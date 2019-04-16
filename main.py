@@ -35,7 +35,6 @@ class DB:
     def delete(self,args):
         self.conn.execute("command")
         self.conn.commit()
-
 #1
 def WIN_user_login():
     # import turtle
@@ -773,7 +772,6 @@ def WIN_take_transit():
     window.mainloop()
 
     #The table
-
 #16
 def WIN_transit_his():
            
@@ -834,90 +832,231 @@ def WIN_transit_his():
     #The table
 #17
 def WIN_emp_manage_profile():
-            
+        
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Employee Manage Profile")
+    window.geometry('600x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
-    l0.grid(sticky='n')
+    Username = 'Ming'
+    Sitename = 'Inman Park'
+    Employeeid = '123456789'
+    Address = '100 East Main Street, Seattle, WA 12345'
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l0 = Label(window,text="Manage Profile", width=36,font=('Arial', 18, 'bold'))
+    l0.place(x=100,y=0)
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l1 = Label(window,text="Fisrt Name", font=('Times 14 normal'))
+    l1.place(x=25,y=60)
+    
+    l2 = Label(window,text="Last Name", font=('Times 14 normal'))
+    l2.place(x=275,y=60)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l3 = Label(window,text="Username", font=('Times 14 normal'))
+    l3.place(x=25,y=100)
+
+    l4 = Label(window,text=Username, font=('Times 14 italic bold'))
+    l4.place(x=120,y=100)
+    
+    l5 = Label(window,text="Site Name",font=('Times 14 normal'))
+    l5.place(x=275,y=100)
+    
+    l6 = Label(window,text=Sitename,font=('Times 14 italic bold'))
+    l6.place(x=400,y=100)
+
+    l7 = Label(window,text="Employee ID", font=('Times 14 normal'))
+    l7.place(x=25,y=140)
+
+    l8 = Label(window,text=Employeeid, font=('Times 14 italic bold'))
+    l8.place(x=120,y=140)
+    
+    l9 = Label(window,text="Phone", font=('Times 14 normal'))
+    l9.place(x=275,y=140)
+
+    l10 = Label(window,text="Address", font=('Times 14 normal'))
+    l10.place(x=25,y=180)
+
+    l11 = Label(window,text=Address, font=('Times 14 italic bold'))
+    l11.place(x=120,y=180)
+
+    l12 = Label(window,text="Email", font=('Times 14 normal'))
+    l12.place(x=25,y=220)
+ 
+    e1 = Entry(window,width=14, bg='powder blue')
+    e1.place(x=120,y=60)
+
+    e2 = Entry(window,width=14, bg='powder blue')
+    e2.place(x=400,y=60)
+
+    e9 = Entry(window,width=14, bg='powder blue')
+    e9.place(x=400,y=140)
+
+    # e12 = Entry(window,width=14, bg='powder blue')
+    # e12.place(x=400,y=220)
+
+    chVarDis = IntVar()
+    c1 = Checkbutton(window, text='Visitor Account',variable=chVarDis)
+    if True:
+        c1.select()
+    else:
+        c1.deselect()
+    c1.place(x=250,y=325)
+
+    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3.place(x=175,y=350)
+
+    b4 = Button(window,text="Register", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4.place(x=325,y=350)
 
     window.mainloop()
-
+#18
 def WIN_adm_manage_user():
-            
+        
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Administrator Manage User")
+    window.geometry('600x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
-    l0.grid(sticky='n')
+    l0 = Label(window,text="Manage User", width=36,font=('Arial', 18, 'bold'))
+    l0.place(x=100,y=0)
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Username", font=('Times 14 normal'))
+    l1.place(x=25,y=60)
+    
+    l2 = Label(window,text="Type", font=('Times 14 normal'))
+    l2.place(x=250,y=60)
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l3 = Label(window,text="Status", font=('Times 14 normal'))
+    l3.place(x=425,y=60)
+ 
+    e1 = Entry(window,width=10, bg='powder blue')
+    e1.place(x=120,y=60)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    option2 = StringVar()
+    o2 = ttk.Combobox(window,width=8, textvariable=option2)
+    o2['values'] = ('Manager','Staff')
+    o2.place(x=300,y=60)
+    o2.current(0)
+
+    option3 = StringVar()
+    o3 = ttk.Combobox(window,width=6, textvariable=option3)
+    o3['values'] = ('--ALL--') # More states should be involved
+    o3.place(x=475,y=60)
+    o3.current(0)
+
+    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=25,y=100)
+
+    b2 = Button(window,text="Approve", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=350,y=100)
+
+    b3 = Button(window,text="Decline", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3.place(x=450,y=100)
+
+    b4 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4.place(x=250,y=350)
 
     window.mainloop()
-
+#19
 def WIN_adm_manage_site():
             
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Administrator Manage Site")
+    window.geometry('500x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
+    l0 = Label(window,text="Manage Site", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Site", font=('Times 14 normal'))
+    l1.place(x=25,y=60)
+    
+    l2 = Label(window,text="Manager", font=('Times 14 normal'))
+    l2.place(x=275,y=60)
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l3 = Label(window,text="Open Everyday", font=('Times 14 normal'))
+    l3.place(x=125,y=100)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    option1 = StringVar()
+    o1 = ttk.Combobox(window,width=8, textvariable=option1)
+    o1['values'] = ('--ALL--')
+    o1.place(x=100,y=60)
+    o1.current(0)
+
+    option2 = StringVar()
+    o2 = ttk.Combobox(window,width=8, textvariable=option2)
+    o2['values'] = ('--ALL--')
+    o2.place(x=350,y=60)
+    o2.current(0)
+
+    option3 = StringVar()
+    o3 = ttk.Combobox(window,width=6, textvariable=option3)
+    o3['values'] = ('No','Yes') # More states should be involved
+    o3.place(x=275,y=100)
+    o3.current(0)
+
+    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=25,y=140)
+
+    b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=200,y=140)
+
+    b3 = Button(window,text="Edit", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3.place(x=300,y=140)
+
+    b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4.place(x=400,y=140)
+
+    b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b5.place(x=200,y=350)
 
     window.mainloop()
-
+#20
 def WIN_adm_edit_site():
-            
+
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Administrator Edit Site")
+    window.geometry('400x300')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
+    l0 = Label(window,text="Edit Site", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Name", font=('Times 14 normal'))
+    l1.place(x=25,y=60)
+    
+    l2 = Label(window,text="Zipcode", font=('Times 14 normal'))
+    l2.place(x=200,y=60)
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l3 = Label(window,text="Address", font=('Times 14 normal'))
+    l3.place(x=25,y=100)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l4 = Label(window,text="Manager", font=('Times 14 normal'))
+    l4.place(x=25,y=140)
+
+    option4 = StringVar()
+    o4 = ttk.Combobox(window,width=10, textvariable=option4)
+    o4['values'] = ('Manager_name')
+    o4.place(x=300,y=140)
+    o4.current(0)
+
+    chVarDis = IntVar()
+    c1 = Checkbutton(window, text='Open Everyday',variable=chVarDis)
+    if True:
+        c1.select()
+    else:
+        c1.deselect()
+    c1.place(x=250,y=325)
+
+    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=25,y=100)
+
+    b2 = Button(window,text="Approve", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=350,y=100)
 
     window.mainloop()
 
@@ -1336,7 +1475,10 @@ def main():
     # WIN_FUN_vis() 
     # WIN_take_transit()
     # WIN_transit_his()
-    WIN_emp_manage_profile()
+    # WIN_emp_manage_profile()
+    # WIN_adm_manage_user()
+    # WIN_adm_manage_site()
+    WIN_adm_edit_site()
 
 if __name__ == '__main__':
     main()
