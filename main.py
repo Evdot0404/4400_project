@@ -1293,179 +1293,544 @@ def WIN_adm_create_transit():
 def WIN_man_manage_event():
             
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Manager Manage Event")
+    window.geometry('500x500')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
-    l0.grid(sticky='n')
+    l0 = Label(window,text="Manage Event", width=36,font=('Arial', 18, 'bold'))
+    l0.pack(side='top')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Name", font=('Times', 14, 'normal'))
+    l1.place(x=25,y=60)
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l2 = Label(window,text="Description Keyword", font=('Times', 14, 'normal'))
+    l2.place(x=250,y=60)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l3 = Label(window,text="Start Date", font=('Times', 14, 'normal'))
+    l3.place(x=25,y=100)
+
+    l4 = Label(window,text="End Date", font=('Times', 14, 'normal'))
+    l4.place(x=250,y=100)
+
+    l5 = Label(window,text="Duration Range", font=('Times', 14, 'normal'))
+    l5.place(x=25,y=140)
+
+    l6 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l6.place(x=175,y=140)
+
+    l7 = Label(window,text="Total Visits Range", font=('Times', 14, 'normal'))
+    l7.place(x=250,y=140)
+
+    l8 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l8.place(x=425,y=140)
+
+    l9 = Label(window,text="Total Revenue Range", font=('Times', 14, 'normal'))
+    l9.place(x=100,y=180)
+
+    l10 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l10.place(x=300,y=180)
+
+    e1 = Entry(window,width=10, bg='powder blue')
+    e1.place(x=100,y=60)
+
+    e2 = Entry(window,width=8, bg='powder blue')
+    e2.place(x=400,y=60)
+
+    e3 = Entry(window,width=14, bg='powder blue')
+    e3.place(x=100,y=100)
+
+    e4 = Entry(window,width=14, bg='powder blue')
+    e4.place(x=350,y=100)
+
+    e6a = Entry(window,width=3, bg='powder blue')
+    e6a.place(x=135,y=140)
+
+    e6b = Entry(window,width=3, bg='powder blue')
+    e6b.place(x=190,y=140)
+
+    e8a = Entry(window,width=3, bg='powder blue')
+    e8a.place(x=385,y=140)
+
+    e8b = Entry(window,width=3, bg='powder blue')
+    e8b.place(x=440,y=140)
+
+    e10a = Entry(window,width=3, bg='powder blue')
+    e10a.place(x=260,y=180)
+
+    e10b = Entry(window,width=3, bg='powder blue')
+    e10b.place(x=315,y=180)
+
+    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=25,y=220)
+
+    b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=200,y=220)
+
+    b3 = Button(window,text="Edit", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3.place(x=300,y=220)
+
+    b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4.place(x=400,y=220)
+
+    b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b5.place(x=200,y=450)
 
     window.mainloop()
-
+#26
 def WIN_man_VE_event():
             
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Manager View/Edit Event")
+    window.geometry('400x800')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
-    l0.grid(sticky='n')
+    Eventname = 'Bus Tour'
+    Price = '25'
+    Startdate = '2019-02-01'
+    Enddate = '2019-02-01'
+    Minsta = '4'
+    Capacity = '100'
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l0 = Label(window,text="View/Edit Event", width=36,font=('Arial', 18, 'bold'))
+    l0.place(x=25,y=0)
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l1 = Label(window,text="Name", font=('Times 14 normal'))
+    l1.place(x=25,y=60)
+    
+    l2 = Label(window,text=Eventname, font=('Times 14 italic bold'))
+    l2.place(x=100,y=60)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l3 = Label(window,text="Price($)", font=('Times 14 normal'))
+    l3.place(x=225,y=60)
+
+    l4 = Label(window,text=Price, font=('Times 14 italic bold'))
+    l4.place(x=300,y=60)
+    
+    l5 = Label(window,text="Start Date",font=('Times 14 normal'))
+    l5.place(x=25,y=100)
+    
+    l6 = Label(window,text=Startdate,font=('Times 14 italic bold'))
+    l6.place(x=100,y=100)
+
+    l7 = Label(window,text="End Date", font=('Times 14 normal'))
+    l7.place(x=225,y=100)
+
+    l8 = Label(window,text=Enddate, font=('Times 14 italic bold'))
+    l8.place(x=300,y=100)
+    
+    l9 = Label(window,text="Minimum Staff Required", font=('Times 14 normal'))
+    l9.place(x=25,y=140)
+
+    l10 = Label(window,text=Minsta, font=('Times 14 italic bold'))
+    l10.place(x=100,y=140)
+
+    l11 = Label(window,text="Capacity", font=('Times 14 normal'))
+    l11.place(x=225,y=140)
+       
+    l12 = Label(window,text=Capacity,font=('Times 14 italic bold'))
+    l12.place(x=300,y=140)
+
+    l13 = Label(window,text="Staff Assigned", font=('Times 14 normal'))
+    l13.place(x=25,y=220)
+
+    l14 = Label(window,text="Description", font=('Times 14 normal'))
+    l14.place(x=25,y=340)
+    
+    l15 = Label(window,text="Daily Visits Range", font=('Times 14 normal'))
+    l15.place(x=25,y=460)
+
+    l16 = Label(window,text="--", font=('Times 14 normal'))
+    l16.place(x=250,y=460)
+
+    l17 = Label(window,text="Daily Revenue Range", font=('Times 14 normal'))
+    l17.place(x=25,y=500)
+
+    l18 = Label(window,text="--", font=('Times 14 normal'))
+    l18.place(x=250,y=500)
+
+    e16a = Entry(window,width=3, bg='powder blue')
+    e16a.place(x=200,y=460)
+
+    e16b = Entry(window,width=3, bg='powder blue')
+    e16b.place(x=275,y=460)
+
+    e18a = Entry(window,width=3, bg='powder blue')
+    e18a.place(x=200,y=500)
+
+    e18b = Entry(window,width=3, bg='powder blue')
+    e18b.place(x=275,y=500)
+
+    st1 = scrolledtext.ScrolledText(window, width=25, height=8,wrap=WORD,bd=8,)
+    st1.place(x=150,y=180)
+    st1.insert(INSERT,"""Something to be filled""")
+    st1.config(state=DISABLED)
+
+    st2 = scrolledtext.ScrolledText(window, width=25, height=8,wrap=WORD,bd=8,)
+    st2.place(x=150,y=300)
+    st2.insert(INSERT,"""Something to be filled""")
+    st2.config(state=DISABLED)
+
+    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=25,y=540)
+
+    b2 = Button(window,text="Update", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=275,y=540)
+
+    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3.pack(side='bottom')
 
     window.mainloop()
-
+#27
 def WIN_man_create_event():
             
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Manager Create Event")
+    window.geometry('500x500')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
+    l0 = Label(window,text="Create Event", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Name", font=('Times 14 normal'))
+    l1.place(x=25,y=60)
+    
+    l2 = Label(window,text="Price($)", font=('Times 14 normal'))
+    l2.place(x=25,y=100)
+
+    l3 = Label(window,text="Capacity", font=('Times 14 normal'))
+    l3.place(x=150,y=100)
+
+    l4 = Label(window,text="Minimum Staff Required", font=('Times 14 normal'))
+    l4.place(x=275,y=100)
+    
+    l5 = Label(window,text="Start Date",font=('Times 14 normal'))
+    l5.place(x=25,y=140)
+    
+    l6 = Label(window,text="End Date",font=('Times 14 normal'))
+    l6.place(x=275,y=140)
+
+    l7 = Label(window,text="Description", font=('Times 14 normal'))
+    l7.place(x=25,y=220)
+
+    l8 = Label(window,text="Assign Staff", font=('Times 14 normal'))
+    l8.place(x=25,y=340)
 
     e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    e1.place(x=125,y=60)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    e2 = Entry(window,width=3, bg='powder blue')
+    e2.place(x=100,y=100)
+
+    e3 = Entry(window,width=3, bg='powder blue')
+    e3.place(x=225,y=100)
+
+    e4 = Entry(window,width=3, bg='powder blue')
+    e4.place(x=450,y=100)
+
+    e5 = Entry(window,width=8, bg='powder blue')
+    e5.place(x=125,y=140)
+
+    e6 = Entry(window,width=8, bg='powder blue')
+    e6.place(x=350,y=140)
+
+    st1 = scrolledtext.ScrolledText(window, width=45, height=7,wrap=WORD,bd=8,)
+    st1.place(x=125,y=180)
+    st1.insert(INSERT,"""Something to be filled""")
+    st1.config(state=DISABLED)
+
+    st2 = scrolledtext.ScrolledText(window, width=45, height=7,wrap=WORD,bd=8,)
+    st2.place(x=125,y=300)
+    st2.insert(INSERT,"""Something to be filled""")
+    st2.config(state=DISABLED)
+
+    b1 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=75,y=450)
+
+    b2 = Button(window,text="Create", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=275,y=450)
 
     window.mainloop() 
-
+#28
 def WIN_man_manage_staff():
-            
+                      
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Manager Manage Staff")
+    window.geometry('400x500')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
-    l0.grid(sticky='n')
+    l0 = Label(window,text="Manage Staff", width=36,font=('Arial', 18, 'bold'))
+    l0.pack(side='top')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Site", font=('Times', 14, 'normal'))
+    l1.place(x=75,y=60)
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l2 = Label(window,text="First Name", font=('Times', 14, 'normal'))
+    l2.place(x=25,y=100)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l3 = Label(window,text="Last Name", font=('Times', 14, 'normal'))
+    l3.place(x=200,y=100)
+
+    l4 = Label(window,text="Start Date", font=('Times', 14, 'normal'))
+    l4.place(x=25,y=140)
+
+    l5 = Label(window,text="End Date", font=('Times', 14, 'normal'))
+    l5.place(x=200,y=140)
+
+    e2 = Entry(window,width=6, bg='powder blue')
+    e2.place(x=125,y=100)
+
+    e3 = Entry(window,width=6, bg='powder blue')
+    e3.place(x=300,y=100)
+
+    e4 = Entry(window,width=6, bg='powder blue')
+    e4.place(x=125,y=140)
+
+    e5 = Entry(window,width=6, bg='powder blue')
+    e5.place(x=300,y=140)
+
+    option1 = StringVar()
+    o1 = ttk.Combobox(window,width=10, textvariable=option1)
+    o1['values'] = ('InmanPark')
+    o1.place(x=125,y=60)
+    o1.current(0)
+
+    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=150,y=180)
+
+    b2 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=150,y=450)
 
     window.mainloop()
-
+#29
 def WIN_man_site_report():
             
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Manager Site Report")
+    window.geometry('500x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
-    l0.grid(sticky='n')
+    l0 = Label(window,text="Site Report", width=36,font=('Arial', 18, 'bold'))
+    l0.pack(side='top')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Start Date", font=('Times', 14, 'normal'))
+    l1.place(x=25,y=60)
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l2 = Label(window,text="End Date", font=('Times', 14, 'normal'))
+    l2.place(x=300,y=60)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l3 = Label(window,text="Event Count Range", font=('Times', 14, 'normal'))
+    l3.place(x=25,y=100)
 
-    window.mainloop() 
+    l4 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l4.place(x=200,y=100)
 
+    l5 = Label(window,text="Staff Count Range", font=('Times', 14, 'normal'))
+    l5.place(x=250,y=100)
+
+    l6 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l6.place(x=425,y=100)
+
+    l7 = Label(window,text="Total Visits Range", font=('Times', 14, 'normal'))
+    l7.place(x=25,y=140)
+
+    l8 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l8.place(x=200,y=140)
+
+    l9 = Label(window,text="Total Revenue Range", font=('Times', 14, 'normal'))
+    l9.place(x=250,y=140)
+
+    l10 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l10.place(x=425,y=140)
+
+    e1 = Entry(window,width=10, bg='powder blue')
+    e1.place(x=100,y=60)
+
+    e2 = Entry(window,width=10, bg='powder blue')
+    e2.place(x=375,y=60)
+
+    e4a = Entry(window,width=2, bg='powder blue')
+    e4a.place(x=170,y=100)
+
+    e4b = Entry(window,width=2, bg='powder blue')
+    e4b.place(x=215,y=100)
+
+    e6a = Entry(window,width=2, bg='powder blue')
+    e6a.place(x=395,y=100)
+
+    e6b = Entry(window,width=2, bg='powder blue')
+    e6b.place(x=440,y=100)
+
+    e8a = Entry(window,width=2, bg='powder blue')
+    e8a.place(x=170,y=140)
+
+    e8b = Entry(window,width=2, bg='powder blue')
+    e8b.place(x=215,y=140)
+
+    e10a = Entry(window,width=2, bg='powder blue')
+    e10a.place(x=395,y=140)
+
+    e10b = Entry(window,width=2, bg='powder blue')
+    e10b.place(x=440,y=140)
+
+    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=50,y=180)
+
+    b2 = Button(window,text="Daily Detail", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=375,y=180)
+
+    b3 = Button(window,text="Back", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3.pack(side='bottom')
+
+    window.mainloop()
+#30
 def WIN_man_daily_detail():
             
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Manager Daily Detail")
+    window.geometry('400x300')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
-    l0.grid(sticky='n')
+    l0 = Label(window,text="Daily Detail", width=36,font=('Arial', 18, 'bold'))
+    l0.pack(side='top')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
-
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
-
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    b1 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.pack(side='bottom')
 
     window.mainloop()
-
+#31
 def WIN_sta_view_schedule():
-            
+                       
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Staff View Schedule")
+    window.geometry('500x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
-    l0.grid(sticky='n')
+    l0 = Label(window,text="View Schedule", width=36,font=('Arial', 18, 'bold'))
+    l0.pack(side='top')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="First Name", font=('Times', 14, 'normal'))
+    l1.place(x=25,y=60)
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l2 = Label(window,text="Last Name", font=('Times', 14, 'normal'))
+    l2.place(x=250,y=60)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l3 = Label(window,text="Start Date", font=('Times', 14, 'normal'))
+    l3.place(x=25,y=100)
+
+    l4 = Label(window,text="End Date", font=('Times', 14, 'normal'))
+    l4.place(x=250,y=100)
+
+    e1 = Entry(window,width=10, bg='powder blue')
+    e1.place(x=125,y=60)
+
+    e2 = Entry(window,width=10, bg='powder blue')
+    e2.place(x=350,y=60)
+
+    e3 = Entry(window,width=10, bg='powder blue')
+    e3.place(x=125,y=100)
+
+    e4 = Entry(window,width=10, bg='powder blue')
+    e4.place(x=350,y=100)
+
+    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=100,y=140)
+
+    b2 = Button(window,text="View Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=275,y=140)
+
+    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3.pack(side='bottom')
 
     window.mainloop()
-
+#32
 def WIN_sta_event_detail():
             
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Staff Event Detail")
+    window.geometry('500x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
-    l0.grid(sticky='n')
+    Event = "Arboretum Walking Tour"
+    Site = "Inman Park"
+    Startdate = "2019-02-02"
+    Enddate = "2019-02-02"
+    Durationdays = "1"
+    Staffsassigned = "Alice Smith"
+    Capacity = "20"
+    Price = "0"
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l0 = Label(window,text="Event Detail", width=36,font=('Arial', 18, 'bold'))
+    l0.pack(side='top')
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l1 = Label(window,text="Event", font=('Times 14 normal'))
+    l1.place(x=25,y=60)
+    
+    l2 = Label(window,text=Event, font=('Times 14 italic bold'))
+    l2.place(x=100,y=60)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l3 = Label(window,text="Site", font=('Times 14 normal'))
+    l3.place(x=275,y=60)
+
+    l4 = Label(window,text=Site, font=('Times 14 italic bold'))
+    l4.place(x=325,y=60)
+    
+    l5 = Label(window,text="Start Date",font=('Times 14 normal'))
+    l5.place(x=25,y=100)
+    
+    l6 = Label(window,text=Startdate,font=('Times 14 italic bold'))
+    l6.place(x=100,y=100)
+
+    l7 = Label(window,text="End Date", font=('Times 14 normal'))
+    l7.place(x=200,y=100)
+
+    l8 = Label(window,text=Enddate, font=('Times 14 italic bold'))
+    l8.place(x=275,y=100)
+    
+    l9 = Label(window,text="Duration Days", font=('Times 14 normal'))
+    l9.place(x=350,y=100)
+
+    l10 = Label(window,text=Durationdays, font=('Times 14 italic bold'))
+    l10.place(x=450,y=100)
+
+    l11 = Label(window,text="Staffs Assigned", font=('Times 14 normal'))
+    l11.place(x=25,y=140)
+       
+    l12 = Label(window,text=Staffsassigned,font=('Times 14 italic bold'))
+    l12.place(x=125,y=140)
+
+    l13 = Label(window,text="Capacity", font=('Times 14 normal'))
+    l13.place(x=210,y=140)
+    
+    l14 = Label(window,text=Capacity, font=('Times 14 italic bold'))
+    l14.place(x=275,y=140)
+
+    l15 = Label(window,text="Price", font=('Times 14 normal'))
+    l15.place(x=345,y=140)
+
+    l16 = Label(window,text=Price, font=('Times 14 italic bold'))
+    l16.place(x=400,y=140)
+       
+    l17 = Label(window,text="Description",font=('Times 14 italic bold'))
+    l17.place(x=25,y=180)
+
+    st1 = scrolledtext.ScrolledText(window, width=45, height=7,wrap=WORD,bd=8,)
+    st1.place(x=125,y=180)
+    st1.insert(INSERT,"""Something to be filled""")
+    st1.config(state=DISABLED)
+           
+    b1 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.pack(side='bottom')
 
     window.mainloop() 
-
+#33
 def WIN_vis_explore_event():
             
     window = Tk()
@@ -1625,7 +1990,20 @@ def main():
     # WIN_adm_manage_transit()
     # WIN_adm_edit_transit()
     # WIN_adm_create_transit()
-    WIN_man_manage_event()
+    # WIN_man_manage_event()
+    # WIN_man_VE_event()
+    # WIN_man_create_event()
+    # WIN_man_manage_staff()
+    # WIN_man_site_report()
+    # WIN_man_daily_detail()
+    # WIN_sta_view_schedule()
+    # WIN_sta_event_detail()
+    WIN_vis_explore_event()
+    # WIN_vis_event_detail()
+    # WIN_vis_explore_site()
+    # WIN_vis_transit_detail()
+    # WIN_vis_site_detail()
+    # WIN_vis_visit_his()
 
 if __name__ == '__main__':
     main()
