@@ -2,6 +2,7 @@
 import flask
 import sqlite3
 from tkinter import *
+from tkinter import scrolledtext
 from tkinter import ttk
 import tkinter.messagebox
 
@@ -1019,7 +1020,7 @@ def WIN_adm_edit_site():
 
     window = Tk()
     window.title("Administrator Edit Site")
-    window.geometry('400x300')
+    window.geometry('400x250')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
@@ -1030,7 +1031,7 @@ def WIN_adm_edit_site():
     l1.place(x=25,y=60)
     
     l2 = Label(window,text="Zipcode", font=('Times 14 normal'))
-    l2.place(x=200,y=60)
+    l2.place(x=225,y=60)
 
     l3 = Label(window,text="Address", font=('Times 14 normal'))
     l3.place(x=25,y=100)
@@ -1038,10 +1039,19 @@ def WIN_adm_edit_site():
     l4 = Label(window,text="Manager", font=('Times 14 normal'))
     l4.place(x=25,y=140)
 
+    e1 = Entry(window,width=10, bg='powder blue')
+    e1.place(x=100,y=60)
+
+    e2 = Entry(window,width=8, bg='powder blue')
+    e2.place(x=300,y=60)
+
+    e3 = Entry(window,width=26, bg='powder blue')
+    e3.place(x=100,y=100)
+
     option4 = StringVar()
-    o4 = ttk.Combobox(window,width=10, textvariable=option4)
+    o4 = ttk.Combobox(window,width=12, textvariable=option4)
     o4['values'] = ('Manager_name')
-    o4.place(x=300,y=140)
+    o4.place(x=100,y=140)
     o4.current(0)
 
     chVarDis = IntVar()
@@ -1050,104 +1060,236 @@ def WIN_adm_edit_site():
         c1.select()
     else:
         c1.deselect()
-    c1.place(x=250,y=325)
+    c1.place(x=250,y=140)
 
-    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.place(x=25,y=100)
+    b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=25,y=200)
 
-    b2 = Button(window,text="Approve", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b2.place(x=350,y=100)
+    b2 = Button(window,text="Update", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=275,y=200)
 
-    window.mainloop()
-
+    window.mainloop()   
+#21
 def WIN_adm_create_site():
-            
+ 
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Administrator Create Site")
+    window.geometry('400x250')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
+    l0 = Label(window,text="Create Site", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Name", font=('Times 14 normal'))
+    l1.place(x=25,y=60)
+    
+    l2 = Label(window,text="Zipcode", font=('Times 14 normal'))
+    l2.place(x=225,y=60)
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l3 = Label(window,text="Address", font=('Times 14 normal'))
+    l3.place(x=25,y=100)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l4 = Label(window,text="Manager", font=('Times 14 normal'))
+    l4.place(x=25,y=140)
 
-    window.mainloop()
+    e1 = Entry(window,width=10, bg='powder blue')
+    e1.place(x=100,y=60)
 
+    e2 = Entry(window,width=8, bg='powder blue')
+    e2.place(x=300,y=60)
+
+    e3 = Entry(window,width=26, bg='powder blue')
+    e3.place(x=100,y=100)
+
+    option4 = StringVar()
+    o4 = ttk.Combobox(window,width=12, textvariable=option4)
+    o4['values'] = ('Manager_name')
+    o4.place(x=100,y=140)
+    o4.current(0)
+
+    chVarDis = IntVar()
+    c1 = Checkbutton(window, text='Open Everyday',variable=chVarDis)
+    if True:
+        c1.select()
+    else:
+        c1.deselect()
+    c1.place(x=250,y=140)
+
+    b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=25,y=200)
+
+    b2 = Button(window,text="Create", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=275,y=200)
+
+    window.mainloop()   
+#22
 def WIN_adm_manage_transit():
             
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Administrator Manage Transit")
+    window.geometry('500x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
-    l0.grid(sticky='n')
+    l0 = Label(window,text="Take Transit", width=36,font=('Arial', 18, 'bold'))
+    l0.pack(side='top')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Transport Type", font=('Times', 14, 'normal'))
+    l1.place(x=25,y=60)
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l2 = Label(window,text="Route", font=('Times', 14, 'normal'))
+    l2.place(x=250,y=60)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l3 = Label(window,text="Contain Site", font=('Times', 14, 'normal'))
+    l3.place(x=25,y=100)
+
+    l4 = Label(window,text="Price Range", font=('Times', 14, 'normal'))
+    l4.place(x=250,y=100)
+
+    l5 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l5.place(x=400,y=100)
+
+    e5a = Entry(window,width=3, bg='powder blue')
+    e5a.place(x=350,y=100)
+
+    e5b = Entry(window,width=3, bg='powder blue')
+    e5b.place(x=425,y=100)
+
+    e2 = Entry(window,width=14, bg='powder blue')
+    e2.place(x=350,y=60)
+
+    option1 = StringVar()
+    o1 = ttk.Combobox(window,width=10, textvariable=option1)
+    o1['values'] = ('--ALL--')
+    o1.place(x=125,y=60)
+    o1.current(0)
+
+    option3 = StringVar()
+    o3 = ttk.Combobox(window,width=8, textvariable=option3)
+    o3['values'] = ('Inman Park') # More states should be involved
+    o3.place(x=125,y=100)
+    o3.current(0)
+
+    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=25,y=140)
+
+    b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=200,y=140)
+
+    b3 = Button(window,text="Edit", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3.place(x=300,y=140)
+
+    b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4.place(x=400,y=140)
+
+    b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b5.place(x=200,y=350)
 
     window.mainloop()
-
+#23
 def WIN_adm_edit_transit():
             
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Administrator Edit Transit")
+    window.geometry('400x300')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
-    l0.grid(sticky='n')
+    # spin = Spinbox(window, values=('A','B'),width=5, bd=8)
+    # spin.place(x=0,y=0)
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    Transit_type = "Bus"
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l0 = Label(window,text="Edit Transit", width=36,font=('Arial', 18, 'bold'))
+    l0.pack(side='top')
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l1 = Label(window,text="Transport Type", font=('Times', 14, 'normal'))
+    l1.place(x=25,y=60)
+
+    l2 = Label(window,text=Transit_type, font=('Times', 14, 'italic','bold'))
+    l2.place(x=125,y=60)
+
+    l3 = Label(window,text="Route", font=('Times', 14, 'normal'))
+    l3.place(x=175,y=60)
+
+    l4 = Label(window,text="Price($)", font=('Times', 14, 'normal'))
+    l4.place(x=275,y=60)
+
+    l5 = Label(window,text="Connected Sites", font=('Times', 14, 'normal'))
+    l5.place(x=25,y=140)
+
+    e1 = Entry(window,width=3, bg='powder blue')
+    e1.place(x=225,y=60)
+
+    e2 = Entry(window,width=3, bg='powder blue')
+    e2.place(x=325,y=60)
+
+    # For now, it's fixed
+    st1 = scrolledtext.ScrolledText(window, width=20, height=8,wrap=WORD,bd=8,)
+    st1.place(x=200,y=100)
+    st1.insert(INSERT,"""Something to be filled""")
+    st1.config(state=DISABLED)
+
+    b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=25,y=250)
+
+    b2 = Button(window,text="Update", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=300,y=250)
 
     window.mainloop() 
-
+#24
 def WIN_adm_create_transit():
-            
+                 
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Administrator Create Transit")
+    window.geometry('400x300')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
-    l0.grid(sticky='n')
+    # spin = Spinbox(window, values=('A','B'),width=5, bd=8)
+    # spin.place(x=0,y=0)
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l0 = Label(window,text="Create Transit", width=36,font=('Arial', 18, 'bold'))
+    l0.pack(side='top')
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l1 = Label(window,text="Transport Type", font=('Times', 14, 'normal'))
+    l1.place(x=25,y=60)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l3 = Label(window,text="Route", font=('Times', 14, 'normal'))
+    l3.place(x=200,y=60)
 
-    window.mainloop()
+    l4 = Label(window,text="Price($)", font=('Times', 14, 'normal'))
+    l4.place(x=300,y=60)
 
+    l5 = Label(window,text="Connected Sites", font=('Times', 14, 'normal'))
+    l5.place(x=25,y=140)
+
+    e1 = Entry(window,width=3, bg='powder blue')
+    e1.place(x=250,y=60)
+
+    e2 = Entry(window,width=3, bg='powder blue')
+    e2.place(x=350,y=60)
+
+    option1 = StringVar()
+    o1 = ttk.Combobox(window,width=5, textvariable=option1)
+    o1['values'] = ('MARTA')
+    o1.place(x=125,y=60)
+    o1.current(0)
+    # For now, it's fixed
+    st1 = scrolledtext.ScrolledText(window, width=20, height=8,wrap=WORD,bd=8,)
+    st1.place(x=200,y=100)
+    st1.insert(INSERT,"""Something to be filled""")
+    st1.config(state=DISABLED)
+
+    b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=25,y=250)
+
+    b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=300,y=250)
+
+    window.mainloop() 
+#25
 def WIN_man_manage_event():
             
     window = Tk()
@@ -1478,7 +1620,12 @@ def main():
     # WIN_emp_manage_profile()
     # WIN_adm_manage_user()
     # WIN_adm_manage_site()
-    WIN_adm_edit_site()
+    # WIN_adm_edit_site()
+    # WIN_adm_create_site()
+    # WIN_adm_manage_transit()
+    # WIN_adm_edit_transit()
+    # WIN_adm_create_transit()
+    WIN_man_manage_event()
 
 if __name__ == '__main__':
     main()
