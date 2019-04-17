@@ -1,1 +1,1 @@
-25 windows have been created.
+32 windows have been created.
