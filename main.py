@@ -36,22 +36,23 @@ class DB:
     def delete(self,args):
         self.conn.execute("command")
         self.conn.commit()
+# Mutural functions 
+def back():
+    pass 
+
+def entryget(button,entry):
+    message = entry.get()
+    button.configure(text=message)
+
 #1
 def WIN_user_login():
-    # import turtle
-    # def hello():
-    #     turtle.write("Hello world", align='center', font=('Arial', 18, 'normal'))
 
     # Initialization
     window = Tk()
     window.title("User Login")
     window.geometry('400x200')
+    window.resizable(0, 0)
     window.configure(background="#fff")
-
-    # canvas = turtle.ScrolledCanvas(window)
-    # canvas.pack(side=LEFT)
-    # screen = turtle.TurtleScreen(canvas)
-    # turtle = turtle.RawPen(screen, visible=False)
 
     # Labels
     l0 = Label(window, text="Atlanta Beltline Login", width=36,font=('Arial', 18, 'bold'))
@@ -66,32 +67,43 @@ def WIN_user_login():
     # l2.grid(row=4, column=0)
 
     #entry
-    e1 = Entry(window,width=20, bg='powder blue')
+    e1_content = StringVar()
+    e1 = Entry(window,width=20, bg='powder blue',textvariable=e1_content)
+    """ focus is that as soon as the GUI appears, we can type into this text box without having to click it first """
+    e1.focus() 
     e1.place(x=150,y=60)
     # e1.focus_set()
 
-    e2 = Entry(window,width=20, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=20, bg='powder blue',textvariable=e2_content,show='*')
     e2.place(x=150,y=100)
-    # e2.focus_set()
 
-    def hello(text):
-        e1.delete(0,END)
-        # e1.insert(0,text)
-        tkinter.messagebox.showinfo("Example",e1.get())
-        # exit()
-
-    def hi():
-        tkinter.messagebox.showinfo("Example","hi")
-        exit()
-        # print("hi")
     # Buttons
-    b1 = Button(window, text="Login", width=6, height=2,bg='white',fg='grey',font=('Arial 9 bold'), command=(lambda: hello("test")))
-    b1.place(x=75,y=150)
-    # b1.grid(row=12, column=1) padx,pady
 
-    b2 = Button(window, text="Register", width=8, height=2,bg='white',fg='grey',font=('Arial 9 bold'), command=(lambda: tkinter.messagebox.showwarning("yes","this is wrong")))
+    def clickMe():
+        b1.configure(text="Clicked!")
+        l1.configure(foreground='red')
+
+    def checkaccount():
+        email = e1_content.get()
+        password = e2_content.get()
+        #! Here, a list from database needed
+        accounts = [('mcao42@gatech.edu','123456')]
+        if (email,password) in accounts:
+            window.destroy()
+            WIN_FUN_user()
+        else: 
+            tkinter.messagebox.showwarning('Invalid Account','Incorrect email and password combination!')
+
+    def register():
+        window.destroy()
+        WIN_regi_nav()
+    
+    b1 = Button(window, text="Login", width=6, height=2,bg='white',fg='grey',font=('Arial 9 bold'), command=(lambda: checkaccount()))
+    b1.place(x=75,y=150)
+
+    b2 = Button(window, text="Register", width=8, height=2,bg='white',fg='grey',font=('Arial 9 bold'), command=(lambda: register()))
     b2.place(x=250,y=150)
-    # b2.grid(row=12, column=2)
 
     # Radiobutton()
 
@@ -102,6 +114,7 @@ def WIN_regi_nav():
     window = Tk()
     window.title("Register Navigation")
     window.geometry('250x250')
+    window.resizable(0, 0)
     window.configure(background="#fff")
 
     l0 = Label(window,text="Register Navigation", width=36,font=('Arial', 18, 'bold'))
@@ -1966,7 +1979,7 @@ def WIN_vis_visit_his():
 def main():
     # db = DB()
 
-    # WIN_user_login()
+    WIN_user_login()
     # WIN_regi_nav()
     # WIN_regi_user()
     # WIN_regi_vis()
@@ -1998,7 +2011,7 @@ def main():
     # WIN_man_daily_detail()
     # WIN_sta_view_schedule()
     # WIN_sta_event_detail()
-    WIN_vis_explore_event()
+    # WIN_vis_explore_event()
     # WIN_vis_event_detail()
     # WIN_vis_explore_site()
     # WIN_vis_transit_detail()
