@@ -1,4 +1,5 @@
 #! /usr/bin/python3
+import flask
 import sqlite3
 from tkinter import *
 from tkinter import scrolledtext
@@ -37,20 +38,23 @@ class DB:
         self.conn.execute("command")
         self.conn.commit()
 # Mutural functions 
-
-take_transit = ''
-transit_his = ''
-man_profile = ''
-man_user = ''
-man_transit = ''
-man_site = ''
-exp_site = ''
-exp_event = ''
-vis_his = ''
-man_event = ''
-view_site_report = ''
-view_sta = ''
-view_schedule = ''
+take_transit = ['']
+transit_his = ['']
+man_profile = ['']
+man_user = ['']
+man_transit = ['']
+man_site = ['']
+exp_site = ['']
+exp_event = ['']
+vis_his = ['']
+man_event = ['']
+view_site_report = ['']
+view_sta = ['']
+view_schedule = ['']
+newemail = []
+newemail_vis = []
+newemail_emp = []
+newemail_emp_and_vis = []
 
 #1 s2
 def WIN_user_login():
@@ -155,7 +159,6 @@ def WIN_regi_nav():
 
     window.mainloop()
 #3
-newemail = []
 def WIN_regi_user():
 
     geometry = '600x' + str(len(newemail)*40+300)
@@ -287,7 +290,6 @@ def WIN_regi_user():
 
     window.mainloop()
 #4
-newemail_vis = []
 def WIN_regi_vis():
 
     geometry = '600x' + str(len(newemail_vis)*40+300)
@@ -418,7 +420,6 @@ def WIN_regi_vis():
 
     window.mainloop()
 #5
-newemail_emp = []
 def WIN_regi_emp():
 
     geometry = '600x' + str(len(newemail_emp)*40+400)
@@ -616,7 +617,6 @@ def WIN_regi_emp():
 
     window.mainloop()
 #6
-newemail_emp_and_vis = []
 def WIN_regi_emp_and_vis():
 
     geometry = '600x' + str(len(newemail_emp_and_vis)*40+400)
@@ -824,11 +824,11 @@ def WIN_FUN_user():
     def navigation(value):
         if value == 1:
             window.destroy()
-            take_transit = 'user'
+            take_transit[0] = 'user'
             WIN_take_transit()
         if value == 2:
             window.destroy()
-            transit_his = 'user'
+            transit_his[0] = 'user'
             WIN_transit_his()
         if value == 3:
             window.destroy()
@@ -858,27 +858,27 @@ def WIN_FUN_adm():
     def navigation(value):
         if value == 1:
             window.destroy()
-            man_profile = 'adm'
+            man_profile[0] = 'adm'
             WIN_emp_manage_profile()
         if value == 2:
             window.destroy()
-            man_user = 'adm'
+            man_user[0] = 'adm'
             WIN_adm_manage_user()
         if value == 3:
             window.destroy()
-            man_transit = 'adm'
+            man_transit[0] = 'adm'
             WIN_adm_manage_transit()
         if value == 4:
             window.destroy()
-            man_site = 'adm'
+            man_site[0] = 'adm'
             WIN_adm_manage_site() 
         if value == 5:
             window.destroy()
-            take_transit = 'adm'
+            take_transit[0] = 'adm'
             WIN_take_transit()
         if value == 6:
             window.destroy()
-            transit_his = 'adm'
+            transit_his[0] = 'adm'
             WIN_transit_his() 
         if value == 7:
             window.destroy()
@@ -920,39 +920,39 @@ def WIN_FUN_adm_and_vis():
     def navigation(value):
         if value == 1:
             window.destroy()
-            man_profile = 'admuser'
+            man_profile[0] = 'admuser'
             WIN_emp_manage_profile()
         if value == 2:
             window.destroy()
-            man_user = 'admuser'
+            man_user[0] = 'admuser'
             WIN_adm_manage_user()
         if value == 3:
             window.destroy()
-            man_transit = 'admuser'
+            man_transit[0] = 'admuser'
             WIN_adm_manage_transit()
         if value == 4:
             window.destroy()
-            man_transit = 'admuser'
+            man_transit[0] = 'admuser'
             WIN_adm_manage_site() 
         if value == 5:
             window.destroy()
-            take_transit = 'admuser'
+            take_transit[0] = 'admuser'
             WIN_take_transit()
         if value == 6:
             window.destroy()
-            exp_site = 'admuser'
+            exp_site[0] = 'admuser'
             WIN_vis_explore_site() 
         if value == 7:
             window.destroy()
-            exp_event = 'admuser'
+            exp_event[0] = 'admuser'
             WIN_vis_explore_event()
         if value == 8:
             window.destroy()
-            transit_his = 'admuser'
+            transit_his[0] = 'admuser'
             WIN_transit_his()  
         if value == 9:
             window.destroy()
-            vis_his = 'admuser'
+            vis_his[0] = 'admuser'
             WIN_vis_visit_his()
         if value == 10:
             window.destroy()
@@ -1003,27 +1003,27 @@ def WIN_FUN_man():
     def navigation(value):
         if value == 1:
             window.destroy()
-            man_profile = 'man'
+            man_profile[0] = 'man'
             WIN_emp_manage_profile()
         if value == 2:
             window.destroy()
-            man_event = 'man'
+            man_event[0] = 'man'
             WIN_man_manage_event()
         if value == 3:
             window.destroy()
-            view_site_report = 'man'
+            view_site_report[0] = 'man'
             WIN_man_site_report()
         if value == 4:
             window.destroy()
-            view_sta = 'man'
+            view_sta[0] = 'man'
             WIN_man_manage_staff() 
         if value == 5:
             window.destroy()
-            take_transit = 'man'
+            take_transit[0] = 'man'
             WIN_take_transit()
         if value == 6:
             window.destroy()
-            transit_his = 'man'
+            transit_his[0] = 'man'
             WIN_transit_his() 
         if value == 7:
             window.destroy()
@@ -1065,39 +1065,39 @@ def WIN_FUN_man_and_vis():
     def navigation(value):
         if value == 1:
             window.destroy()
-            man_profile = 'manuser'
+            man_profile[0] = 'manuser'
             WIN_emp_manage_profile()
         if value == 2:
             window.destroy()
-            man_event = 'manuser'
+            man_event[0] = 'manuser'
             WIN_man_manage_event()
         if value == 4:
             window.destroy()
-            view_site_report = 'manuser'
+            view_site_report[0] = 'manuser'
             WIN_man_site_report()
         if value == 3:
             window.destroy()
-            view_sta = 'manuser'
+            view_sta[0] = 'manuser'
             WIN_man_manage_staff()
         if value == 5:
             window.destroy()
-            exp_site = 'manuser'
+            exp_site[0] = 'manuser'
             WIN_vis_explore_site() 
         if value == 6:
             window.destroy()
-            exp_event = 'manuser'
+            exp_event[0] = 'manuser'
             WIN_vis_explore_event() 
         if value == 7:
             window.destroy()
-            take_transit = 'manuser'
+            take_transit[0] = 'manuser'
             WIN_take_transit()
         if value == 8:
             window.destroy()
-            transit_his = 'manuser'
+            transit_his[0] = 'manuser'
             WIN_transit_his() 
         if value == 9:
             window.destroy()
-            vis_his = 'manuser'
+            vis_his[0] = 'manuser'
             WIN_vis_visit_his()
         if value == 10:
             window.destroy()
@@ -1139,6 +1139,7 @@ def WIN_FUN_man_and_vis():
     window.mainloop()
 #12
 def WIN_FUN_sta():
+    # global take_transit
   
     window = Tk()
     window.title("Staff Functionality")
@@ -1148,19 +1149,20 @@ def WIN_FUN_sta():
     def navigation(value):
         if value == 1:
             window.destroy()
-            man_profile = 'sta'
+            man_profile[0] = 'sta'
             WIN_emp_manage_profile()
         if value == 2:
             window.destroy()
-            view_schedule = 'sta'
+            view_schedule[0] = 'sta'
             WIN_sta_view_schedule()
         if value == 3:
             window.destroy()
-            take_transit = 'sta'
+            take_transit[0] = 'sta'
+            print(take_transit)
             WIN_take_transit()
         if value == 4:
             window.destroy()
-            transit_his = 'sta'
+            transit_his[0] = 'sta'
             WIN_transit_his()
         if value == 5:
             window.destroy()
@@ -1196,31 +1198,31 @@ def WIN_FUN_sta_and_vis():
     def navigation(value):
         if value == 1:
             window.destroy()
-            man_profile = 'stauser'
+            man_profile[0] = 'stauser'
             WIN_emp_manage_profile()
         if value == 2:
             window.destroy()
-            view_schedule = 'stauser'
+            view_schedule[0] = 'stauser'
             WIN_sta_view_schedule()
         if value == 3:
             window.destroy()
-            exp_event = 'stauser'
+            exp_event[0] = 'stauser'
             WIN_vis_explore_event() 
         if value == 4:
             window.destroy()
-            exp_site = 'stauser'
+            exp_site[0] = 'stauser'
             WIN_vis_explore_site() 
         if value == 5:
             window.destroy()
-            take_transit = 'stauser'
+            take_transit[0] = 'stauser'
             WIN_take_transit()
         if value == 6:
             window.destroy()
-            vis_his = 'stauser'
+            vis_his[0] = 'stauser'
             WIN_vis_visit_his()            
         if value == 7:
             window.destroy()
-            transit_his = 'stauser'
+            transit_his[0] = 'stauser'
             WIN_transit_his()
         if value == 8:
             window.destroy()
@@ -1265,33 +1267,95 @@ def WIN_FUN_vis():
     l0 = Label(window,text="Visitor Functionality", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
 
-    b1 = Button(window,text="Explore Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    def navigation(value):
+        if value == 1:
+            window.destroy()
+            exp_event = 'vis'
+            WIN_vis_explore_event() 
+        if value == 2:
+            window.destroy()
+            exp_site = 'vis'
+            WIN_vis_explore_site()
+        if value == 3:
+            window.destroy()
+            vis_his = 'vis'
+            WIN_vis_visit_his()     
+        if value == 4:
+            window.destroy()
+            take_transit = 'vis'
+            WIN_take_transit()           
+        if value == 5:
+            window.destroy()
+            transit_his = 'vis'
+            WIN_transit_his()
+        if value == 6:
+            window.destroy()
+            WIN_user_login() 
+
+    b1 = Button(window,text="Explore Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
     b1.place(x=75,y=60)
 
-    b2 = Button(window,text="Explore Site", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Explore Site", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
     b2.place(x=75,y=90)
 
-    b3 = Button(window,text="View Visit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="View Visit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(3)))
     b3.place(x=75,y=120)
 
-    b4 = Button(window,text="Take Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4 = Button(window,text="Take Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(4)))
     b4.place(x=75,y=150)
 
-    b5 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b5 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(5)))
     b5.place(x=75,y=180)
 
-    b6 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b6 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(6)))
     b6.place(x=75,y=210)
 
     window.mainloop()
 #15
 def WIN_take_transit():
-           
+
     window = Tk()
     window.title("User Take Transit")
     window.geometry('500x500')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def filter():
+        start = e1_content.get()
+        end = e2_content.get()
+        
+    def logtransit():
+        if not re.match(r'^[0-9]{4}-[0-9]{2}-[0-9]{2}$',e3_content.get()):
+            tkinter.messagebox.showwarning('Date Error','Not valid date!')            
+        else:
+            transitdate = e3_content.get()
+        
+    def back():
+        if take_transit[0] == 'user':
+            window.destroy()
+            WIN_FUN_user()
+        elif take_transit[0] == 'adm':
+            window.destroy() 
+            WIN_FUN_adm()           
+        elif take_transit[0] == 'admuser':
+            window.destroy()
+            WIN_FUN_adm_and_vis()
+        elif take_transit[0] == 'man':
+            window.destroy()
+            WIN_FUN_man()
+        elif take_transit[0] == 'manuser':
+            window.destroy()
+            WIN_FUN_man_and_vis()
+        elif take_transit[0] == 'sta':
+            window.destroy()
+            WIN_FUN_sta()
+        elif take_transit[0] == 'stauser':
+            window.destroy()
+            WIN_FUN_sta_and_vis()
+        elif take_transit[0] == 'vis':
+            window.destroy()
+            WIN_FUN_vis()
+        else: pass
 
     l0 = Label(window,text="Take Transit", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
@@ -1311,13 +1375,16 @@ def WIN_take_transit():
     l5 = Label(window,text="Transit Date", font=('Times', 14, 'normal'))
     l5.place(x=160,y=450)
 
-    e1 = Entry(window,width=3, bg='powder blue')
+    e1_content = StringVar()
+    e1 = Entry(window,width=3, bg='powder blue',textvariable=e1_content)
     e1.place(x=120,y=100)
 
-    e2 = Entry(window,width=3, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=3, bg='powder blue',textvariable=e2_content)
     e2.place(x=200,y=100)
-
-    e3 = Entry(window,width=8, bg='powder blue')
+    
+    e3_content = StringVar()
+    e3 = Entry(window,width=8, bg='powder blue',textvariable=e3_content)
     e3.place(x=250,y=450)
 
     option1 = StringVar()
@@ -1328,17 +1395,17 @@ def WIN_take_transit():
 
     option2 = StringVar()
     o2 = ttk.Combobox(window,width=8, textvariable=option2)
-    o2['values'] = ('--ALL--') # More states should be involved
+    o2['values'] = ('--ALL--','MARTA','Bus','Bike') # More states should be involved
     o2.place(x=350,y=60)
     o2.current(0)
 
-    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: filter()))
     b1.place(x=300,y=100)
 
-    b2 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b2.place(x=50,y=450)
 
-    b3 = Button(window,text="Log Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="Log Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: logtransit()))
     b3.place(x=350,y=450)
 
     window.mainloop()
@@ -2545,9 +2612,9 @@ def main():
     # WIN_regi_emp_and_vis()
     # WIN_FUN_user()
     # WIN_FUN_adm()
-    WIN_FUN_adm_and_vis()
+    # WIN_FUN_adm_and_vis()
     # WIN_FUN_man()
-    # WIN_FUN_man_and_vis()
+    WIN_FUN_man_and_vis()
     # WIN_FUN_sta()
     # WIN_FUN_sta_and_vis()
     # WIN_FUN_vis() 
