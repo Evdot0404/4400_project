@@ -1,5 +1,4 @@
 #! /usr/bin/python3
-import flask
 import sqlite3
 from tkinter import *
 from tkinter import scrolledtext
@@ -38,9 +37,20 @@ class DB:
         self.conn.execute("command")
         self.conn.commit()
 # Mutural functions 
-def entryget(button,entry):
-    message = entry.get()
-    button.configure(text=message)
+
+take_transit = ''
+transit_his = ''
+man_profile = ''
+man_user = ''
+man_transit = ''
+man_site = ''
+exp_site = ''
+exp_event = ''
+vis_his = ''
+man_event = ''
+view_site_report = ''
+view_sta = ''
+view_schedule = ''
 
 #1 s2
 def WIN_user_login():
@@ -733,7 +743,6 @@ def WIN_regi_emp_and_vis():
     labelname = {}
     buttonname = {}
     for email in newemail_emp_and_vis:
-        print(newemail_emp_and_vis)
         i = newemail_emp_and_vis.index(email)
         labelname[email] = Label(window,text=newemail_emp_and_vis[i], font=('Times 12 normal'))
         labelname[email].place(x=120,y=260 + i*40) 
@@ -812,16 +821,29 @@ def WIN_FUN_user():
     window.geometry('250x175')
     window.configure(background="#fff")
 
+    def navigation(value):
+        if value == 1:
+            window.destroy()
+            take_transit = 'user'
+            WIN_take_transit()
+        if value == 2:
+            window.destroy()
+            transit_his = 'user'
+            WIN_transit_his()
+        if value == 3:
+            window.destroy()
+            WIN_user_login()        
+    
     l0 = Label(window,text="User Functionality", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
 
-    b1 = Button(window,text="Take Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Take Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
     b1.place(x=75,y=60)
 
-    b2 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
     b2.place(x=75,y=90)
 
-    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(3)))
     b3.place(x=75,y=120)
 
     window.mainloop()
@@ -833,28 +855,57 @@ def WIN_FUN_adm():
     window.geometry('250x300')
     window.configure(background="#fff")
 
+    def navigation(value):
+        if value == 1:
+            window.destroy()
+            man_profile = 'adm'
+            WIN_emp_manage_profile()
+        if value == 2:
+            window.destroy()
+            man_user = 'adm'
+            WIN_adm_manage_user()
+        if value == 3:
+            window.destroy()
+            man_transit = 'adm'
+            WIN_adm_manage_transit()
+        if value == 4:
+            window.destroy()
+            man_site = 'adm'
+            WIN_adm_manage_site() 
+        if value == 5:
+            window.destroy()
+            take_transit = 'adm'
+            WIN_take_transit()
+        if value == 6:
+            window.destroy()
+            transit_his = 'adm'
+            WIN_transit_his() 
+        if value == 7:
+            window.destroy()
+            WIN_user_login() 
+
     l0 = Label(window,text="Administrator Functionality", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
 
-    b1 = Button(window,text="Manage Profile", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Manage Profile", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
     b1.place(x=75,y=60)
 
-    b2 = Button(window,text="Manage User", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Manage User", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
     b2.place(x=75,y=90)
 
-    b3 = Button(window,text="Manage Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="Manage Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(3)))
     b3.place(x=75,y=120)
 
-    b4 = Button(window,text="Manage Site", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4 = Button(window,text="Manage Site", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(4)))
     b4.place(x=75,y=150)
 
-    b5 = Button(window,text="Take Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b5 = Button(window,text="Take Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(5)))
     b5.place(x=75,y=180)
 
-    b6 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b6 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(6)))
     b6.place(x=75,y=210)
 
-    b7 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b7 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(7)))
     b7.place(x=75,y=240)
 
     window.mainloop()
@@ -866,37 +917,78 @@ def WIN_FUN_adm_and_vis():
     window.geometry('250x400')
     window.configure(background="#fff")
 
+    def navigation(value):
+        if value == 1:
+            window.destroy()
+            man_profile = 'admuser'
+            WIN_emp_manage_profile()
+        if value == 2:
+            window.destroy()
+            man_user = 'admuser'
+            WIN_adm_manage_user()
+        if value == 3:
+            window.destroy()
+            man_transit = 'admuser'
+            WIN_adm_manage_transit()
+        if value == 4:
+            window.destroy()
+            man_transit = 'admuser'
+            WIN_adm_manage_site() 
+        if value == 5:
+            window.destroy()
+            take_transit = 'admuser'
+            WIN_take_transit()
+        if value == 6:
+            window.destroy()
+            exp_site = 'admuser'
+            WIN_vis_explore_site() 
+        if value == 7:
+            window.destroy()
+            exp_event = 'admuser'
+            WIN_vis_explore_event()
+        if value == 8:
+            window.destroy()
+            transit_his = 'admuser'
+            WIN_transit_his()  
+        if value == 9:
+            window.destroy()
+            vis_his = 'admuser'
+            WIN_vis_visit_his()
+        if value == 10:
+            window.destroy()
+            WIN_user_login() 
+
     l0 = Label(window,text="Administrator Functionality", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
 
-    b1 = Button(window,text="Manage Profile", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Manage Profile", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
     b1.place(x=75,y=60)
 
-    b2 = Button(window,text="Manage User", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Manage User", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
     b2.place(x=75,y=90)
 
-    b3 = Button(window,text="Manage Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="Manage Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(3)))
     b3.place(x=75,y=120)
 
-    b4 = Button(window,text="Manage Site", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4 = Button(window,text="Manage Site", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(4)))
     b4.place(x=75,y=150)
 
-    b5 = Button(window,text="Take Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b5 = Button(window,text="Take Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(5)))
     b5.place(x=75,y=180)
 
-    b6 = Button(window,text="Explore Site", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b6 = Button(window,text="Explore Site", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(6)))
     b6.place(x=75,y=210)
 
-    b7 = Button(window,text="Explore Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b7 = Button(window,text="Explore Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(7)))
     b7.place(x=75,y=240)
 
-    b8 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b8 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(8)))
     b8.place(x=75,y=270)
 
-    b9 = Button(window,text="View Visit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b9 = Button(window,text="View Visit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(9)))
     b9.place(x=75,y=300)
 
-    b10 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b10 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(10)))
     b10.place(x=75,y=330)
 
     window.mainloop()
@@ -908,28 +1000,57 @@ def WIN_FUN_man():
     window.geometry('250x300')
     window.configure(background="#fff")
 
+    def navigation(value):
+        if value == 1:
+            window.destroy()
+            man_profile = 'man'
+            WIN_emp_manage_profile()
+        if value == 2:
+            window.destroy()
+            man_event = 'man'
+            WIN_man_manage_event()
+        if value == 3:
+            window.destroy()
+            view_site_report = 'man'
+            WIN_man_site_report()
+        if value == 4:
+            window.destroy()
+            view_sta = 'man'
+            WIN_man_manage_staff() 
+        if value == 5:
+            window.destroy()
+            take_transit = 'man'
+            WIN_take_transit()
+        if value == 6:
+            window.destroy()
+            transit_his = 'man'
+            WIN_transit_his() 
+        if value == 7:
+            window.destroy()
+            WIN_user_login()
+
     l0 = Label(window,text="Manager Functionality", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
 
-    b1 = Button(window,text="Manage Profile", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Manage Profile", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
     b1.place(x=75,y=60)
 
-    b2 = Button(window,text="Manage Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Manage Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
     b2.place(x=75,y=90)
 
-    b3 = Button(window,text="View Site Report", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="View Site Report", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(3)))
     b3.place(x=75,y=120)
 
-    b4 = Button(window,text="View Staff", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4 = Button(window,text="View Staff", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda:navigation(4)))
     b4.place(x=75,y=150)
 
-    b5 = Button(window,text="Take Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b5 = Button(window,text="Take Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(5)))
     b5.place(x=75,y=180)
 
-    b6 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b6 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(6)))
     b6.place(x=75,y=210)
 
-    b7 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b7 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(7)))
     b7.place(x=75,y=240)
 
     window.mainloop()
@@ -941,37 +1062,78 @@ def WIN_FUN_man_and_vis():
     window.geometry('250x400')
     window.configure(background="#fff")
 
+    def navigation(value):
+        if value == 1:
+            window.destroy()
+            man_profile = 'manuser'
+            WIN_emp_manage_profile()
+        if value == 2:
+            window.destroy()
+            man_event = 'manuser'
+            WIN_man_manage_event()
+        if value == 4:
+            window.destroy()
+            view_site_report = 'manuser'
+            WIN_man_site_report()
+        if value == 3:
+            window.destroy()
+            view_sta = 'manuser'
+            WIN_man_manage_staff()
+        if value == 5:
+            window.destroy()
+            exp_site = 'manuser'
+            WIN_vis_explore_site() 
+        if value == 6:
+            window.destroy()
+            exp_event = 'manuser'
+            WIN_vis_explore_event() 
+        if value == 7:
+            window.destroy()
+            take_transit = 'manuser'
+            WIN_take_transit()
+        if value == 8:
+            window.destroy()
+            transit_his = 'manuser'
+            WIN_transit_his() 
+        if value == 9:
+            window.destroy()
+            vis_his = 'manuser'
+            WIN_vis_visit_his()
+        if value == 10:
+            window.destroy()
+            WIN_user_login()
+
     l0 = Label(window,text="Manager Functionality", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
 
-    b1 = Button(window,text="Manage Profile", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Manage Profile", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
     b1.place(x=75,y=60)
 
-    b2 = Button(window,text="Manage Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Manage Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
     b2.place(x=75,y=90)
 
-    b3 = Button(window,text="View Staff", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="View Staff", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(3)))
     b3.place(x=75,y=120)
 
-    b4 = Button(window,text="View Site Report", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4 = Button(window,text="View Site Report", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(4)))
     b4.place(x=75,y=150)
 
-    b5 = Button(window,text="Explore Site", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b5 = Button(window,text="Explore Site", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(5)))
     b5.place(x=75,y=180)
 
-    b6 = Button(window,text="Explore Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b6 = Button(window,text="Explore Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(6)))
     b6.place(x=75,y=210)
 
-    b7 = Button(window,text="Take Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b7 = Button(window,text="Take Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(7)))
     b7.place(x=75,y=240)
 
-    b8 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b8 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(8)))
     b8.place(x=75,y=270)
 
-    b9 = Button(window,text="View Visit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b9 = Button(window,text="View Visit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(9)))
     b9.place(x=75,y=300)
 
-    b10 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b10 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(10)))
     b10.place(x=75,y=330)
 
     window.mainloop()
@@ -983,22 +1145,43 @@ def WIN_FUN_sta():
     window.geometry('250x250')
     window.configure(background="#fff")
 
+    def navigation(value):
+        if value == 1:
+            window.destroy()
+            man_profile = 'sta'
+            WIN_emp_manage_profile()
+        if value == 2:
+            window.destroy()
+            view_schedule = 'sta'
+            WIN_sta_view_schedule()
+        if value == 3:
+            window.destroy()
+            take_transit = 'sta'
+            WIN_take_transit()
+        if value == 4:
+            window.destroy()
+            transit_his = 'sta'
+            WIN_transit_his()
+        if value == 5:
+            window.destroy()
+            WIN_user_login() 
+
     l0 = Label(window,text="Staff Functionality", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
 
-    b1 = Button(window,text="Manage Profile", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Manage Profile", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
     b1.place(x=75,y=60)
 
-    b2 = Button(window,text="View Schedule", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="View Schedule", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
     b2.place(x=75,y=90)
 
-    b3 = Button(window,text="Take Tansit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="Take Tansit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(3)))
     b3.place(x=75,y=120)
 
-    b4 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(4)))
     b4.place(x=75,y=150)
 
-    b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(5)))
     b5.place(x=75,y=180)
 
     window.mainloop()
@@ -1010,31 +1193,64 @@ def WIN_FUN_sta_and_vis():
     window.geometry('250x320')
     window.configure(background="#fff")
 
+    def navigation(value):
+        if value == 1:
+            window.destroy()
+            man_profile = 'stauser'
+            WIN_emp_manage_profile()
+        if value == 2:
+            window.destroy()
+            view_schedule = 'stauser'
+            WIN_sta_view_schedule()
+        if value == 3:
+            window.destroy()
+            exp_event = 'stauser'
+            WIN_vis_explore_event() 
+        if value == 4:
+            window.destroy()
+            exp_site = 'stauser'
+            WIN_vis_explore_site() 
+        if value == 5:
+            window.destroy()
+            take_transit = 'stauser'
+            WIN_take_transit()
+        if value == 6:
+            window.destroy()
+            vis_his = 'stauser'
+            WIN_vis_visit_his()            
+        if value == 7:
+            window.destroy()
+            transit_his = 'stauser'
+            WIN_transit_his()
+        if value == 8:
+            window.destroy()
+            WIN_user_login() 
+
     l0 = Label(window,text="Staff Functionality", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
 
-    b1 = Button(window,text="Manage Profile", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Manage Profile", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
     b1.place(x=75,y=60)
 
-    b2 = Button(window,text="View Schedule", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="View Schedule", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
     b2.place(x=75,y=90)
 
-    b3 = Button(window,text="Explore Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="Explore Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(3)))
     b3.place(x=75,y=120)
 
-    b4 = Button(window,text="Explore Site", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4 = Button(window,text="Explore Site", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(4)))
     b4.place(x=75,y=150)
 
-    b5 = Button(window,text="Take Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b5 = Button(window,text="Take Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(5)))
     b5.place(x=75,y=180)
 
-    b6 = Button(window,text="View Visit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b6 = Button(window,text="View Visit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(6)))
     b6.place(x=75,y=210)
 
-    b7 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b7 = Button(window,text="View Transit History", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(7)))
     b7.place(x=75,y=240)
 
-    b8 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b8 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(8)))
     b8.place(x=75,y=270)
 
     window.mainloop()
@@ -2326,10 +2542,10 @@ def main():
     # WIN_regi_user()
     # WIN_regi_vis()
     # WIN_regi_emp()
-    WIN_regi_emp_and_vis()
+    # WIN_regi_emp_and_vis()
     # WIN_FUN_user()
     # WIN_FUN_adm()
-    # WIN_FUN_adm_and_vis()
+    WIN_FUN_adm_and_vis()
     # WIN_FUN_man()
     # WIN_FUN_man_and_vis()
     # WIN_FUN_sta()
