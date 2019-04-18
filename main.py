@@ -5,6 +5,7 @@ from tkinter import *
 from tkinter import scrolledtext
 from tkinter import ttk
 import tkinter.messagebox
+import re
 
 class DB:
     def __init__(self):
@@ -37,16 +38,12 @@ class DB:
         self.conn.execute("command")
         self.conn.commit()
 # Mutural functions 
-def back():
-    pass 
-
 def entryget(button,entry):
     message = entry.get()
     button.configure(text=message)
 
-#1
+#1 s2
 def WIN_user_login():
-
     # Initialization
     window = Tk()
     window.title("User Login")
@@ -80,15 +77,11 @@ def WIN_user_login():
 
     # Buttons
 
-    def clickMe():
-        b1.configure(text="Clicked!")
-        l1.configure(foreground='red')
-
     def checkaccount():
         email = e1_content.get()
         password = e2_content.get()
         #! Here, a list from database needed
-        accounts = [('mcao42@gatech.edu','123456')]
+        accounts = [('mcao42@gatech.edu','12345678')]
         if (email,password) in accounts:
             window.destroy()
             WIN_FUN_user()
@@ -108,7 +101,7 @@ def WIN_user_login():
     # Radiobutton()
 
     window.mainloop()
-#2
+#2 s2
 def WIN_regi_nav():
 
     window = Tk()
@@ -117,33 +110,104 @@ def WIN_regi_nav():
     window.resizable(0, 0)
     window.configure(background="#fff")
 
+    def navigation(number):
+        window.destroy()
+        if   number == 0:
+            WIN_regi_user()
+        elif number == 1:
+            WIN_regi_vis()
+        elif number == 2:
+            WIN_regi_emp()
+        elif number == 3:
+            WIN_regi_emp_and_vis()
+
+    def back():
+        window.destroy()
+        WIN_user_login()
+
     l0 = Label(window,text="Register Navigation", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
 
-    b1 = Button(window,text="User Only", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="User Only", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(0)))
     b1.place(x=75,y=60)
 
-    b2 = Button(window,text="Visitor Only", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Visitor Only", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
     b2.place(x=75,y=90)
 
-    b3 = Button(window,text="Employee Only", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="Employee Only", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
     b3.place(x=75,y=120)
 
-    b4 = Button(window,text="Employee-Visitor", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4 = Button(window,text="Employee-Visitor", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda:navigation(3)))
     b4.place(x=75,y=150)
 
-    b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b5.place(x=75,y=180)
 
     window.mainloop()
 #3
+newemail = []
 def WIN_regi_user():
+
+    geometry = '600x' + str(len(newemail)*40+300)
     
     window = Tk()
     window.title("Register User")
-    window.geometry('600x300')
+    window.geometry(geometry)
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def confirmpwd():
+        if len(e3_content.get()) < 8 :
+            tkinter.messagebox.showwarning('Password Error','Password should at least 8 characters')
+        
+        if e3_content.get() != e5_content.get():
+            tkinter.messagebox.showwarning('Not same password','Incorrect confirmed password, try again!')
+
+    def checkusername():
+        #! username list from database needed
+        usernames = ['Mingming','Priyam']
+        if e2_content.get() in usernames:
+            tkinter.messagebox.showwarning('Existed Username','The username exists, try another username!')
+
+    def checkemail():
+        #! username list from database needed
+        emails = ['mcao42@gatech.edu']
+        #! email format
+        if not re.match(r'^[0-9a-zA-Z]+@{1}[0-9a-zA-Z]+\.{1}[0-9a-zA-Z]+',e6_content.get()):
+            tkinter.messagebox.showwarning('Email Error','Not valid email!')
+        elif e6_content.get() in emails:
+            tkinter.messagebox.showwarning('Existed Email','The email exists, try another email!')
+        else:
+            newemail.append(e6_content.get())
+    
+    def register_checks():
+        if e1_content.get() == '':
+            tkinter.messagebox.showwarning('First Name Error','First Name should not be none')
+        if e4_content.get() == '':
+            tkinter.messagebox.showwarning('Last Name Error','Last Name should not be none')
+        if e2_content.get() == '':
+            tkinter.messagebox.showwarning('Username Error','Username should not be none')  
+        if len(newemail) == 0:
+            tkinter.messagebox.showwarning('Email Error','Email should not be none')  
+        confirmpwd()
+        checkusername()
+        window.destroy()
+        WIN_user_login()
+
+    def addemail():
+        checkemail()
+        window.destroy()
+        WIN_regi_user()
+
+    def removeemail(email):
+        # print(email)
+        newemail.remove(email)
+        window.destroy()
+        WIN_regi_user()
+
+    def back():
+        window.destroy()
+        WIN_regi_nav()
 
     l0 = Label(window,text="Register User", width=36,font=('Arial', 18, 'bold'))
     l0.place(x=100,y=0)
@@ -160,51 +224,121 @@ def WIN_regi_user():
     l4 = Label(window,text="Last Name", font=('Times 14 normal'))
     l4.place(x=275,y=60)
     
-    l5 = Label(window,text="Comfirm Password",font=('Times 14 normal'))
+    l5 = Label(window,text="Confirm Password",font=('Times 14 normal'))
     l5.place(x=275,y=140)
 
     l6 = Label(window,text="Email", font=('Times 14 normal'))
     l6.place(x=25,y=180)
- 
-    e1 = Entry(window,width=14, bg='powder blue')
+
+    labelname = {}
+    buttonname = {}
+    for email in newemail:
+        i = newemail.index(email)
+        labelname[email] = Label(window,text=newemail[i], font=('Times 12 normal'))
+        labelname[email].place(x=120,y=180 + i*40) 
+        buttonname[email] = Button(window,text="Remove", width=6, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: removeemail(email)))  
+        buttonname[email].place(x=400,y=180 + i*40)   
+
+    e1_content = StringVar()
+    e1 = Entry(window,width=14, bg='powder blue',textvariable=e1_content)
+    e1.focus()
     e1.place(x=120,y=60)
 
-    e2 = Entry(window,width=14, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=14, bg='powder blue',textvariable=e2_content)
     e2.place(x=120,y=100)
 
-    e3 = Entry(window,width=14, bg='powder blue')
+    e3_content = StringVar()
+    e3 = Entry(window,width=14, bg='powder blue',textvariable=e3_content,show='*')
     e3.place(x=120,y=140)
 
-    e4 = Entry(window,width=14, bg='powder blue')
+    e4_content = StringVar()
+    e4 = Entry(window,width=14, bg='powder blue',textvariable=e4_content)
     e4.place(x=400,y=60)
 
-    e5 = Entry(window,width=14, bg='powder blue')
+    e5_content = StringVar()
+    e5 = Entry(window,width=14, bg='powder blue',textvariable=e5_content,show='*')
     e5.place(x=400,y=140)
 
-    # e6 = Entry(window,width=14, bg='powder blue')
-    # e6.place(x=400,y=140)
+    e6y = len(newemail)*40 + 180
 
-    # b1 = Button(window,text="Remove", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    # b1.grid(row=2,column=2)
+    e6_content = StringVar()
+    e6 = Entry(window,width=20, bg='powder blue',textvariable=e6_content)
+    e6.place(x=120,y=e6y)
 
-    # b2 = Button(window,text="Add", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    # b2.place(x=75,y=90)
+    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
+    b3.place(x=175,y=250+len(newemail)*40)
 
-    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b3.place(x=175,y=250)
+    b4 = Button(window,text="Register", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda:register_checks()))
+    b4.place(x=325,y=250+len(newemail)*40)
 
-    b4 = Button(window,text="Register", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b4.place(x=325,y=250)
+    b6add = Button(window,text="Add", width=6, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: addemail()))
+    b6add.place(x=400,y=e6y)
 
     window.mainloop()
 #4
+newemail_vis = []
 def WIN_regi_vis():
-        
+
+    geometry = '600x' + str(len(newemail_vis)*40+300)
+    
     window = Tk()
     window.title("Register Visitor")
-    window.geometry('600x300')
+    window.geometry(geometry)
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def confirmpwd():
+        if len(e3_content.get()) < 8 :
+            tkinter.messagebox.showwarning('Password Error','Password should at least 8 characters')
+        
+        if e3_content.get() != e5_content.get():
+            tkinter.messagebox.showwarning('Not same password','Incorrect confirmed password, try again!')
+
+    def checkusername():
+        #! username list from database needed
+        usernames = ['Mingming','Priyam']
+        if e2_content.get() in usernames:
+            tkinter.messagebox.showwarning('Existed Username','The username exists, try another username!')
+
+    def checkemail():
+        #! username list from database needed
+        emails = ['mcao42@gatech.edu']
+        #! email format
+        if not re.match(r'^[0-9a-zA-Z]+@{1}[0-9a-zA-Z]+\.{1}[0-9a-zA-Z]+',e6_content.get()):
+            tkinter.messagebox.showwarning('Email Error','Not valid email!')
+        elif e6_content.get() in emails:
+            tkinter.messagebox.showwarning('Existed Email','The email exists, try another email!')
+        else:
+            newemail_vis.append(e6_content.get())
+    
+    def register_checks():
+        if e1_content.get() == '':
+            tkinter.messagebox.showwarning('First Name Error','First Name should not be none')
+        if e4_content.get() == '':
+            tkinter.messagebox.showwarning('Last Name Error','Last Name should not be none')
+        if e2_content.get() == '':
+            tkinter.messagebox.showwarning('Username Error','Username should not be none')  
+        if len(newemail_vis) == 0:
+            tkinter.messagebox.showwarning('Email Error','Email should not be none')  
+        confirmpwd()
+        checkusername()
+        window.destroy()
+        WIN_user_login()
+
+    def addemail():
+        checkemail()
+        window.destroy()
+        WIN_regi_vis()
+
+    def removeemail(email):
+        newemail_vis.remove(email)
+        window.destroy()
+        WIN_regi_vis()
+
+    def back():
+        window.destroy()
+        WIN_regi_nav()
 
     l0 = Label(window,text="Register Visitor", width=36,font=('Arial', 18, 'bold'))
     l0.place(x=100,y=0)
@@ -221,51 +355,143 @@ def WIN_regi_vis():
     l4 = Label(window,text="Last Name", font=('Times 14 normal'))
     l4.place(x=275,y=60)
     
-    l5 = Label(window,text="Comfirm Password",font=('Times 14 normal'))
+    l5 = Label(window,text="Confirm Password",font=('Times 14 normal'))
     l5.place(x=275,y=140)
 
     l6 = Label(window,text="Email", font=('Times 14 normal'))
     l6.place(x=25,y=180)
- 
-    e1 = Entry(window,width=14, bg='powder blue')
+
+    labelname = {}
+    buttonname = {}
+    for email in newemail_vis:
+        i = newemail_vis.index(email)
+        labelname[email] = Label(window,text=newemail_vis[i], font=('Times 12 normal'))
+        labelname[email].place(x=120,y=180 + i*40) 
+        buttonname[email] = Button(window,text="Remove", width=6, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: removeemail(email)))  
+        buttonname[email].place(x=400,y=180 + i*40)   
+
+    e1_content = StringVar()
+    e1 = Entry(window,width=14, bg='powder blue',textvariable=e1_content)
+    e1.focus()
     e1.place(x=120,y=60)
 
-    e2 = Entry(window,width=14, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=14, bg='powder blue',textvariable=e2_content)
     e2.place(x=120,y=100)
 
-    e3 = Entry(window,width=14, bg='powder blue')
+    e3_content = StringVar()
+    e3 = Entry(window,width=14, bg='powder blue',textvariable=e3_content,show='*')
     e3.place(x=120,y=140)
 
-    e4 = Entry(window,width=14, bg='powder blue')
+    e4_content = StringVar()
+    e4 = Entry(window,width=14, bg='powder blue',textvariable=e4_content)
     e4.place(x=400,y=60)
 
-    e5 = Entry(window,width=14, bg='powder blue')
+    e5_content = StringVar()
+    e5 = Entry(window,width=14, bg='powder blue',textvariable=e5_content,show='*')
     e5.place(x=400,y=140)
 
-    # e6 = Entry(window,width=14, bg='powder blue')
-    # e6.place(x=400,y=140)
+    e6y = len(newemail_vis)*40 + 180
 
-    # b1 = Button(window,text="Remove", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    # b1.grid(row=2,column=2)
+    e6_content = StringVar()
+    e6 = Entry(window,width=20, bg='powder blue',textvariable=e6_content)
+    e6.place(x=120,y=e6y)
 
-    # b2 = Button(window,text="Add", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    # b2.place(x=75,y=90)
+    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
+    b3.place(x=175,y=250+len(newemail_vis)*40)
 
-    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b3.place(x=175,y=250)
+    b4 = Button(window,text="Register", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda:register_checks()))
+    b4.place(x=325,y=250+len(newemail_vis)*40)
 
-    b4 = Button(window,text="Register", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b4.place(x=325,y=250)
+    b6add = Button(window,text="Add", width=6, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: addemail()))
+    b6add.place(x=400,y=e6y)
 
     window.mainloop()
 #5
+newemail_emp = []
 def WIN_regi_emp():
-        
+
+    geometry = '600x' + str(len(newemail_emp)*40+400)
+
     window = Tk()
     window.title("Register Employee")
-    window.geometry('600x400')
+    window.geometry(geometry)
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+
+    def confirmpwd():
+        if len(e3_content.get()) < 8 :
+            tkinter.messagebox.showwarning('Password Error','Password should at least 8 characters')
+        
+        if e3_content.get() != e5_content.get():
+            tkinter.messagebox.showwarning('Not same password','Incorrect confirmed password, try again!')
+
+    def checkusername():
+        #! username list from database needed
+        usernames = ['Mingming','Priyam']
+        if e2_content.get() in usernames:
+            tkinter.messagebox.showwarning('Existed Username','The username exists, try another username!')
+
+    def checkemail():
+        #! username list from database needed
+        emails = ['mcao42@gatech.edu']
+        #! email format
+        if not re.match(r'^[0-9a-zA-Z]+@{1}[0-9a-zA-Z]+\.{1}[0-9a-zA-Z]+',e6_content.get()):
+            tkinter.messagebox.showwarning('Email Error','Not valid email!')
+        elif e6_content.get() in emails:
+            tkinter.messagebox.showwarning('Existed Email','The email exists, try another email!')
+        else:
+            newemail_emp.append(e6_content.get())
+
+    def checkphone():
+        #! phone list from database needed
+        phones = ['123456789']
+        if e8_content.get() == '':
+            tkinter.messagebox.showwarning('Phone Error','Phone should not be none')  
+        elif not re.match('^[0-9]{9}',e8_content.get()):
+            tkinter.messagebox.showwarning('Phone Error','Not valid phone!')
+        elif e8_content.get() in phones:
+            tkinter.messagebox.showwarning('Existed Phone','The phone exists, try another phone!')
+
+    def checkzipcode():
+        if e12_content.get() == '':
+            tkinter.messagebox.showwarning('Zipcode Error','Zipcode should not be none')  
+        elif not re.match('^[0-9]{5}',e12_content.get()):
+            tkinter.messagebox.showwarning('Zipcode Error','Not valid zipcode!')
+
+    def register_checks():
+        if e1_content.get() == '':
+            tkinter.messagebox.showwarning('First Name Error','First Name should not be none')
+        if e4_content.get() == '':
+            tkinter.messagebox.showwarning('Last Name Error','Last Name should not be none')
+        if e2_content.get() == '':
+            tkinter.messagebox.showwarning('Username Error','Username should not be none')  
+        if len(newemail_emp) == 0:
+            tkinter.messagebox.showwarning('Email Error','Email should not be none')  
+        confirmpwd()
+        checkphone()
+        checkusername()
+        if e10_content.get() == '':
+            tkinter.messagebox.showwarning('City Error','City should not be none')  
+        checkzipcode()
+        window.destroy()
+        WIN_user_login()
+
+    def addemail():
+        checkemail()
+        window.destroy()
+        WIN_regi_emp()
+
+    def removeemail(email):
+        # print(email)
+        newemail_emp.remove(email)
+        window.destroy()
+        WIN_regi_emp()
+
+    def back():
+        window.destroy()
+        WIN_regi_nav()
 
     l0 = Label(window,text="Register Employee", width=36,font=('Arial', 18, 'bold'))
     l0.place(x=100,y=0)
@@ -305,32 +531,56 @@ def WIN_regi_emp():
 
     l12 = Label(window,text="Zipcode", font=('Times 14 normal'))
     l12.place(x=325,y=220)
- 
-    e1 = Entry(window,width=14, bg='powder blue')
+
+    labelname = {}
+    buttonname = {}
+    for email in newemail_emp:
+        i = newemail_emp.index(email)
+        labelname[email] = Label(window,text=newemail_emp[i], font=('Times 12 normal'))
+        labelname[email].place(x=120,y=260 + i*40) 
+        buttonname[email] = Button(window,text="Remove", width=6, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: removeemail(email)))  
+        buttonname[email].place(x=400,y=260 + i*40) 
+    
+    e1_content = StringVar()
+    e1 = Entry(window,width=14, bg='powder blue',textvariable=e1_content)
     e1.place(x=120,y=60)
 
-    e2 = Entry(window,width=14, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=14, bg='powder blue',textvariable=e2_content)
     e2.place(x=120,y=100)
 
-    e3 = Entry(window,width=14, bg='powder blue')
+    e3_content = StringVar()
+    e3 = Entry(window,width=14, bg='powder blue',textvariable=e3_content,show='*')
     e3.place(x=120,y=140)
 
-    e4 = Entry(window,width=14, bg='powder blue')
+    e4_content = StringVar()
+    e4 = Entry(window,width=14, bg='powder blue',textvariable=e4_content)
     e4.place(x=400,y=60)
 
-    e5 = Entry(window,width=14, bg='powder blue')
+    e5_content = StringVar()
+    e5 = Entry(window,width=14, bg='powder blue',textvariable=e5_content,show='*')
     e5.place(x=400,y=140)
 
-    e8 = Entry(window,width=14, bg='powder blue')
+    e6y = len(newemail_emp)*40 + 260
+
+    e6_content = StringVar()
+    e6 = Entry(window,width=14, bg='powder blue',textvariable=e6_content)
+    e6.place(x=120,y=e6y)
+
+    e8_content = StringVar()
+    e8 = Entry(window,width=14, bg='powder blue',textvariable=e8_content)
     e8.place(x=120,y=180)
 
-    e9 = Entry(window,width=14, bg='powder blue')
+    e9_content = StringVar()
+    e9 = Entry(window,width=14, bg='powder blue',textvariable=e9_content)
     e9.place(x=400,y=180)
 
-    e10 = Entry(window,width=6, bg='powder blue')
+    e10_content = StringVar()
+    e10 = Entry(window,width=6, bg='powder blue',textvariable=e10_content)
     e10.place(x=120,y=220)
 
-    e12 = Entry(window,width=14, bg='powder blue')
+    e12_content = StringVar()
+    e12 = Entry(window,width=14, bg='powder blue',textvariable=e12_content)
     e12.place(x=400,y=220)
 
     option7 = StringVar()
@@ -341,33 +591,105 @@ def WIN_regi_emp():
 
     option11 = StringVar()
     o11 = ttk.Combobox(window,width=4, textvariable=option11)
-    o11['values'] = ('GA') # More states should be involved
+    o11['values'] = ('AL','AZ','AR','CA','GA') # More states should be involved
     o11.place(x=250,y=220)
     o11.current(0)
-    # e6 = Entry(window,width=14, bg='powder blue')
-    # e6.place(x=400,y=140)
 
-    # b1 = Button(window,text="Remove", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    # b1.grid(row=2,column=2)
+    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
+    b3.place(x=175,y=350+len(newemail_emp)*40)
 
-    # b2 = Button(window,text="Add", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    # b2.place(x=75,y=90)
+    b4 = Button(window,text="Register", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda:register_checks()))
+    b4.place(x=325,y=350+len(newemail_emp)*40)
 
-    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b3.place(x=175,y=350)
-
-    b4 = Button(window,text="Register", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b4.place(x=325,y=350)
+    b6add = Button(window,text="Add", width=6, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: addemail()))
+    b6add.place(x=400,y=e6y)
 
     window.mainloop()
 #6
+newemail_emp_and_vis = []
 def WIN_regi_emp_and_vis():
-         
+
+    geometry = '600x' + str(len(newemail_emp_and_vis)*40+400)
+
     window = Tk()
     window.title("Register Employee-Visitor")
-    window.geometry('600x400')
+    window.geometry(geometry)
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+
+    def confirmpwd():
+        if len(e3_content.get()) < 8 :
+            tkinter.messagebox.showwarning('Password Error','Password should at least 8 characters')
+        
+        if e3_content.get() != e5_content.get():
+            tkinter.messagebox.showwarning('Not same password','Incorrect confirmed password, try again!')
+
+    def checkusername():
+        #! username list from database needed
+        usernames = ['Mingming','Priyam']
+        if e2_content.get() in usernames:
+            tkinter.messagebox.showwarning('Existed Username','The username exists, try another username!')
+
+    def checkemail():
+        #! username list from database needed
+        emails = ['mcao42@gatech.edu']
+        #! email format
+        if not re.match(r'^[0-9a-zA-Z]+@{1}[0-9a-zA-Z]+\.{1}[0-9a-zA-Z]+',e6_content.get()):
+            tkinter.messagebox.showwarning('Email Error','Not valid email!')
+        elif e6_content.get() in emails:
+            tkinter.messagebox.showwarning('Existed Email','The email exists, try another email!')
+        else:
+            newemail_emp_and_vis.append(e6_content.get())
+
+    def checkphone():
+        #! phone list from database needed
+        phones = ['123456789']
+        if e8_content.get() == '':
+            tkinter.messagebox.showwarning('Phone Error','Phone should not be none')  
+        elif not re.match('^[0-9]{9}',e8_content.get()):
+            tkinter.messagebox.showwarning('Phone Error','Not valid phone!')
+        elif e8_content.get() in phones:
+            tkinter.messagebox.showwarning('Existed Phone','The phone exists, try another phone!')
+
+    def checkzipcode():
+        if e12_content.get() == '':
+            tkinter.messagebox.showwarning('Zipcode Error','Zipcode should not be none')  
+        elif not re.match('^[0-9]{5}',e12_content.get()):
+            tkinter.messagebox.showwarning('Zipcode Error','Not valid zipcode!')
+
+    def register_checks():
+        if e1_content.get() == '':
+            tkinter.messagebox.showwarning('First Name Error','First Name should not be none')
+        if e4_content.get() == '':
+            tkinter.messagebox.showwarning('Last Name Error','Last Name should not be none')
+        if e2_content.get() == '':
+            tkinter.messagebox.showwarning('Username Error','Username should not be none')  
+        if len(newemail_emp) == 0:
+            tkinter.messagebox.showwarning('Email Error','Email should not be none')  
+        confirmpwd()
+        checkphone()
+        checkusername()
+        if e10_content.get() == '':
+            tkinter.messagebox.showwarning('City Error','City should not be none')  
+        checkzipcode()
+        window.destroy()
+        WIN_user_login()
+
+    def addemail():
+        checkemail()
+        window.destroy()
+        WIN_regi_emp_and_vis()
+
+    def removeemail(email):
+        # print(email)
+        newemail_emp_and_vis.remove(email)
+        window.destroy()
+        WIN_regi_emp_and_vis()
+
+    def back():
+        window.destroy()
+        WIN_regi_nav()
 
     l0 = Label(window,text="Register Employee-Visitor", width=36,font=('Arial', 18, 'bold'))
     l0.place(x=100,y=0)
@@ -407,32 +729,57 @@ def WIN_regi_emp_and_vis():
 
     l12 = Label(window,text="Zipcode", font=('Times 14 normal'))
     l12.place(x=325,y=220)
- 
-    e1 = Entry(window,width=14, bg='powder blue')
+
+    labelname = {}
+    buttonname = {}
+    for email in newemail_emp_and_vis:
+        print(newemail_emp_and_vis)
+        i = newemail_emp_and_vis.index(email)
+        labelname[email] = Label(window,text=newemail_emp_and_vis[i], font=('Times 12 normal'))
+        labelname[email].place(x=120,y=260 + i*40) 
+        buttonname[email] = Button(window,text="Remove", width=6, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: removeemail(email)))  
+        buttonname[email].place(x=400,y=260 + i*40) 
+    
+    e1_content = StringVar()
+    e1 = Entry(window,width=14, bg='powder blue',textvariable=e1_content)
     e1.place(x=120,y=60)
 
-    e2 = Entry(window,width=14, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=14, bg='powder blue',textvariable=e2_content)
     e2.place(x=120,y=100)
 
-    e3 = Entry(window,width=14, bg='powder blue')
+    e3_content = StringVar()
+    e3 = Entry(window,width=14, bg='powder blue',textvariable=e3_content,show='*')
     e3.place(x=120,y=140)
 
-    e4 = Entry(window,width=14, bg='powder blue')
+    e4_content = StringVar()
+    e4 = Entry(window,width=14, bg='powder blue',textvariable=e4_content)
     e4.place(x=400,y=60)
 
-    e5 = Entry(window,width=14, bg='powder blue')
+    e5_content = StringVar()
+    e5 = Entry(window,width=14, bg='powder blue',textvariable=e5_content,show='*')
     e5.place(x=400,y=140)
 
-    e8 = Entry(window,width=14, bg='powder blue')
+    e6y = len(newemail_emp_and_vis)*40 + 260
+
+    e6_content = StringVar()
+    e6 = Entry(window,width=14, bg='powder blue',textvariable=e6_content)
+    e6.place(x=120,y=e6y)
+
+    e8_content = StringVar()
+    e8 = Entry(window,width=14, bg='powder blue',textvariable=e8_content)
     e8.place(x=120,y=180)
 
-    e9 = Entry(window,width=14, bg='powder blue')
+    e9_content = StringVar()
+    e9 = Entry(window,width=14, bg='powder blue',textvariable=e9_content)
     e9.place(x=400,y=180)
 
-    e10 = Entry(window,width=6, bg='powder blue')
+    e10_content = StringVar()
+    e10 = Entry(window,width=6, bg='powder blue',textvariable=e10_content)
     e10.place(x=120,y=220)
 
-    e12 = Entry(window,width=14, bg='powder blue')
+    e12_content = StringVar()
+    e12 = Entry(window,width=14, bg='powder blue',textvariable=e12_content)
     e12.place(x=400,y=220)
 
     option7 = StringVar()
@@ -443,23 +790,18 @@ def WIN_regi_emp_and_vis():
 
     option11 = StringVar()
     o11 = ttk.Combobox(window,width=4, textvariable=option11)
-    o11['values'] = ('GA') # More states should be involved
+    o11['values'] = ('AL','AZ','AR','CA','GA') # More states should be involved
     o11.place(x=250,y=220)
     o11.current(0)
-    # e6 = Entry(window,width=14, bg='powder blue')
-    # e6.place(x=400,y=140)
 
-    # b1 = Button(window,text="Remove", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    # b1.grid(row=2,column=2)
+    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
+    b3.place(x=175,y=350+len(newemail_emp_and_vis)*40)
 
-    # b2 = Button(window,text="Add", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    # b2.place(x=75,y=90)
+    b4 = Button(window,text="Register", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda:register_checks()))
+    b4.place(x=325,y=350+len(newemail_emp_and_vis)*40)
 
-    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b3.place(x=175,y=350)
-
-    b4 = Button(window,text="Register", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b4.place(x=325,y=350)
+    b6add = Button(window,text="Add", width=6, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: addemail()))
+    b6add.place(x=400,y=e6y)
 
     window.mainloop()
 #7
@@ -1979,12 +2321,12 @@ def WIN_vis_visit_his():
 def main():
     # db = DB()
 
-    WIN_user_login()
+    # WIN_user_login()
     # WIN_regi_nav()
     # WIN_regi_user()
     # WIN_regi_vis()
     # WIN_regi_emp()
-    # WIN_regi_emp_and_vis()
+    WIN_regi_emp_and_vis()
     # WIN_FUN_user()
     # WIN_FUN_adm()
     # WIN_FUN_adm_and_vis()
