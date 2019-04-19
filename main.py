@@ -2472,132 +2472,397 @@ def WIN_sta_event_detail():
 def WIN_vis_explore_event():
             
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Explore Event")
+    window.geometry('600x600')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
+    l0 = Label(window,text="Explore Event", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Name", font=('Times 14 normal'))
+    l1.place(x=10,y=60)
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l2 = Label(window,text="Description Keyword", font=('Times 14 normal'))
+    l2.place(x=230,y=60)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l3 = Label(window,text="Site Name", font=('Times 14 normal'))
+    l3.place(x=10,y=100)
+
+    l4 = Label(window,text="Start Date", font=('Times', 14, 'normal'))
+    l4.place(x=10,y=140)
+
+    l5 = Label(window,text="End Date", font=('Times', 14, 'normal'))
+    l5.place(x=300,y=140)   
+
+    l5 = Label(window,text="Daily Visits Range", font=('Times', 14, 'normal'))
+    l5.place(x=10,y=180)
+
+    l6 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l6.place(x=200,y=180)
+
+    l7 = Label(window,text="Ticket Price Range", font=('Times', 14, 'normal'))
+    l7.place(x=270,y=180)
+
+    l8 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l8.place(x=470,y=180)
+
+    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=50,y=250)
+
+    b2 = Button(window,text="Event Detail", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=375,y=250)
+
+    b3 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3.place(x=200,y=550)
+
+    e1a = Entry(window,width=10, bg='powder blue')
+    e1a.place(x=150,y=60)
+
+    e1b = Entry(window,width=10, bg='powder blue')
+    e1b.place(x=450,y=60) 
+
+    e2 = Entry(window,width=20, bg='powder blue')
+    e2.place(x=150,y=140) 
+
+    e3a = Entry(window,width=20, bg='powder blue')
+    e3a.place(x=150,y=140)
+
+    e3b = Entry(window,width=20, bg='powder blue')
+    e3b.place(x=400,y=140) 
+
+    e4a = Entry(window,width=4, bg='powder blue')
+    e4a.place(x=160,y=180) 
+
+    e4b = Entry(window,width=4, bg='powder blue')
+    e4b.place(x=230,y=180)
+
+    e4c = Entry(window,width=4, bg='powder blue')
+    e4c.place(x=430,y=180)
+
+    e4d = Entry(window,width=4, bg='powder blue')
+    e4d.place(x=500,y=180)     
+
+    chVarDis = IntVar()
+    c1 = Checkbutton(window, text='Include Visited',variable=chVarDis)
+    if True:
+        c1.select()
+    else:
+        c1.deselect()
+    c1.place(x=150,y=220)
+
+    chVarDis2 = IntVar()
+    c1 = Checkbutton(window, text='Include Sold out event',variable=chVarDis2)
+    if True:
+        c1.select()
+    else:
+        c1.deselect()
+    c1.place(x=350,y=220)
+
+    option1 = StringVar()
+    o1 = ttk.Combobox(window,width=5, textvariable=option1)
+    o1['values'] = ('--ALL--')
+    o1.place(x=150,y=100)
+    o1.current(0)
+   
 
     window.mainloop() 
-
+#34
 def WIN_vis_event_detail():
             
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Visitor Event Detail ")
+    window.geometry('500x600')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
+    Event="Arboretum Walking Tour"
+    Site="Inman Park"
+    Start_Date="2019-02-01"
+    End_Date="2019-02-01"
+    Ticket_Price=0
+    Tickets_Remaining=0
+    Description= "Official"
+    
+    l0 = Label(window,text="Visitor Event Detail", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Event", font=('Times 12 normal'))
+    l1.place(x=10,y=50)
+
+    l2 = Label(window,text=Event,font=('Times 10 italic bold'))
+    l2.place(x=70,y=50)
+
+    l3 = Label(window,text="Site",font=('Times 12 normal'))
+    l3.place(x=250,y=50)   
+
+    l4 = Label(window,text=Site,font=('Times 10 italic bold'))
+    l4.place(x=300,y=50)   
+
+    l5 = Label(window,text="Start Date",font=('Times 12 normal'))
+    l5.place(x=10,y=80)
+
+    l6 = Label(window,text=Start_Date,font=('Times 10 italic bold'))
+    l6.place(x=100,y=80)
+
+    l7 = Label(window,text="End Date",font=('Times 10 normal'))
+    l7.place(x=250,y=80)  
+
+    l8 = Label(window,text=End_Date,font=('Times 10 italic bold'))
+    l8.place(x=350,y=80)
+
+    l9 = Label(window,text="Ticket Price($)",font=('Times 12 normal'))
+    l9.place(x=10,y=120)   
+
+    l10 = Label(window,text=Ticket_Price,font=('Times 10 italic bold'))
+    l10.place(x=140,y=120) 
+
+    l11 = Label(window,text="Tickets Remaining",font=('Times 10 normal'))
+    l11.place(x=250,y=120)
+
+    l12 = Label(window,text=Tickets_Remaining,font=('Times 10 italic bold'))
+    l12.place(x=380,y=120)      
+
+    l13 = Label(window,text="Description",font=('Times 12 normal'))
+    l13.place(x=10,y=200)
+
+    l14 = Label(window,text=Description,font=('Times 10 italic bold'))
+    l14.place(x=150,y=200)
+
+    l15 = Label(window,text="Visit Date",font=('Times 10 italic bold'))
+    l15.place(x=10,y=500)
+
+    b1 = Button(window,text="Log Visit", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=300,y=500)
+
+    b2 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=200,y=550)
 
     e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    e1.place(x=150,y=500)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
 
     window.mainloop() 
 
+#35
 def WIN_vis_explore_site():
             
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Visitor Explore Site")
+    window.geometry('600x600')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
+    l0 = Label(window,text="Visitor Explore Site", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Name", font=('Times 12 normal'))
+    l1.place(x=10,y=50) 
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l2 = Label(window,text="Start Date", font=('Times 12 normal'))
+    l2.place(x=10,y=80)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l3 = Label(window,text="End Date", font=('Times 12 normal'))
+    l3.place(x=300,y=80) 
 
+    l4 = Label(window,text="Daily Visits Range", font=('Times', 14, 'normal'))
+    l4.place(x=10,y=120)
+
+    l5 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l5.place(x=200,y=120)
+
+    l6 = Label(window,text="Ticket Price Range", font=('Times', 14, 'normal'))
+    l6.place(x=270,y=120)
+
+    l7 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l7.place(x=470,y=120)              
+
+    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=20,y=200)
+
+    b2 = Button(window,text="Site Detail", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=300,y=200)
+
+    b3 = Button(window,text="Transit Detail", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3.place(x=450,y=200)
+
+    b4 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4.place(x=250,y=550)
+
+    e1a = Entry(window,width=4, bg='powder blue')
+    e1a.place(x=160,y=120)
+
+    e1b = Entry(window,width=4, bg='powder blue')
+    e1b.place(x=230,y=120)    
+
+    e2a = Entry(window,width=4, bg='powder blue')
+    e2a.place(x=430,y=120)
+
+    e2b = Entry(window,width=4, bg='powder blue')
+    e2b.place(x=500,y=120)
+
+    e3a = Entry(window,width=4, bg='powder blue')
+    e3a.place(x=100,y=80)
+
+    e3b = Entry(window,width=10, bg='powder blue')
+    e3b.place(x=400,y=80)
+
+    option1 = StringVar()
+    o1 = ttk.Combobox(window,width=20, textvariable=option1)
+    o1['values'] = ('--ALL--','Site1','Site2','Site3') # More states should be involved
+    o1.place(x=60,y=50)
+    o1.current(0)    
+
+    option2 = StringVar()
+    o2 = ttk.Combobox(window,width=8, textvariable=option2)
+    o2['values'] = ('Yes','No') # This step can be hardcoded
+    o2.place(x=400,y=50)
+    o2.current(0)
+
+    chVarDis = IntVar()
+    c1 = Checkbutton(window, text='Include Visited',variable=chVarDis)
+    if True:
+        c1.select()
+    else:
+        c1.deselect()
+    c1.place(x=190,y=160)
     window.mainloop()
 
+#36
 def WIN_vis_transit_detail():
-            
+
+    Site="Inman Park"
+
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Visitor Transit Detail")
+    window.geometry('600x600')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
+    l0 = Label(window,text="Transit Detail", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Site", font=('Times 12 normal'))
+    l1.place(x=10,y=50)
+
+    l2 = Label(window,text=Site, font=('Times 12 italic'))
+    l2.place(x=90,y=50)
+
+    l3 = Label(window,text="Transport Type", font=('Times 12 italic'))
+    l3.place(x=300,y=50)    
+
+    l4 = Label(window,text="Transit Date", font=('Times 12 italic'))
+    l4.place(x=150,y=550)      
+
+    b1 = Button(window,text="Back", width=10, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=10,y=550)
+
+    b2 = Button(window,text="Log Visit", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=450,y=550)
 
     e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    e1.place(x=250,y=550)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    option1 = StringVar()
+    o1 = ttk.Combobox(window,width=8, textvariable=option1)
+    o1['values'] = ('MARTA','Bus','Bike')
+    o1.place(x=440,y=50)
+    o1.current(0)
+
 
     window.mainloop() 
 
+#37
 def WIN_vis_site_detail():
-            
+
+    Site="Inman Park"
+    Open_Everyday="Yes"
+    Address = "Inman Park, Atlanta, GA 30307"
+
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Visitor Site Detail")
+    window.geometry('600x300')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
+    l0 = Label(window,text="Site Detail", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Site", font=('Times 12 normal'))
+    l1.place(x=10,y=50)
+
+    l2 = Label(window,text=Site, font=('Times 12 italic'))
+    l2.place(x=90,y=50)    
+
+    l3 = Label(window,text="Open Everyday", font=('Times 12 normal'))
+    l3.place(x=250,y=50)
+
+    l4 = Label(window,text=Open_Everyday, font=('Times 12 italic'))
+    l4.place(x=400,y=50)
+
+    l5 = Label(window,text="Address", font=('Times 12 normal'))
+    l5.place(x=10,y=100)
+
+    l6 = Label(window,text=Address, font=('Times 12 italic'))
+    l6.place(x=100,y=100) 
+
+    l7 = Label(window,text="Visit Date", font=('Times 12 normal'))
+    l7.place(x=100,y=180)       
+
+    b1 = Button(window,text="Back", width=10, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=300,y=225)
+
+    b2 = Button(window,text="Log Visit", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=450,y=180)
 
     e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
-
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    e1.place(x=250,y=180)
 
     window.mainloop() 
 
 def WIN_vis_visit_his():
             
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Visitor Visit History")
+    window.geometry('600x600')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
+    l0 = Label(window,text="Visit History", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Event", font=('Times', 14, 'normal'))
+    l1.place(x=10,y=60)
+
+    l2 = Label(window,text="Site", font=('Times', 14, 'normal'))
+    l2.place(x=250,y=60)
+
+    l3 = Label(window,text="Start Date", font=('Times', 14, 'normal'))
+    l3.place(x=10,y=100)
+
+    l5 = Label(window,text="End Date", font=('Times', 14, 'normal'))
+    l5.place(x=300,y=100)    
+
+    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=200,y=150)
+
+    b2 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=200,y=450)
 
     e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    e1.place(x=100,y=60)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    e2 = Entry(window,width=10, bg='powder blue')
+    e2.place(x=125,y=100)
+
+    e3 = Entry(window,width=10, bg='powder blue')
+    e3.place(x=400,y=100)
+
+    option1 = StringVar()
+    o1 = ttk.Combobox(window,width=8, textvariable=option1)
+    o1['values'] = ('ALL','MARTA','Bus','Bike')
+    o1.place(x=300,y=50)
+    o1.current(0)    
 
     window.mainloop()
 
@@ -2614,7 +2879,7 @@ def main():
     # WIN_FUN_adm()
     # WIN_FUN_adm_and_vis()
     # WIN_FUN_man()
-    WIN_FUN_man_and_vis()
+    # WIN_FUN_man_and_vis()
     # WIN_FUN_sta()
     # WIN_FUN_sta_and_vis()
     # WIN_FUN_vis() 
