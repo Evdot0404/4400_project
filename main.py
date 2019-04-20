@@ -1,5 +1,4 @@
 #! /usr/bin/python3
-import flask
 import sqlite3
 from tkinter import *
 from tkinter import scrolledtext
@@ -91,6 +90,10 @@ def WIN_user_login():
 
     # Buttons
 
+    def login():
+        #! S3      
+        pass
+
     def checkaccount():
         email = e1_content.get()
         password = e2_content.get()
@@ -98,13 +101,15 @@ def WIN_user_login():
         accounts = [('mcao42@gatech.edu','12345678')]
         if (email,password) in accounts:
             window.destroy()
-            WIN_FUN_user()
+            login()
         else: 
             tkinter.messagebox.showwarning('Invalid Account','Incorrect email and password combination!')
 
     def register():
         window.destroy()
         WIN_regi_nav()
+
+
     
     b1 = Button(window, text="Login", width=6, height=2,bg='white',fg='grey',font=('Arial 9 bold'), command=(lambda: checkaccount()))
     b1.place(x=75,y=150)
@@ -1413,6 +1418,10 @@ def WIN_take_transit():
     #The table
 #16
 def WIN_transit_his():
+
+    startdate = ''
+    enddate = ''
+    Route = ''
            
     window = Tk()
     window.title("User Transit History")
@@ -1420,6 +1429,63 @@ def WIN_transit_his():
     window.resizable(0, 0)
     window.configure(background="#fff")
 
+    def checkstartdate():
+        if not re.match(r'^[0-9]{4}-[0-9]{2}-[0-9]{2}$',e3_content.get()):
+            tkinter.messagebox.showwarning('Date Error','Not valid Start date!')            
+        else:
+            startdate = e4_content.get()
+
+    def checkenddate():
+        if not re.match(r'^[0-9]{4}-[0-9]{2}-[0-9]{2}$',e3_content.get()):
+            tkinter.messagebox.showwarning('Date Error','Not valid End date!')            
+        else:
+            enddate = e5_content.get()
+    
+    def checkroute():
+        pass
+    
+    def filter():
+        if e4_content.get() == '' or e5_content.get() == '' and e3_content.get() == '':
+            pass
+        elif e4_content.get() != '' and e5_content.get() != '' and e3_content.get() != '':
+            checkstartdate()
+            checkenddate()
+            checkroute()
+        elif e4_content.get() != '' and e5_content.get() != '' and e3_content.get() == '':
+            checkstartdate()
+            checkenddate()
+        elif e4_content.get() == '' or e5_content.get() == '' and e3_content.get() != '':
+            checkroute()
+        else:pass
+        #! filter with Date
+    
+    def back():
+        if transit_his[0] == 'user':
+            window.destroy()
+            WIN_FUN_user()
+        elif transit_his[0] == 'adm':
+            window.destroy() 
+            WIN_FUN_adm()           
+        elif transit_his[0] == 'admuser':
+            window.destroy()
+            WIN_FUN_adm_and_vis()
+        elif transit_his[0]== 'man':
+            window.destroy()
+            WIN_FUN_man()
+        elif transit_his[0] == 'manuser':
+            window.destroy()
+            WIN_FUN_man_and_vis()
+        elif transit_his[0] == 'sta':
+            window.destroy()
+            WIN_FUN_sta()
+        elif transit_his[0] == 'stauser':
+            window.destroy()
+            WIN_FUN_sta_and_vis()
+        elif transit_his[0] == 'vis':
+            window.destroy()
+            WIN_FUN_vis()
+        else: pass
+        
     l0 = Label(window,text="Transit History", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
 
@@ -1438,14 +1504,17 @@ def WIN_transit_his():
     l5 = Label(window,text="End Date", font=('Times', 14, 'normal'))
     l5.place(x=300,y=100)
 
-    e1 = Entry(window,width=6, bg='powder blue')
-    e1.place(x=75,y=100)
+    e3_content = StringVar()
+    e3 = Entry(window,width=6, bg='powder blue',textvariable=e3_content)
+    e3.place(x=75,y=100)
 
-    e2 = Entry(window,width=6, bg='powder blue')
-    e2.place(x=225,y=100)
+    e4_content = StringVar()
+    e4 = Entry(window,width=6, bg='powder blue',textvariable=e4_content)
+    e4.place(x=225,y=100)
 
-    e3 = Entry(window,width=6, bg='powder blue')
-    e3.place(x=375,y=100)
+    e5_content = StringVar()
+    e5 = Entry(window,width=6, bg='powder blue',textvariable=e5_content)
+    e5.place(x=375,y=100)
 
     option1 = StringVar()
     o1 = ttk.Combobox(window,width=10, textvariable=option1)
@@ -1455,14 +1524,14 @@ def WIN_transit_his():
 
     option2 = StringVar()
     o2 = ttk.Combobox(window,width=8, textvariable=option2)
-    o2['values'] = ('--ALL--') # More states should be involved
+    o2['values'] = ('--ALL--','MARTA','Bus','Bike') # More states should be involved
     o2.place(x=350,y=60)
     o2.current(0)
 
-    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: filter()))
     b1.place(x=200,y=150)
 
-    b2 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b2.place(x=200,y=450)
 
 
@@ -1482,6 +1551,33 @@ def WIN_emp_manage_profile():
     Sitename = 'Inman Park'
     Employeeid = '123456789'
     Address = '100 East Main Street, Seattle, WA 12345'
+
+    def back():
+        if man_profile[0] == 'user':
+            window.destroy()
+            WIN_FUN_user()
+        elif man_profile[0] == 'adm':
+            window.destroy() 
+            WIN_FUN_adm()           
+        elif man_profile[0] == 'admuser':
+            window.destroy()
+            WIN_FUN_adm_and_vis()
+        elif man_profile[0] == 'man':
+            window.destroy()
+            WIN_FUN_man()
+        elif man_profile[0] == 'manuser':
+            window.destroy()
+            WIN_FUN_man_and_vis()
+        elif man_profile[0] == 'sta':
+            window.destroy()
+            WIN_FUN_sta()
+        elif man_profile[0] == 'stauser':
+            window.destroy()
+            WIN_FUN_sta_and_vis()
+        elif man_profile[0] == 'vis':
+            window.destroy()
+            WIN_FUN_vis()
+        else: pass
 
     l0 = Label(window,text="Manage Profile", width=36,font=('Arial', 18, 'bold'))
     l0.place(x=100,y=0)
@@ -1525,10 +1621,12 @@ def WIN_emp_manage_profile():
     e1 = Entry(window,width=14, bg='powder blue')
     e1.place(x=120,y=60)
 
-    e2 = Entry(window,width=14, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=14, bg='powder blue',textvariable=e2_content)
     e2.place(x=400,y=60)
 
-    e9 = Entry(window,width=14, bg='powder blue')
+    e9_content = StringVar()
+    e9 = Entry(window,width=14, bg='powder blue',textvariable=e9_content)
     e9.place(x=400,y=140)
 
     # e12 = Entry(window,width=14, bg='powder blue')
@@ -1542,10 +1640,10 @@ def WIN_emp_manage_profile():
         c1.deselect()
     c1.place(x=250,y=325)
 
-    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b3.place(x=175,y=350)
 
-    b4 = Button(window,text="Register", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4 = Button(window,text="Update", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
     b4.place(x=325,y=350)
 
     window.mainloop()
@@ -1558,6 +1656,15 @@ def WIN_adm_manage_user():
     window.resizable(0, 0)
     window.configure(background="#fff")
 
+    def back():
+        if man_user[0] == 'adm':
+            window.destroy()
+            WIN_FUN_adm()
+        elif man_user[0] == 'admuser':
+            window.destroy() 
+            WIN_FUN_adm_and_vis()  
+        else:pass    
+
     l0 = Label(window,text="Manage User", width=36,font=('Arial', 18, 'bold'))
     l0.place(x=100,y=0)
 
@@ -1569,8 +1676,9 @@ def WIN_adm_manage_user():
 
     l3 = Label(window,text="Status", font=('Times 14 normal'))
     l3.place(x=425,y=60)
- 
-    e1 = Entry(window,width=10, bg='powder blue')
+    
+    e1_content = StringVar()
+    e1 = Entry(window,width=10, bg='powder blue',textvariable=e1_content)
     e1.place(x=120,y=60)
 
     option2 = StringVar()
@@ -1594,7 +1702,7 @@ def WIN_adm_manage_user():
     b3 = Button(window,text="Decline", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
     b3.place(x=450,y=100)
 
-    b4 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b4.place(x=250,y=350)
 
     window.mainloop()
@@ -1606,6 +1714,15 @@ def WIN_adm_manage_site():
     window.geometry('500x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def back():
+        if man_site[0] == 'admuser':
+            window.destroy()
+            WIN_FUN_adm_and_vis()
+        elif man_site[0] == 'adm':
+            window.destroy() 
+            WIN_FUN_adm()           
+        else: pass    
 
     l0 = Label(window,text="Manage Site", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
@@ -1649,7 +1766,7 @@ def WIN_adm_manage_site():
     b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
     b4.place(x=400,y=140)
 
-    b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b5.place(x=200,y=350)
 
     window.mainloop()
@@ -1661,6 +1778,10 @@ def WIN_adm_edit_site():
     window.geometry('400x250')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def back():
+        window.destroy()
+        WIN_adm_manage_site()
 
     l0 = Label(window,text="Edit Site", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
@@ -1677,13 +1798,16 @@ def WIN_adm_edit_site():
     l4 = Label(window,text="Manager", font=('Times 14 normal'))
     l4.place(x=25,y=140)
 
-    e1 = Entry(window,width=10, bg='powder blue')
+    e1_content = StringVar()
+    e1 = Entry(window,width=10, bg='powder blue',textvariable=e1_content)
     e1.place(x=100,y=60)
 
-    e2 = Entry(window,width=8, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=8, bg='powder blue',textvariable=e2_content)
     e2.place(x=300,y=60)
 
-    e3 = Entry(window,width=26, bg='powder blue')
+    e3_content = StringVar()
+    e3 = Entry(window,width=26, bg='powder blue',textvariable=e3_content)
     e3.place(x=100,y=100)
 
     option4 = StringVar()
@@ -1700,7 +1824,7 @@ def WIN_adm_edit_site():
         c1.deselect()
     c1.place(x=250,y=140)
 
-    b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.place(x=25,y=200)
 
     b2 = Button(window,text="Update", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
@@ -1715,6 +1839,10 @@ def WIN_adm_create_site():
     window.geometry('400x250')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def back():
+        window.destroy()
+        WIN_adm_manage_site()
 
     l0 = Label(window,text="Create Site", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
@@ -1731,13 +1859,16 @@ def WIN_adm_create_site():
     l4 = Label(window,text="Manager", font=('Times 14 normal'))
     l4.place(x=25,y=140)
 
-    e1 = Entry(window,width=10, bg='powder blue')
+    e1_content = StringVar()
+    e1 = Entry(window,width=10, bg='powder blue',textvariable=e1_content)
     e1.place(x=100,y=60)
 
-    e2 = Entry(window,width=8, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=8, bg='powder blue',textvariable=e2_content)
     e2.place(x=300,y=60)
 
-    e3 = Entry(window,width=26, bg='powder blue')
+    e3_content = StringVar()
+    e3 = Entry(window,width=26, bg='powder blue',textvariable=e3_content)
     e3.place(x=100,y=100)
 
     option4 = StringVar()
@@ -1754,7 +1885,7 @@ def WIN_adm_create_site():
         c1.deselect()
     c1.place(x=250,y=140)
 
-    b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.place(x=25,y=200)
 
     b2 = Button(window,text="Create", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
@@ -1769,6 +1900,15 @@ def WIN_adm_manage_transit():
     window.geometry('500x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def back():
+        if man_transit[0] == 'adm':
+            window.destroy() 
+            WIN_FUN_adm()           
+        elif man_transit[0] == 'admuser':
+            window.destroy()
+            WIN_FUN_adm_and_vis()
+        else: pass
 
     l0 = Label(window,text="Take Transit", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
@@ -1788,13 +1928,16 @@ def WIN_adm_manage_transit():
     l5 = Label(window,text="--", font=('Times', 14, 'normal'))
     l5.place(x=400,y=100)
 
-    e5a = Entry(window,width=3, bg='powder blue')
+    e5a_content = IntVar()
+    e5a = Entry(window,width=3, bg='powder blue',textvariable=e5a_content)
     e5a.place(x=350,y=100)
 
-    e5b = Entry(window,width=3, bg='powder blue')
+    e5b_content = IntVar()
+    e5b = Entry(window,width=3, bg='powder blue',textvariable=e5b_content)
     e5b.place(x=425,y=100)
 
-    e2 = Entry(window,width=14, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=14, bg='powder blue',textvariable=e2_content)
     e2.place(x=350,y=60)
 
     option1 = StringVar()
@@ -1821,7 +1964,7 @@ def WIN_adm_manage_transit():
     b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
     b4.place(x=400,y=140)
 
-    b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b5.place(x=200,y=350)
 
     window.mainloop()
@@ -1834,8 +1977,9 @@ def WIN_adm_edit_transit():
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    # spin = Spinbox(window, values=('A','B'),width=5, bd=8)
-    # spin.place(x=0,y=0)
+    def back():
+        window.destroy()
+        WIN_adm_manage_transit()
 
     Transit_type = "Bus"
 
@@ -1857,10 +2001,12 @@ def WIN_adm_edit_transit():
     l5 = Label(window,text="Connected Sites", font=('Times', 14, 'normal'))
     l5.place(x=25,y=140)
 
-    e1 = Entry(window,width=3, bg='powder blue')
+    e1_content = StringVar()
+    e1 = Entry(window,width=3, bg='powder blue',textvariable=e1_content)
     e1.place(x=225,y=60)
 
-    e2 = Entry(window,width=3, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=3, bg='powder blue',textvariable=e2_content)
     e2.place(x=325,y=60)
 
     # For now, it's fixed
@@ -1869,7 +2015,7 @@ def WIN_adm_edit_transit():
     st1.insert(INSERT,"""Something to be filled""")
     st1.config(state=DISABLED)
 
-    b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.place(x=25,y=250)
 
     b2 = Button(window,text="Update", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
@@ -1885,8 +2031,9 @@ def WIN_adm_create_transit():
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    # spin = Spinbox(window, values=('A','B'),width=5, bd=8)
-    # spin.place(x=0,y=0)
+    def back():
+        window.destroy()
+        WIN_adm_manage_transit()
 
     l0 = Label(window,text="Create Transit", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
@@ -1903,10 +2050,12 @@ def WIN_adm_create_transit():
     l5 = Label(window,text="Connected Sites", font=('Times', 14, 'normal'))
     l5.place(x=25,y=140)
 
-    e1 = Entry(window,width=3, bg='powder blue')
+    e1_content = StringVar()
+    e1 = Entry(window,width=3, bg='powder blue',textvariable=e1_content)
     e1.place(x=250,y=60)
 
-    e2 = Entry(window,width=3, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=3, bg='powder blue',textvariable=e2_content)
     e2.place(x=350,y=60)
 
     option1 = StringVar()
@@ -1920,7 +2069,7 @@ def WIN_adm_create_transit():
     st1.insert(INSERT,"""Something to be filled""")
     st1.config(state=DISABLED)
 
-    b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.place(x=25,y=250)
 
     b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
@@ -1935,6 +2084,15 @@ def WIN_man_manage_event():
     window.geometry('500x500')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def back():
+        if man_event[0] == 'man':
+            window.destroy() 
+            WIN_FUN_man()           
+        elif man_event[0] == 'manuser':
+            window.destroy()
+            WIN_FUN_man_and_vis()
+        else: pass
 
     l0 = Label(window,text="Manage Event", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
@@ -1969,34 +2127,44 @@ def WIN_man_manage_event():
     l10 = Label(window,text="--", font=('Times', 14, 'normal'))
     l10.place(x=300,y=180)
 
-    e1 = Entry(window,width=10, bg='powder blue')
+    e1_content = StringVar()
+    e1 = Entry(window,width=10, bg='powder blue',textvariable=e1_content)
     e1.place(x=100,y=60)
 
-    e2 = Entry(window,width=8, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=8, bg='powder blue',textvariable=e2_content)
     e2.place(x=400,y=60)
 
-    e3 = Entry(window,width=14, bg='powder blue')
+    e3_content = StringVar()
+    e3 = Entry(window,width=14, bg='powder blue',textvariable=e3_content)
     e3.place(x=100,y=100)
 
-    e4 = Entry(window,width=14, bg='powder blue')
+    e4_content = StringVar()
+    e4 = Entry(window,width=14, bg='powder blue',textvariable=e4_content)
     e4.place(x=350,y=100)
 
-    e6a = Entry(window,width=3, bg='powder blue')
+    e6a_content = IntVar()
+    e6a = Entry(window,width=3, bg='powder blue',textvariable=e6a_content)
     e6a.place(x=135,y=140)
 
-    e6b = Entry(window,width=3, bg='powder blue')
+    e6b_content = IntVar()
+    e6b = Entry(window,width=3, bg='powder blue',textvariable=e6b_content)
     e6b.place(x=190,y=140)
 
-    e8a = Entry(window,width=3, bg='powder blue')
+    e8a_content = IntVar()
+    e8a = Entry(window,width=3, bg='powder blue',textvariable=e8a_content)
     e8a.place(x=385,y=140)
 
-    e8b = Entry(window,width=3, bg='powder blue')
+    e8b_content = IntVar()
+    e8b = Entry(window,width=3, bg='powder blue',textvariable=e8b_content)
     e8b.place(x=440,y=140)
 
-    e10a = Entry(window,width=3, bg='powder blue')
+    e10a_content = IntVar()
+    e10a = Entry(window,width=3, bg='powder blue',textvariable=e10a_content)
     e10a.place(x=260,y=180)
 
-    e10b = Entry(window,width=3, bg='powder blue')
+    e10b_content = IntVar()
+    e10b = Entry(window,width=3, bg='powder blue',textvariable=e10b_content)
     e10b.place(x=315,y=180)
 
     b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
@@ -2005,13 +2173,13 @@ def WIN_man_manage_event():
     b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
     b2.place(x=200,y=220)
 
-    b3 = Button(window,text="Edit", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="ViewEdit", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
     b3.place(x=300,y=220)
 
     b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
     b4.place(x=400,y=220)
 
-    b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b5.place(x=200,y=450)
 
     window.mainloop()
@@ -2030,6 +2198,10 @@ def WIN_man_VE_event():
     Enddate = '2019-02-01'
     Minsta = '4'
     Capacity = '100'
+
+    def back():
+        window.destroy()
+        WIN_man_manage_event()
 
     l0 = Label(window,text="View/Edit Event", width=36,font=('Arial', 18, 'bold'))
     l0.place(x=25,y=0)
@@ -2088,16 +2260,20 @@ def WIN_man_VE_event():
     l18 = Label(window,text="--", font=('Times 14 normal'))
     l18.place(x=250,y=500)
 
-    e16a = Entry(window,width=3, bg='powder blue')
+    e16a_content = IntVar()
+    e16a = Entry(window,width=3, bg='powder blue',textvariable=e16a_content)
     e16a.place(x=200,y=460)
 
-    e16b = Entry(window,width=3, bg='powder blue')
+    e16b_content = IntVar()
+    e16b = Entry(window,width=3, bg='powder blue',textvariable=e16b_content)
     e16b.place(x=275,y=460)
 
-    e18a = Entry(window,width=3, bg='powder blue')
+    e18a_content = IntVar()
+    e18a = Entry(window,width=3, bg='powder blue',textvariable=e18a_content)
     e18a.place(x=200,y=500)
 
-    e18b = Entry(window,width=3, bg='powder blue')
+    e18b_content = IntVar()
+    e18b = Entry(window,width=3, bg='powder blue',textvariable=e18b_content)
     e18b.place(x=275,y=500)
 
     st1 = scrolledtext.ScrolledText(window, width=25, height=8,wrap=WORD,bd=8,)
@@ -2116,7 +2292,7 @@ def WIN_man_VE_event():
     b2 = Button(window,text="Update", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
     b2.place(x=275,y=540)
 
-    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b3.pack(side='bottom')
 
     window.mainloop()
@@ -2128,6 +2304,10 @@ def WIN_man_create_event():
     window.geometry('500x500')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def back():
+        window.destroy()
+        WIN_man_manage_event()
 
     l0 = Label(window,text="Create Event", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
@@ -2156,22 +2336,28 @@ def WIN_man_create_event():
     l8 = Label(window,text="Assign Staff", font=('Times 14 normal'))
     l8.place(x=25,y=340)
 
-    e1 = Entry(window,width=20, bg='powder blue')
+    e1_content = StringVar()
+    e1 = Entry(window,width=20, bg='powder blue',textvariable=e1_content)
     e1.place(x=125,y=60)
 
-    e2 = Entry(window,width=3, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=3, bg='powder blue',textvariable=e2_content)
     e2.place(x=100,y=100)
 
-    e3 = Entry(window,width=3, bg='powder blue')
+    e3_content = StringVar()
+    e3 = Entry(window,width=3, bg='powder blue',textvariable=e3_content)
     e3.place(x=225,y=100)
 
-    e4 = Entry(window,width=3, bg='powder blue')
+    e4_content = StringVar()
+    e4 = Entry(window,width=3, bg='powder blue',textvariable=e4_content)
     e4.place(x=450,y=100)
 
-    e5 = Entry(window,width=8, bg='powder blue')
+    e5_content = StringVar()
+    e5 = Entry(window,width=8, bg='powder blue',textvariable=e5_content)
     e5.place(x=125,y=140)
 
-    e6 = Entry(window,width=8, bg='powder blue')
+    e6_content = StringVar()
+    e6 = Entry(window,width=8, bg='powder blue',textvariable=e6_content)
     e6.place(x=350,y=140)
 
     st1 = scrolledtext.ScrolledText(window, width=45, height=7,wrap=WORD,bd=8,)
@@ -2184,7 +2370,7 @@ def WIN_man_create_event():
     st2.insert(INSERT,"""Something to be filled""")
     st2.config(state=DISABLED)
 
-    b1 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.place(x=75,y=450)
 
     b2 = Button(window,text="Create", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
@@ -2199,6 +2385,15 @@ def WIN_man_manage_staff():
     window.geometry('400x500')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def back():
+        if view_sta[0] == 'man':
+            window.destroy()
+            WIN_FUN_man()
+        elif view_sta[0] == 'manuser':
+            window.destroy()
+            WIN_FUN_man_and_vis()
+        else: pass
 
     l0 = Label(window,text="Manage Staff", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
@@ -2218,16 +2413,20 @@ def WIN_man_manage_staff():
     l5 = Label(window,text="End Date", font=('Times', 14, 'normal'))
     l5.place(x=200,y=140)
 
-    e2 = Entry(window,width=6, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=6, bg='powder blue',textvariable=e2_content)
     e2.place(x=125,y=100)
 
-    e3 = Entry(window,width=6, bg='powder blue')
+    e3_content = StringVar()
+    e3 = Entry(window,width=6, bg='powder blue',textvariable=e3_content)
     e3.place(x=300,y=100)
 
-    e4 = Entry(window,width=6, bg='powder blue')
+    e4_content = StringVar()
+    e4 = Entry(window,width=6, bg='powder blue',textvariable=e4_content)
     e4.place(x=125,y=140)
 
-    e5 = Entry(window,width=6, bg='powder blue')
+    e5_content = StringVar()
+    e5 = Entry(window,width=6, bg='powder blue',textvariable=e5_content)
     e5.place(x=300,y=140)
 
     option1 = StringVar()
@@ -2239,7 +2438,7 @@ def WIN_man_manage_staff():
     b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
     b1.place(x=150,y=180)
 
-    b2 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b2.place(x=150,y=450)
 
     window.mainloop()
@@ -2251,6 +2450,15 @@ def WIN_man_site_report():
     window.geometry('500x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def back():
+        if view_site_report[0] == 'man':
+            window.destroy()
+            WIN_FUN_man()
+        elif view_site_report[0] == 'manuser':
+            window.destroy()
+            WIN_FUN_man_and_vis()
+        else: pass
 
     l0 = Label(window,text="Site Report", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
@@ -2285,34 +2493,44 @@ def WIN_man_site_report():
     l10 = Label(window,text="--", font=('Times', 14, 'normal'))
     l10.place(x=425,y=140)
 
-    e1 = Entry(window,width=10, bg='powder blue')
+    e1_content = StringVar()
+    e1 = Entry(window,width=10, bg='powder blue',textvariable=e1_content)
     e1.place(x=100,y=60)
 
-    e2 = Entry(window,width=10, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=10, bg='powder blue',textvariable=e2_content)
     e2.place(x=375,y=60)
 
-    e4a = Entry(window,width=2, bg='powder blue')
+    e4a_content = IntVar()
+    e4a = Entry(window,width=2, bg='powder blue',textvariable=e4a_content)
     e4a.place(x=170,y=100)
 
-    e4b = Entry(window,width=2, bg='powder blue')
+    e4b_content = IntVar()
+    e4b = Entry(window,width=2, bg='powder blue',textvariable=e4b_content)
     e4b.place(x=215,y=100)
 
-    e6a = Entry(window,width=2, bg='powder blue')
+    e6a_content = IntVar()
+    e6a = Entry(window,width=2, bg='powder blue',textvariable=e6a_content)
     e6a.place(x=395,y=100)
 
-    e6b = Entry(window,width=2, bg='powder blue')
+    e6b_content = IntVar()
+    e6b = Entry(window,width=2, bg='powder blue',textvariable=e6b_content)
     e6b.place(x=440,y=100)
 
-    e8a = Entry(window,width=2, bg='powder blue')
+    e8a_content = IntVar()
+    e8a = Entry(window,width=2, bg='powder blue',textvariable=e8a_content)
     e8a.place(x=170,y=140)
 
-    e8b = Entry(window,width=2, bg='powder blue')
+    e8b_content = IntVar()
+    e8b = Entry(window,width=2, bg='powder blue',textvariable=e8b_content)
     e8b.place(x=215,y=140)
 
-    e10a = Entry(window,width=2, bg='powder blue')
+    e10a_content = IntVar()
+    e10a = Entry(window,width=2, bg='powder blue',textvariable=e10a_content)
     e10a.place(x=395,y=140)
 
-    e10b = Entry(window,width=2, bg='powder blue')
+    e10b_content = IntVar()
+    e10b = Entry(window,width=2, bg='powder blue',textvariable=e10b_content)
     e10b.place(x=440,y=140)
 
     b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
@@ -2321,7 +2539,7 @@ def WIN_man_site_report():
     b2 = Button(window,text="Daily Detail", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
     b2.place(x=375,y=180)
 
-    b3 = Button(window,text="Back", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="Back", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b3.pack(side='bottom')
 
     window.mainloop()
@@ -2334,10 +2552,14 @@ def WIN_man_daily_detail():
     window.resizable(0, 0)
     window.configure(background="#fff")
 
+    def back():
+        window.destroy()
+        WIN_man_site_report()
+
     l0 = Label(window,text="Daily Detail", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
 
-    b1 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.pack(side='bottom')
 
     window.mainloop()
@@ -2349,6 +2571,15 @@ def WIN_sta_view_schedule():
     window.geometry('500x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def back():
+        if view_schedule[0] == 'sta':
+            window.destroy()
+            WIN_FUN_sta()
+        elif view_schedule[0] == 'stauser':
+            window.destroy()
+            WIN_FUN_sta_and_vis()
+        else: pass
 
     l0 = Label(window,text="View Schedule", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
@@ -2365,16 +2596,20 @@ def WIN_sta_view_schedule():
     l4 = Label(window,text="End Date", font=('Times', 14, 'normal'))
     l4.place(x=250,y=100)
 
-    e1 = Entry(window,width=10, bg='powder blue')
+    e1_content = StringVar()
+    e1 = Entry(window,width=10, bg='powder blue',textvariable=e1_content)
     e1.place(x=125,y=60)
 
-    e2 = Entry(window,width=10, bg='powder blue')
+    e2_content = StringVar()
+    e2 = Entry(window,width=10, bg='powder blue',textvariable=e2_content)
     e2.place(x=350,y=60)
 
-    e3 = Entry(window,width=10, bg='powder blue')
+    e3_content = StringVar()
+    e3 = Entry(window,width=10, bg='powder blue',textvariable=e3_content)
     e3.place(x=125,y=100)
 
-    e4 = Entry(window,width=10, bg='powder blue')
+    e4_content = StringVar()
+    e4 = Entry(window,width=10, bg='powder blue',textvariable=e4_content)
     e4.place(x=350,y=100)
 
     b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
@@ -2383,7 +2618,7 @@ def WIN_sta_view_schedule():
     b2 = Button(window,text="View Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
     b2.place(x=275,y=140)
 
-    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b3.pack(side='bottom')
 
     window.mainloop()
@@ -2405,6 +2640,10 @@ def WIN_sta_event_detail():
     Capacity = "20"
     Price = "0"
 
+    def back():
+        window.destroy()
+        WIN_sta_view_schedule()
+        
     l0 = Label(window,text="Event Detail", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
 
@@ -2464,7 +2703,7 @@ def WIN_sta_event_detail():
     st1.insert(INSERT,"""Something to be filled""")
     st1.config(state=DISABLED)
            
-    b1 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.pack(side='bottom')
 
     window.mainloop() 
