@@ -14,7 +14,7 @@ class DB:
     def close(self):
         self.cursor.close()
         self.conn.close()
-
+        
     # Seach database
     def search(self,*args):
         self.cursor.execute(' '.join(args))
@@ -23,15 +23,15 @@ class DB:
 
     # Insert database
     def insert(self,*args):
-        self.conn.execute(' '.join(args))
+        self.cursor.execute(' '.join(args))
         self.conn.commit()
 
     # Update database
     def update(self,*args):
-        self.conn.execute(' '.join(args))
+        self.cursor.execute(' '.join(args))
         self.conn.commit()
 
     # Delete from database
     def delete(self,*args):
-        self.conn.execute(' '.join(args))
+        self.cursor.execute(' '.join(args))
         self.conn.commit()
