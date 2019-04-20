@@ -57,7 +57,13 @@ def WIN_regi_user():
             etype = "etype='User'"
             command = "INSERT INTO user SET status='Pending'," + username + "," + password + "," + fname + "," + lname + "," + etype
             db.insert(command)
+            for email_tmp in newemail:     
+                email = "email='" + email_tmp + "'"
+                command = "INSERT INTO email SET " + username + "," + email
+                db.insert(command)
             window.destroy()
+            newemail.clear()
+            db.close()
             WIN_user_login()
 
     def addemail():
