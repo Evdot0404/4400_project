@@ -1,0 +1,42 @@
+def WIN_regi_nav():
+
+    window = Tk()
+    window.title("Register Navigation")
+    window.geometry('250x250')
+    window.resizable(0, 0)
+    window.configure(background="#fff")
+
+    def navigation(number):
+        window.destroy()
+        if   number == 0:
+            WIN_regi_user()
+        elif number == 1:
+            WIN_regi_vis()
+        elif number == 2:
+            WIN_regi_emp()
+        elif number == 3:
+            WIN_regi_emp_and_vis()
+
+    def back():
+        window.destroy()
+        WIN_user_login()
+
+    l0 = Label(window,text="Register Navigation", width=36,font=('Arial', 18, 'bold'))
+    l0.pack(side='top')
+
+    b1 = Button(window,text="User Only", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(0)))
+    b1.place(x=75,y=60)
+
+    b2 = Button(window,text="Visitor Only", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
+    b2.place(x=75,y=90)
+
+    b3 = Button(window,text="Employee Only", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
+    b3.place(x=75,y=120)
+
+    b4 = Button(window,text="Employee-Visitor", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda:navigation(3)))
+    b4.place(x=75,y=150)
+
+    b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
+    b5.place(x=75,y=180)
+
+    window.mainloop()
