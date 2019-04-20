@@ -108,9 +108,7 @@ def WIN_user_login():
     def register():
         window.destroy()
         WIN_regi_nav()
-
-
-    
+ 
     b1 = Button(window, text="Login", width=6, height=2,bg='white',fg='grey',font=('Arial 9 bold'), command=(lambda: checkaccount()))
     b1.place(x=75,y=150)
 
@@ -1552,6 +1550,13 @@ def WIN_emp_manage_profile():
     Employeeid = '123456789'
     Address = '100 East Main Street, Seattle, WA 12345'
 
+    def update():
+        #! update database
+        newfname = e1_content.get() 
+        newlname = e2_content.get()
+        newphone = e9_content.get() 
+        IsVis = chVarDis.get()
+
     def back():
         if man_profile[0] == 'user':
             window.destroy()
@@ -1617,8 +1622,9 @@ def WIN_emp_manage_profile():
 
     l12 = Label(window,text="Email", font=('Times 14 normal'))
     l12.place(x=25,y=220)
- 
-    e1 = Entry(window,width=14, bg='powder blue')
+
+    e1_content = StringVar()
+    e1 = Entry(window,width=14, bg='powder blue',textvariable=e1_content)
     e1.place(x=120,y=60)
 
     e2_content = StringVar()
@@ -1715,6 +1721,14 @@ def WIN_adm_manage_site():
     window.resizable(0, 0)
     window.configure(background="#fff")
 
+    def navigation(value):
+        if value == 1:
+            window.destroy()
+            WIN_adm_create_site()
+        if value == 2:
+            window.destroy()
+            WIN_adm_edit_site()
+
     def back():
         if man_site[0] == 'admuser':
             window.destroy()
@@ -1757,10 +1771,10 @@ def WIN_adm_manage_site():
     b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
     b1.place(x=25,y=140)
 
-    b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
     b2.place(x=200,y=140)
 
-    b3 = Button(window,text="Edit", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="Edit", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
     b3.place(x=300,y=140)
 
     b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
@@ -1782,6 +1796,9 @@ def WIN_adm_edit_site():
     def back():
         window.destroy()
         WIN_adm_manage_site()
+
+    def update():
+        pass
 
     l0 = Label(window,text="Edit Site", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
@@ -1827,7 +1844,7 @@ def WIN_adm_edit_site():
     b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.place(x=25,y=200)
 
-    b2 = Button(window,text="Update", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Update", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: update()))
     b2.place(x=275,y=200)
 
     window.mainloop()   
@@ -1839,6 +1856,9 @@ def WIN_adm_create_site():
     window.geometry('400x250')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def create():
+        pass
 
     def back():
         window.destroy()
@@ -1888,7 +1908,7 @@ def WIN_adm_create_site():
     b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.place(x=25,y=200)
 
-    b2 = Button(window,text="Create", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Create", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: create()))
     b2.place(x=275,y=200)
 
     window.mainloop()   
@@ -1900,6 +1920,14 @@ def WIN_adm_manage_transit():
     window.geometry('500x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def navigation(value):
+        if value == 1:
+            window.destroy()
+            WIN_adm_create_transit()
+        if value == 2:
+            window.destroy()
+            WIN_adm_edit_transit()
 
     def back():
         if man_transit[0] == 'adm':
@@ -1955,10 +1983,10 @@ def WIN_adm_manage_transit():
     b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
     b1.place(x=25,y=140)
 
-    b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
     b2.place(x=200,y=140)
 
-    b3 = Button(window,text="Edit", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="Edit", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
     b3.place(x=300,y=140)
 
     b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
@@ -1976,6 +2004,9 @@ def WIN_adm_edit_transit():
     window.geometry('400x300')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def update():
+        pass
 
     def back():
         window.destroy()
@@ -2018,7 +2049,7 @@ def WIN_adm_edit_transit():
     b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.place(x=25,y=250)
 
-    b2 = Button(window,text="Update", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Update", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: update()))
     b2.place(x=300,y=250)
 
     window.mainloop() 
@@ -2030,6 +2061,9 @@ def WIN_adm_create_transit():
     window.geometry('400x300')
     window.resizable(0, 0)
     window.configure(background="#fff")
+    
+    def create():
+        pass
 
     def back():
         window.destroy()
@@ -2072,7 +2106,7 @@ def WIN_adm_create_transit():
     b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.place(x=25,y=250)
 
-    b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: create()))
     b2.place(x=300,y=250)
 
     window.mainloop() 
@@ -2084,6 +2118,14 @@ def WIN_man_manage_event():
     window.geometry('500x500')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def navigation(value):
+        if value == 1:
+            window.destroy()
+            WIN_man_create_event()
+        if value == 2:
+            window.destroy()
+            WIN_man_VE_event()
 
     def back():
         if man_event[0] == 'man':
@@ -2170,10 +2212,10 @@ def WIN_man_manage_event():
     b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
     b1.place(x=25,y=220)
 
-    b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
     b2.place(x=200,y=220)
 
-    b3 = Button(window,text="ViewEdit", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="ViewEdit", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
     b3.place(x=300,y=220)
 
     b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
@@ -2451,6 +2493,11 @@ def WIN_man_site_report():
     window.resizable(0, 0)
     window.configure(background="#fff")
 
+    def navigation(value):
+        if value == 1:
+            window.destroy()
+            WIN_man_daily_detail()
+
     def back():
         if view_site_report[0] == 'man':
             window.destroy()
@@ -2536,7 +2583,7 @@ def WIN_man_site_report():
     b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
     b1.place(x=50,y=180)
 
-    b2 = Button(window,text="Daily Detail", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Daily Detail", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
     b2.place(x=375,y=180)
 
     b3 = Button(window,text="Back", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
@@ -2559,7 +2606,7 @@ def WIN_man_daily_detail():
     l0 = Label(window,text="Daily Detail", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
 
-    b1 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
+    b1 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda:back()))
     b1.pack(side='bottom')
 
     window.mainloop()
@@ -2707,6 +2754,7 @@ def WIN_sta_event_detail():
     b1.pack(side='bottom')
 
     window.mainloop() 
+ 
 #33
 def WIN_vis_explore_event():
             
