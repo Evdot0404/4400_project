@@ -35,6 +35,8 @@ def WIN_regi_vis():
             tkinter.messagebox.showwarning('Email Error','Not valid email!')
         elif e6_content.get() in emails:
             tkinter.messagebox.showwarning('Existed Email','The email exists, try another email!')
+        elif e6_content.get() in newemail_vis:
+            tkinter.messagebox.showwarning('Existed Email','The email exists, try another email!')
         else:
             newemail_vis.append(e6_content.get())
     
@@ -79,6 +81,7 @@ def WIN_regi_vis():
     def back():
         window.destroy()
         newemail_vis.clear()
+        db.close()
         WIN_regi_nav()
 
     l0 = Label(window,text="Register Visitor", width=36,font=('Arial', 18, 'bold'))
