@@ -1,0 +1,141 @@
+#25
+#def WIN_man_manage_event(manuser_or_man)
+def WIN_man_manage_event():
+    db= DB()
+    #dummy variable
+    #man_event[0]=man
+    man_event[0]='man'
+    sql_command_25_1= "SELECT DISTINCT(eventname),Staff_Count,Duration,Total_Visits,Total_Revenue FROM `manage_event`;"
+    table_raw = db.search(sql_command_25_1)
+    print(table_raw)
+   
+    window = Tk()
+    window.title("Manager Manage Event")
+    window.geometry('500x500')
+    window.resizable(0, 0)
+    window.configure(background="#fff")
+
+    def back():
+        if man_event[0] == 'man':
+            window.destroy() 
+            WIN_FUN_man()           
+        elif man_event[0] == 'manuser':
+            window.destroy()
+            WIN_FUN_man_and_vis()
+        else: pass
+
+    l0 = Label(window,text="Manage Event", width=36,font=('Arial', 18, 'bold'))
+    l0.pack(side='top')
+
+    l1 = Label(window,text="Name", font=('Times', 14, 'normal'))
+    l1.place(x=25,y=60)
+
+    l2 = Label(window,text="Description Keyword", font=('Times', 14, 'normal'))
+    l2.place(x=250,y=60)
+
+    l3 = Label(window,text="Start Date", font=('Times', 14, 'normal'))
+    l3.place(x=25,y=100)
+
+    l4 = Label(window,text="End Date", font=('Times', 14, 'normal'))
+    l4.place(x=250,y=100)
+
+    l5 = Label(window,text="Duration Range", font=('Times', 14, 'normal'))
+    l5.place(x=25,y=140)
+
+    l6 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l6.place(x=175,y=140)
+
+    l7 = Label(window,text="Total Visits Range", font=('Times', 14, 'normal'))
+    l7.place(x=250,y=140)
+
+    l8 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l8.place(x=425,y=140)
+
+    l9 = Label(window,text="Total Revenue Range", font=('Times', 14, 'normal'))
+    l9.place(x=100,y=180)
+
+    l10 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l10.place(x=300,y=180)
+
+    e1_content = StringVar()
+    e1 = Entry(window,width=10, bg='powder blue',textvariable=e1_content)
+    e1.place(x=100,y=60)
+
+    e2_content = StringVar()
+    e2 = Entry(window,width=8, bg='powder blue',textvariable=e2_content)
+    e2.place(x=400,y=60)
+
+    e3_content = StringVar()
+    e3 = Entry(window,width=14, bg='powder blue',textvariable=e3_content)
+    e3.place(x=100,y=100)
+
+    e4_content = StringVar()
+    e4 = Entry(window,width=14, bg='powder blue',textvariable=e4_content)
+    e4.place(x=350,y=100)
+
+    e6a_content = IntVar()
+    e6a = Entry(window,width=3, bg='powder blue',textvariable=e6a_content)
+    e6a.place(x=135,y=140)
+
+    e6b_content = IntVar()
+    e6b = Entry(window,width=3, bg='powder blue',textvariable=e6b_content)
+    e6b.place(x=190,y=140)
+
+    e8a_content = IntVar()
+    e8a = Entry(window,width=3, bg='powder blue',textvariable=e8a_content)
+    e8a.place(x=385,y=140)
+
+    e8b_content = IntVar()
+    e8b = Entry(window,width=3, bg='powder blue',textvariable=e8b_content)
+    e8b.place(x=440,y=140)
+
+    e10a_content = IntVar()
+    e10a = Entry(window,width=3, bg='powder blue',textvariable=e10a_content)
+    e10a.place(x=260,y=180)
+
+    e10b_content = IntVar()
+    e10b = Entry(window,width=3, bg='powder blue',textvariable=e10b_content)
+    e10b.place(x=315,y=180)
+
+    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=25,y=220)
+
+    b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=200,y=220)
+
+    b3 = Button(window,text="ViewEdit", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3.place(x=300,y=220)
+
+    b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4.place(x=400,y=220)
+
+    b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
+    b5.place(x=200,y=450)
+
+    def selectItem(event):
+        item = tree.focus()
+        table_raw['values'] = tree.item(item)
+
+    tree = ttk.Treeview(window)
+    tree.place(x=25,y=160)
+    vsb = ttk.Scrollbar(window, orient="vertical", command=tree.yview)
+    vsb.place(x=425, y=160, height=240)
+    tree["show"] = 'headings'
+    tree.configure(yscrollcommand=vsb.set,height=12)
+    tree["columns"]=("one","two","three","four","five")
+    tree.column("one", width=120)
+    tree.column("two", width=50)
+    tree.column("three",width=50)
+    tree.column("four",width=70)
+    tree.column("five",width=80)
+    tree.heading("one", text="Name")
+    tree.heading("two", text="Staff #")
+    tree.heading("three", text="Durations")
+    tree.heading("four",text="Total Visits")
+    tree.heading("five",text="Revenue")
+    tree.bind('<ButtonRelease-1>', table_raw)
+    for item in table_raw:
+        tree.insert("",'end',values=(item[0],item[1],item[2],item[3],item[4]))
+
+
+    window.mainloop()
