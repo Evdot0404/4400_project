@@ -46,6 +46,8 @@ class DB:
         self.cursor.execute(arg)
         self.conn.commit()
 # Mutural functions 
+username_login = ['manager2']
+
 take_transit = ['']
 transit_his = ['']
 man_profile = ['']
@@ -63,9 +65,8 @@ newemail = []
 newemail_vis = []
 newemail_emp = []
 newemail_emp_and_vis = []
-
-# Other variables
-username_login = ['maria.hernandez']
+newemail_profile = []
+oriemail_profile = []
 
 """ ============================= """
 
@@ -109,7 +110,15 @@ def WIN_user_login():
         etype = db.search(command)
         command = "SELECT U.username FROM user as U " + "WHERE U.password='" + password + "'"
         username = db.search(command)
-        username_login[0] = username
+        username_login[0] = username[0][0]
+
+        # For WIN17 profiles
+        command = "SELECT * FROM manage_profile WHERE username='" + username_login[0] + "'"
+        profile = db.search(command)
+        for info in profile:
+            newemail_profile.append(info[7])
+            oriemail_profile.append(info[7])
+
         if 'Employee' in etype[0]:
             username_tmp = str(username[0][0])
             command = "SELECT Em.etype FROM employee as Em " + "WHERE Em.eusername='" + username_tmp + "'"
@@ -1936,24 +1945,86 @@ def WIN_transit_his():
     #The table
 #17
 def WIN_emp_manage_profile():
-        
+    db = DB()
+    command = "SELECT * FROM manage_profile WHERE username='" + username_login[0] + "'"
+    profile = db.search(command)
+    print(profile)
+    command = "SELECT * FROM user WHERE username='" + username_login[0] + "'"
+    if db.search(command)[0][5] == 'employee,visitor':
+        Etype = "manuser"
+        isVis = 1
+    else:
+        Etype = "man"
+        isVis = 0
+
+    Fname = profile[0][0]
+    Lname = profile[0][1]
+    Username = profile[0][2]
+    Sitename = profile[0][3]
+    Employeeid = profile[0][4]
+    Phone = profile[0][5]
+    Address = profile[0][6]
+
+    geometry = '600x' + str(len(newemail_profile)*40+400)
     window = Tk()
     window.title("Employee Manage Profile")
-    window.geometry('600x400')
+    window.geometry(geometry)
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    Username = 'Ming'
-    Sitename = 'Inman Park'
-    Employeeid = '123456789'
-    Address = '100 East Main Street, Seattle, WA 12345'
-
     def update():
-        #! update database
         newfname = e1_content.get() 
         newlname = e2_content.get()
         newphone = e9_content.get() 
         IsVis = chVarDis.get()
+        try:
+            command = "UPDATE user SET fname='" + newfname + "',lname='" + newlname + "' WHERE username='" + username_login[0] + "'"
+            db.update(command)
+            command = "UPDATE employee SET phone='" + newphone + "' WHERE username='" + username_login[0] + "'" 
+            db.update(command)
+            for email in oriemail_profile:
+                if email not in newemail_profile:
+                    command = "DELETE FROM email WHERE username='" + username_login[0] + "' AND email='" + email + "'" 
+                    db.update(command)
+            for email in newemail_profile:
+                if email not in oriemail_profile:
+                    command = "INSERT INTO email SET username='" + username_login[0] + "',email='" + email + "'"
+                    db.update(command)
+            if IsVis == 1:
+                command = "UPDATE user SET etype='employee,visitor' WHERE username='" + username_login[0] + "'"
+                db.update(command)
+            else:
+                command = "UPDATE user SET etype='Employee' WHERE username='" + username_login[0] + "'"
+                db.update(command)
+            window.destroy()
+            WIN_user_login()
+        except:
+            tkinter.messagebox.showwarning('Update Error','No changes or invalid information')
+
+    def checkemail():
+        command = 'SELECT email FROM email'
+        emails_tmp = db.search(command)
+        emails = []
+        for email in newemail_profile:
+            emails.append(email[0])
+        if not re.match(r'^[0-9a-zA-Z]+@{1}[0-9a-zA-Z]+\.{1}[0-9a-zA-Z]+',e12_content.get()):
+            tkinter.messagebox.showwarning('Email Error','Not valid email!')
+        elif e12_content.get() in emails_tmp:
+            tkinter.messagebox.showwarning('Existed Email','The email exists, try another email!')
+        elif e12_content.get() in newemail_profile:
+            tkinter.messagebox.showwarning('Existed Email','The email exists, try another email!')
+        else:
+            newemail_profile.append(e12_content.get())
+            
+    def addemail():
+        checkemail()
+        window.destroy()
+        WIN_emp_manage_profile()
+
+    def removeemail(email):
+        newemail_profile.remove(email)
+        window.destroy()
+        WIN_emp_manage_profile()
 
     def back():
         if man_profile[0] == 'user':
@@ -2021,34 +2092,51 @@ def WIN_emp_manage_profile():
     l12 = Label(window,text="Email", font=('Times 14 normal'))
     l12.place(x=25,y=220)
 
+    labelname = {}
+    buttonname = {}
+    for email in newemail_profile:
+        i = newemail_profile.index(email)
+        labelname[email] = Label(window,text=newemail_profile[i], font=('Times 12 normal'))
+        labelname[email].place(x=120,y=220 + i*40) 
+        buttonname[email] = Button(window,text="Remove", width=6, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: removeemail(email)))  
+        buttonname[email].place(x=400,y=220 + i*40) 
+
     e1_content = StringVar()
     e1 = Entry(window,width=14, bg='powder blue',textvariable=e1_content)
+    e1.insert(END,Fname)
     e1.place(x=120,y=60)
 
     e2_content = StringVar()
     e2 = Entry(window,width=14, bg='powder blue',textvariable=e2_content)
+    e2.insert(END,Lname)
     e2.place(x=400,y=60)
 
     e9_content = StringVar()
     e9 = Entry(window,width=14, bg='powder blue',textvariable=e9_content)
+    e9.insert(END,Phone)
     e9.place(x=400,y=140)
 
-    # e12 = Entry(window,width=14, bg='powder blue')
-    # e12.place(x=400,y=220)
+    e12y = len(newemail_profile)*40 + 220
+    e12_content = StringVar()
+    e12 = Entry(window,width=20, bg='powder blue',textvariable=e12_content)
+    e12.place(x=120,y=e12y)
 
     chVarDis = IntVar()
     c1 = Checkbutton(window, text='Visitor Account',variable=chVarDis)
-    if True:
+    if Etype == 'manuser':
         c1.select()
     else:
         c1.deselect()
-    c1.place(x=250,y=325)
+    c1.place(x=250,y=325+len(newemail_profile)*40)
 
     b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
-    b3.place(x=175,y=350)
+    b3.place(x=175,y=350+len(newemail_profile)*40)
 
-    b4 = Button(window,text="Update", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b4.place(x=325,y=350)
+    b4 = Button(window,text="Update", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: update()))
+    b4.place(x=325,y=350+len(newemail_profile)*40)
+
+    b12add = Button(window,text="Add", width=6, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: addemail()))
+    b12add.place(x=400,y=e12y)
 
     window.mainloop()
 #18
@@ -3450,7 +3538,7 @@ def WIN_vis_visit_his():
 
 def main():
 
-    # WIN_user_login()
+     WIN_user_login()
     # WIN_regi_nav()
     # WIN_regi_user()
     # WIN_regi_vis()
@@ -3465,7 +3553,7 @@ def main():
     # WIN_FUN_sta_and_vis()
     # WIN_FUN_vis() 
     # WIN_take_transit()
-    WIN_transit_his()
+    # WIN_transit_his()
     # WIN_emp_manage_profile()
     # WIN_adm_manage_user()
     # WIN_adm_manage_site()
