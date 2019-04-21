@@ -1,40 +1,49 @@
 #! /usr/bin/python3
-import sqlite3
+import pymysql # mysql-connector-python
 from tkinter import *
 from tkinter import scrolledtext
 from tkinter import ttk
 import tkinter.messagebox
 import re
+import datetime
 
 class DB:
     def __init__(self):
-        self.conn = sqlite3.connect("database.db")
+        host = "127.0.0.1"
+        user = "root"
+        passwd = "Evdot0404MySQL"
+        database = "CS4400_T77"
+        self.conn = pymysql.connect(host=host,user=user,passwd=passwd,database=database)
+        # if self.conn.is_connected():
+        #     print("Connect to MySQL database")
         self.cursor = self.conn.cursor()
-        self.conn.execute("command")
-        self.conn.commit()
-    
+
     def __del__(self): #destructor
+        self.cursor.close()
+
+    def close(self):
+        self.cursor.close()
         self.conn.close()
 
     # Seach database
-    def search(self):
-        self.cursor.execute("command")
+    def search(self,arg):
+        self.cursor.execute(arg)
         rows = self.cursor.fetchall()
         return rows
 
     # Insert database
-    def insert(self,args):
-        self.conn.execute("command")
+    def insert(self,arg):
+        self.cursor.execute(arg)
         self.conn.commit()
 
     # Update database
-    def update(self,args):
-        self.conn.execute("command")
+    def update(self,arg):
+        self.cursor.execute(arg)
         self.conn.commit()
 
     # Delete from database
-    def delete(self,args):
-        self.conn.execute("command")
+    def delete(self,arg):
+        self.cursor.execute(arg)
         self.conn.commit()
 # Mutural functions 
 take_transit = ['']
@@ -55,8 +64,16 @@ newemail_vis = []
 newemail_emp = []
 newemail_emp_and_vis = []
 
-#1 s2
+# Other variables
+username_login = ['maria.hernandez']
+
+""" ============================= """
+
+""" ============================= """
+
+#1 finished
 def WIN_user_login():
+    db = DB()
     # Initialization
     window = Tk()
     window.title("User Login")
@@ -70,11 +87,9 @@ def WIN_user_login():
 
     l1 = Label(window, text="Email",font=('Times 14 normal'))
     l1.place(x=25,y=60)
-    # l1.grid(row=2, column=0)
 
     l2 = Label(window, text="Password",font=('Times 14 normal'))
     l2.place(x=25,y=100)
-    # l2.grid(row=4, column=0)
 
     #entry
     e1_content = StringVar()
@@ -89,25 +104,51 @@ def WIN_user_login():
     e2.place(x=150,y=100)
 
     # Buttons
-
-    def login():
-        #! S3      
-        pass
+    def login(password):
+        command = "SELECT U.etype FROM user as U " + "WHERE U.password='" + password + "'"
+        etype = db.search(command)
+        command = "SELECT U.username FROM user as U " + "WHERE U.password='" + password + "'"
+        username = db.search(command)
+        username_login[0] = username
+        if 'Employee' in etype[0]:
+            username_tmp = str(username[0][0])
+            command = "SELECT Em.etype FROM employee as Em " + "WHERE Em.eusername='" + username_tmp + "'"
+            etype_emp = db.search(command)
+            if 'Admin' in etype_emp[0]:
+                WIN_FUN_adm();db.close() 
+            elif 'Manager' in etype_emp[0]:
+                WIN_FUN_man();db.close()
+            elif 'Staff' in  etype_emp[0]:
+                WIN_FUN_sta();db.close()
+        elif 'employee,visitor' in etype[0]:
+            username_tmp = str(username[0][0])
+            command = "SELECT Em.etype FROM employee as Em " + "WHERE Em.eusername='" + username_tmp + "'"
+            etype_emp = db.search(command)
+            if 'Admin' in etype_emp[0]:
+                WIN_FUN_adm_and_vis();db.close()
+            elif 'Manager' in etype_emp[0]:
+                WIN_FUN_man_and_vis();db.close()
+            elif 'Staff' in etype_emp[0]:
+                WIN_FUN_sta_and_vis();db.close()
+        elif 'User' in etype[0]:
+            WIN_FUN_user();db.close()
+        elif 'Visitor' in etype[0]:
+            WIN_FUN_vis();db.close()
 
     def checkaccount():
         email = e1_content.get()
-        password = e2_content.get()
-        #! Here, a list from database needed
-        accounts = [('mcao42@gatech.edu','12345678')]
-        if (email,password) in accounts:
+        password = e2_content.get() 
+        command = "SELECT E.email,U.password FROM user as U JOIN email as E on E.username = U.username WHERE U.status='Approved'"
+        email_and_password = db.search(command)
+        if (email,password) in email_and_password:
             window.destroy()
-            login()
+            login(password)
         else: 
             tkinter.messagebox.showwarning('Invalid Account','Incorrect email and password combination!')
 
     def register():
         window.destroy()
-        WIN_regi_nav()
+        WIN_regi_nav();db.close()
  
     b1 = Button(window, text="Login", width=6, height=2,bg='white',fg='grey',font=('Arial 9 bold'), command=(lambda: checkaccount()))
     b1.place(x=75,y=150)
@@ -115,10 +156,8 @@ def WIN_user_login():
     b2 = Button(window, text="Register", width=8, height=2,bg='white',fg='grey',font=('Arial 9 bold'), command=(lambda: register()))
     b2.place(x=250,y=150)
 
-    # Radiobutton()
-
     window.mainloop()
-#2 s2
+#2 finished
 def WIN_regi_nav():
 
     window = Tk()
@@ -161,11 +200,11 @@ def WIN_regi_nav():
     b5.place(x=75,y=180)
 
     window.mainloop()
-#3
+#3 finished
 def WIN_regi_user():
-
+    db = DB()
     geometry = '600x' + str(len(newemail)*40+300)
-    
+
     window = Tk()
     window.title("Register User")
     window.geometry(geometry)
@@ -174,24 +213,32 @@ def WIN_regi_user():
 
     def confirmpwd():
         if len(e3_content.get()) < 8 :
-            tkinter.messagebox.showwarning('Password Error','Password should at least 8 characters')
-        
-        if e3_content.get() != e5_content.get():
+            tkinter.messagebox.showwarning('Password Error','Password should at least 8 characters')  
+        elif e3_content.get() != e5_content.get():
             tkinter.messagebox.showwarning('Not same password','Incorrect confirmed password, try again!')
+        else:return e3_content.get()
 
     def checkusername():
-        #! username list from database needed
-        usernames = ['Mingming','Priyam']
+        command = 'SELECT username FROM user'
+        usernames_tmp = db.search(command)
+        usernames = []
+        for user in usernames_tmp:
+            usernames.append(user[0])
         if e2_content.get() in usernames:
             tkinter.messagebox.showwarning('Existed Username','The username exists, try another username!')
+        else:return e2_content.get()
 
     def checkemail():
-        #! username list from database needed
-        emails = ['mcao42@gatech.edu']
-        #! email format
+        command = 'SELECT email FROM email'
+        emails_tmp = db.search(command)
+        emails = []
+        for email in emails_tmp:
+            emails.append(email[0])
         if not re.match(r'^[0-9a-zA-Z]+@{1}[0-9a-zA-Z]+\.{1}[0-9a-zA-Z]+',e6_content.get()):
             tkinter.messagebox.showwarning('Email Error','Not valid email!')
         elif e6_content.get() in emails:
+            tkinter.messagebox.showwarning('Existed Email','The email exists, try another email!')
+        elif e6_content.get() in newemail:
             tkinter.messagebox.showwarning('Existed Email','The email exists, try another email!')
         else:
             newemail.append(e6_content.get())
@@ -205,10 +252,24 @@ def WIN_regi_user():
             tkinter.messagebox.showwarning('Username Error','Username should not be none')  
         if len(newemail) == 0:
             tkinter.messagebox.showwarning('Email Error','Email should not be none')  
-        confirmpwd()
-        checkusername()
-        window.destroy()
-        WIN_user_login()
+        fname = "fname='" + e1_content.get() + "'"
+        lname = "lname='" + e4_content.get() + "'"
+        password_tmp = confirmpwd()
+        username_tmp = checkusername()
+        if None not in (fname,lname,password_tmp,username_tmp) and newemail != []:
+            password = "password='" + password_tmp + "'"
+            username = "username='" + username_tmp + "'"
+            etype = "etype='User'"
+            command = "INSERT INTO user SET status='Pending'," + username + "," + password + "," + fname + "," + lname + "," + etype
+            db.insert(command)
+            for email_tmp in newemail:     
+                email = "email='" + email_tmp + "'"
+                command = "INSERT INTO email SET " + username + "," + email
+                db.insert(command)
+            window.destroy()
+            newemail.clear()
+            db.close()
+            WIN_user_login()
 
     def addemail():
         checkemail()
@@ -216,13 +277,14 @@ def WIN_regi_user():
         WIN_regi_user()
 
     def removeemail(email):
-        # print(email)
         newemail.remove(email)
         window.destroy()
         WIN_regi_user()
 
     def back():
         window.destroy()
+        newemail.clear()
+        db.close()
         WIN_regi_nav()
 
     l0 = Label(window,text="Register User", width=36,font=('Arial', 18, 'bold'))
@@ -292,9 +354,9 @@ def WIN_regi_user():
     b6add.place(x=400,y=e6y)
 
     window.mainloop()
-#4
+#4 finished
 def WIN_regi_vis():
-
+    db = DB()
     geometry = '600x' + str(len(newemail_vis)*40+300)
     
     window = Tk()
@@ -305,24 +367,32 @@ def WIN_regi_vis():
 
     def confirmpwd():
         if len(e3_content.get()) < 8 :
-            tkinter.messagebox.showwarning('Password Error','Password should at least 8 characters')
-        
-        if e3_content.get() != e5_content.get():
+            tkinter.messagebox.showwarning('Password Error','Password should at least 8 characters')    
+        elif e3_content.get() != e5_content.get():
             tkinter.messagebox.showwarning('Not same password','Incorrect confirmed password, try again!')
+        else:return e3_content.get()
 
     def checkusername():
-        #! username list from database needed
-        usernames = ['Mingming','Priyam']
+        command = 'SELECT username FROM user'
+        usernames_tmp = db.search(command)
+        usernames = []
+        for user in usernames_tmp:
+            usernames.append(user[0])
         if e2_content.get() in usernames:
             tkinter.messagebox.showwarning('Existed Username','The username exists, try another username!')
+        else:return e2_content.get()
 
     def checkemail():
-        #! username list from database needed
-        emails = ['mcao42@gatech.edu']
-        #! email format
+        command = 'SELECT email FROM email'
+        emails_tmp = db.search(command)
+        emails = []
+        for email in emails_tmp:
+            emails.append(email[0])
         if not re.match(r'^[0-9a-zA-Z]+@{1}[0-9a-zA-Z]+\.{1}[0-9a-zA-Z]+',e6_content.get()):
             tkinter.messagebox.showwarning('Email Error','Not valid email!')
         elif e6_content.get() in emails:
+            tkinter.messagebox.showwarning('Existed Email','The email exists, try another email!')
+        elif e6_content.get() in newemail_vis:
             tkinter.messagebox.showwarning('Existed Email','The email exists, try another email!')
         else:
             newemail_vis.append(e6_content.get())
@@ -336,10 +406,24 @@ def WIN_regi_vis():
             tkinter.messagebox.showwarning('Username Error','Username should not be none')  
         if len(newemail_vis) == 0:
             tkinter.messagebox.showwarning('Email Error','Email should not be none')  
-        confirmpwd()
-        checkusername()
-        window.destroy()
-        WIN_user_login()
+        fname = "fname='" + e1_content.get() + "'"
+        lname = "lname='" + e4_content.get() + "'"
+        password_tmp = confirmpwd()
+        username_tmp = checkusername()
+        if None not in (fname,lname,password_tmp,username_tmp) and newemail_vis != []:
+            password = "password='" + password_tmp + "'"
+            username = "username='" + username_tmp + "'"
+            etype = "etype='Visitor'"
+            command = "INSERT INTO user SET status='Pending'," + username + "," + password + "," + fname + "," + lname + "," + etype
+            db.insert(command)
+            for email_tmp in newemail_vis:     
+                email = "email='" + email_tmp + "'"
+                command = "INSERT INTO email SET " + username + "," + email
+                db.insert(command)
+            window.destroy()
+            newemail_vis.clear()
+            db.close()
+            WIN_user_login()
 
     def addemail():
         checkemail()
@@ -353,6 +437,8 @@ def WIN_regi_vis():
 
     def back():
         window.destroy()
+        newemail_vis.clear()
+        db.close()
         WIN_regi_nav()
 
     l0 = Label(window,text="Register Visitor", width=36,font=('Arial', 18, 'bold'))
@@ -422,9 +508,9 @@ def WIN_regi_vis():
     b6add.place(x=400,y=e6y)
 
     window.mainloop()
-#5
+#5 waiting for new table
 def WIN_regi_emp():
-
+    db = DB()
     geometry = '600x' + str(len(newemail_emp)*40+400)
 
     window = Tk()
@@ -433,24 +519,29 @@ def WIN_regi_emp():
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-
     def confirmpwd():
         if len(e3_content.get()) < 8 :
-            tkinter.messagebox.showwarning('Password Error','Password should at least 8 characters')
-        
-        if e3_content.get() != e5_content.get():
+            tkinter.messagebox.showwarning('Password Error','Password should at least 8 characters')  
+        elif e3_content.get() != e5_content.get():
             tkinter.messagebox.showwarning('Not same password','Incorrect confirmed password, try again!')
+        else:return e3_content.get()
 
     def checkusername():
-        #! username list from database needed
-        usernames = ['Mingming','Priyam']
+        command = 'SELECT username FROM user'
+        usernames_tmp = db.search(command)
+        usernames = []
+        for user in usernames_tmp:
+            usernames.append(user[0])
         if e2_content.get() in usernames:
             tkinter.messagebox.showwarning('Existed Username','The username exists, try another username!')
+        else:return e2_content.get()
 
     def checkemail():
-        #! username list from database needed
-        emails = ['mcao42@gatech.edu']
-        #! email format
+        command = 'SELECT email FROM email'
+        emails_tmp = db.search(command)
+        emails = []
+        for email in emails_tmp:
+            emails.append(email[0])
         if not re.match(r'^[0-9a-zA-Z]+@{1}[0-9a-zA-Z]+\.{1}[0-9a-zA-Z]+',e6_content.get()):
             tkinter.messagebox.showwarning('Email Error','Not valid email!')
         elif e6_content.get() in emails:
@@ -459,7 +550,7 @@ def WIN_regi_emp():
             newemail_emp.append(e6_content.get())
 
     def checkphone():
-        #! phone list from database needed
+        command = ''
         phones = ['123456789']
         if e8_content.get() == '':
             tkinter.messagebox.showwarning('Phone Error','Phone should not be none')  
@@ -467,12 +558,14 @@ def WIN_regi_emp():
             tkinter.messagebox.showwarning('Phone Error','Not valid phone!')
         elif e8_content.get() in phones:
             tkinter.messagebox.showwarning('Existed Phone','The phone exists, try another phone!')
+        else:return e8_content.get()
 
     def checkzipcode():
         if e12_content.get() == '':
             tkinter.messagebox.showwarning('Zipcode Error','Zipcode should not be none')  
         elif not re.match('^[0-9]{5}',e12_content.get()):
             tkinter.messagebox.showwarning('Zipcode Error','Not valid zipcode!')
+        else:return e12_content.get()
 
     def register_checks():
         if e1_content.get() == '':
@@ -483,12 +576,12 @@ def WIN_regi_emp():
             tkinter.messagebox.showwarning('Username Error','Username should not be none')  
         if len(newemail_emp) == 0:
             tkinter.messagebox.showwarning('Email Error','Email should not be none')  
-        confirmpwd()
-        checkphone()
-        checkusername()
+        password = confirmpwd()
+        phone = checkphone()
+        username = checkusername()
         if e10_content.get() == '':
             tkinter.messagebox.showwarning('City Error','City should not be none')  
-        checkzipcode()
+        zipcode = checkzipcode()
         window.destroy()
         WIN_user_login()
 
@@ -605,7 +698,7 @@ def WIN_regi_emp():
 
     option11 = StringVar()
     o11 = ttk.Combobox(window,width=4, textvariable=option11)
-    o11['values'] = ('AL','AZ','AR','CA','GA') # More states should be involved
+    o11['values'] = ('AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','Other') 
     o11.place(x=250,y=220)
     o11.current(0)
 
@@ -619,7 +712,7 @@ def WIN_regi_emp():
     b6add.place(x=400,y=e6y)
 
     window.mainloop()
-#6
+#6 waiting for new table
 def WIN_regi_emp_and_vis():
 
     geometry = '600x' + str(len(newemail_emp_and_vis)*40+400)
@@ -816,7 +909,7 @@ def WIN_regi_emp_and_vis():
     b6add.place(x=400,y=e6y)
 
     window.mainloop()
-#7
+#7 finished
 def WIN_FUN_user():
  
     window = Tk()
@@ -850,7 +943,7 @@ def WIN_FUN_user():
     b3.place(x=75,y=120)
 
     window.mainloop()
-#8
+#8 finished
 def WIN_FUN_adm():
  
     window = Tk()
@@ -912,7 +1005,7 @@ def WIN_FUN_adm():
     b7.place(x=75,y=240)
 
     window.mainloop()
-#9
+#9 finished
 def WIN_FUN_adm_and_vis():
 
     window = Tk()
@@ -995,7 +1088,7 @@ def WIN_FUN_adm_and_vis():
     b10.place(x=75,y=330)
 
     window.mainloop()
-#10    
+#10 finished 
 def WIN_FUN_man():
   
     window = Tk()
@@ -1057,7 +1150,7 @@ def WIN_FUN_man():
     b7.place(x=75,y=240)
 
     window.mainloop()
-#11
+#11 finished
 def WIN_FUN_man_and_vis():
 
     window = Tk()
@@ -1140,7 +1233,7 @@ def WIN_FUN_man_and_vis():
     b10.place(x=75,y=330)
 
     window.mainloop()
-#12
+#12 finished
 def WIN_FUN_sta():
     # global take_transit
   
@@ -1190,7 +1283,7 @@ def WIN_FUN_sta():
     b5.place(x=75,y=180)
 
     window.mainloop()
-#13
+#13 finished
 def WIN_FUN_sta_and_vis():
 
     window = Tk()
@@ -1259,7 +1352,7 @@ def WIN_FUN_sta_and_vis():
     b8.place(x=75,y=270)
 
     window.mainloop()
-#14
+#14 finished
 def WIN_FUN_vis():
  
     window = Tk()
@@ -1314,8 +1407,27 @@ def WIN_FUN_vis():
     b6.place(x=75,y=210)
 
     window.mainloop()
-#15
+#15 need fix in database
 def WIN_take_transit():
+    db = DB()
+    command = "select route,type,price,sitename from transit join connect on route = transitroute"
+    table_raw = db.search(command)
+    table = {}
+    for row in table_raw:
+        if row[0] not in table:
+            table[row[0]] = [row[0],row[1],str(row[2]).split("'")[0],[row[3]]]
+        else:
+            table[row[0]][3].append(row[3])
+    table_list = [table[value] for value in table]
+    isreversed = [0]
+    filtered_list = table_list[:]
+    selectitem = {}
+
+    sites = []
+    for item in table_list:
+        for element in item[3]:
+            if element not in sites:
+                sites.append(element)
 
     window = Tk()
     window.title("User Take Transit")
@@ -1323,15 +1435,125 @@ def WIN_take_transit():
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    def filter():
+    def sorting(arg):
+        if arg == 'route':
+            tree.delete(*tree.get_children())
+            if isreversed[0] % 2 == 0:
+                route_list = sorted(filtered_list, key = lambda x: x[0])
+                isreversed[0] += 1
+            else:
+                route_list = sorted(filtered_list, key = lambda x: x[0],reverse=True)
+                isreversed[0] += 1
+            for item in route_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[3])))
+        elif arg == 'ttype':
+            tree.delete(*tree.get_children())
+            if isreversed[0] % 2 == 0:
+                ttype_list = sorted(filtered_list, key = lambda x: x[1])
+                isreversed[0] += 1
+            else:
+                ttype_list = sorted(filtered_list, key = lambda x: x[1],reverse=True)
+                isreversed[0] += 1
+            for item in ttype_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[3])))
+        elif arg == 'price':
+            tree.delete(*tree.get_children())
+            if isreversed[0] % 2 == 0:
+                price_list = sorted(filtered_list, key = lambda x: x[2])
+                isreversed[0] += 1
+            else:
+                price_list = sorted(filtered_list, key = lambda x: x[2],reverse=True)
+                isreversed[0] += 1
+            for item in price_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[3])))
+        elif arg == 'csites':
+            tree.delete(*tree.get_children())
+            if isreversed[0] % 2 == 0:
+                csites_list = sorted(filtered_list, key = lambda x: len(x[3]))
+                isreversed[0] += 1
+            else:
+                csites_list = sorted(filtered_list, key = lambda x: len(x[3]),reverse=True)
+                isreversed[0] += 1
+            for item in csites_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[3])))
+
+    def filter(table_list):
         start = e1_content.get()
         end = e2_content.get()
-        
+        if start != '' and end != '':
+            if float(end) < float(start):
+                tkinter.messagebox.showwarning('Error','Its not a good price range') 
+            else:
+                filtered_list.clear()
+                for item in table_list:
+                    if float(item[2]) >= float(start) and float(item[2]) <= float(end):
+                        filtered_list.append(item)
+                tree.delete(*tree.get_children())
+                for item in filtered_list:
+                    tree.insert("",'end',values=(item[0],item[1],item[2],len(item[3])))
+
+    def filtersite(event):
+        filtered_list = table_list[:]
+        sitename = event.widget.get()
+        if sitename == '--ALL--':
+            filtered_list = table_list[:]
+            tree.delete(*tree.get_children())
+            for item in table_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[3])))
+        else:
+            filtered_list.clear()
+            for item in table_list:
+                if sitename in item[3]:
+                    filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[3])))      
+    
+    def filtertype(event):
+        filtered_list = table_list[:]
+        ttype = event.widget.get()
+        if ttype == '--ALL--':
+            filtered_list.clear()
+            filtered_list = table_list[:]
+            tree.delete(*tree.get_children())
+            for item in table_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[3])))
+        else:
+            filtered_list.clear()
+            for item in table_list:
+                if ttype in item[1]:
+                    filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[3])))
+      
     def logtransit():
         if not re.match(r'^[0-9]{4}-[0-9]{2}-[0-9]{2}$',e3_content.get()):
             tkinter.messagebox.showwarning('Date Error','Not valid date!')            
         else:
-            transitdate = e3_content.get()
+            if selectitem != {}:
+                transitdate = e3_content.get()
+                info = selectitem['values']['values']
+                command = "SELECT date,transitroute FROM take where username='" + username_login[0] + "'"
+                com = db.search(command)
+                transitroute = info[0]
+                newdate = "date='" + transitdate + "'"
+                newroute = "transitroute='" + str(info[0]) + "'"
+                newtype = "transittype='" + info[1] + "'"
+                newusername = "username='" + username_login[0] + "'"
+                if com != None:
+                    if (transitdate,transitroute) not in com:
+                        try:
+                            command =  "INSERT INTO take SET " + newdate + "," + newroute + "," + newtype + "," + newusername
+                            db.insert(command)      
+                        except:
+                            tkinter.messagebox.showwarning('Error','Wrong Date or Selection!') 
+                else:
+                    try:
+                        command =  "INSERT INTO take SET " + newdate + "," + newroute + "," + newtype + "," + newusername
+                        db.insert(command)    
+                    except:
+                        tkinter.messagebox.showwarning('Error','Wrong Date or Selection!') 
         
     def back():
         if take_transit[0] == 'user':
@@ -1392,17 +1614,19 @@ def WIN_take_transit():
 
     option1 = StringVar()
     o1 = ttk.Combobox(window,width=10, textvariable=option1)
-    o1['values'] = ('InmanPark')
+    o1['values'] = tuple(sites)#tuple(x for x in (['--ALL--'] + list(x for x in sites)))
     o1.place(x=125,y=60)
+    o1.bind("<<ComboboxSelected>>",filtersite)
     o1.current(0)
-
+    
     option2 = StringVar()
     o2 = ttk.Combobox(window,width=8, textvariable=option2)
     o2['values'] = ('--ALL--','MARTA','Bus','Bike') # More states should be involved
     o2.place(x=350,y=60)
+    o2.bind("<<ComboboxSelected>>",filtertype)
     o2.current(0)
 
-    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: filter()))
+    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: filter(table_list)))
     b1.place(x=300,y=100)
 
     b2 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
@@ -1410,16 +1634,67 @@ def WIN_take_transit():
 
     b3 = Button(window,text="Log Transit", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: logtransit()))
     b3.place(x=350,y=450)
+    
+    def selectItem(event):
+        item = tree.focus()
+        selectitem['values'] = tree.item(item)
+        
+    tree = ttk.Treeview(window)
+    tree.place(x=25,y=160)
+    vsb = ttk.Scrollbar(window, orient="vertical", command=tree.yview)
+    vsb.place(x=425, y=160, height=240)
+    tree["show"] = 'headings'
+    tree.configure(yscrollcommand=vsb.set,height=12)
+    tree["columns"]=("one","two","three","four")
+    tree.column("one", width=100)
+    tree.column("two", width=100)
+    tree.column("three",width=100)
+    tree.column("four",width=100)
+    tree.heading("one", text="Route",command=(lambda: sorting("route")))
+    tree.heading("two", text="Transport Type",command=(lambda: sorting("ttype")))
+    tree.heading("three", text="Price($)",command=(lambda: sorting("price")))
+    tree.heading("four",text="# Connected Sites",command=(lambda: sorting("csites")))
+    tree.bind('<ButtonRelease-1>', selectItem)
+    for item in table_list:
+        tree.insert("",'end',values=(item[0],item[1],item[2],len(item[3])))
 
     window.mainloop()
 
     #The table
-#16
+#16 testing
 def WIN_transit_his():
+    db = DB()
+    command = "SELECT date,transitroute,transittype,price FROM take JOIN transit on  take.transitroute =  transit.route WHERE username='" + username_login[0] +"'"
+    table_raw = db.search(command)
+    # print(table_raw)
 
-    startdate = ''
-    enddate = ''
-    Route = ''
+    table_list = []
+    for row in table_raw:
+        table_list.append(row)
+    # print(table_list)
+    sitenames = {}
+    routes = set(x[1] for x in table_list)
+    for route in routes:
+        command = "SELECT transitroute,sitename FROM connect WHERE transitroute='" + route + "'"
+        info = db.search(command)
+        for site in info:
+            if route not in sitenames:
+                sitenames[route] = [site[1]]
+            else:
+                sitenames[route].append(site[1])
+    sites = []
+    for i in range(len(table_list)):
+        table_list[i] = [table_list[i][0],table_list[i][1],table_list[i][2],table_list[i][3],sitenames[table_list[i][1]]]
+
+    for value,item in sitenames.items():
+        for element in item:
+            if element not in sites:
+                sites.append(element)
+    # for item from table_list:pass
+    print(table_list)
+    isreversed = [0]
+    filtered_list = table_list[:]
+    selectitem = {}
            
     window = Tk()
     window.title("User Transit History")
@@ -1427,36 +1702,135 @@ def WIN_transit_his():
     window.resizable(0, 0)
     window.configure(background="#fff")
 
+    def sorting(arg):
+        if arg == 'route':
+            tree.delete(*tree.get_children())
+            if isreversed[0] % 2 == 0:
+                route_list = sorted(filtered_list, key = lambda x: x[0])
+                isreversed[0] += 1
+            else:
+                route_list = sorted(filtered_list, key = lambda x: x[0],reverse=True)
+                isreversed[0] += 1
+            for item in route_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],item[3]))
+        elif arg == 'ttype':
+            tree.delete(*tree.get_children())
+            if isreversed[0] % 2 == 0:
+                ttype_list = sorted(filtered_list, key = lambda x: x[1])
+                isreversed[0] += 1
+            else:
+                ttype_list = sorted(filtered_list, key = lambda x: x[1],reverse=True)
+                isreversed[0] += 1
+            for item in ttype_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],item[3]))
+        elif arg == 'price':
+            tree.delete(*tree.get_children())
+            if isreversed[0] % 2 == 0:
+                price_list = sorted(filtered_list, key = lambda x: x[2])
+                isreversed[0] += 1
+            else:
+                price_list = sorted(filtered_list, key = lambda x: x[2],reverse=True)
+                isreversed[0] += 1
+            for item in price_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],item[3]))
+        elif arg == 'csites':
+            tree.delete(*tree.get_children())
+            if isreversed[0] % 2 == 0:
+                csites_list = sorted(filtered_list, key = lambda x: x[3])
+                isreversed[0] += 1
+            else:
+                csites_list = sorted(filtered_list, key = lambda x: x[3],reverse=True)
+                isreversed[0] += 1
+            for item in csites_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],item[3]))
+
     def checkstartdate():
-        if not re.match(r'^[0-9]{4}-[0-9]{2}-[0-9]{2}$',e3_content.get()):
+        if not re.match(r'[0-9]{4}-[0-9]{2}-[0-9]{2}',e4_content.get()):
             tkinter.messagebox.showwarning('Date Error','Not valid Start date!')            
         else:
-            startdate = e4_content.get()
+            return e4_content.get()
 
     def checkenddate():
-        if not re.match(r'^[0-9]{4}-[0-9]{2}-[0-9]{2}$',e3_content.get()):
+        if not re.match(r'[0-9]{4}-[0-9]{2}-[0-9]{2}',e5_content.get()):
             tkinter.messagebox.showwarning('Date Error','Not valid End date!')            
         else:
-            enddate = e5_content.get()
-    
-    def checkroute():
-        pass
-    
+            return  e5_content.get()
+
     def filter():
-        if e4_content.get() == '' or e5_content.get() == '' and e3_content.get() == '':
-            pass
-        elif e4_content.get() != '' and e5_content.get() != '' and e3_content.get() != '':
-            checkstartdate()
-            checkenddate()
-            checkroute()
+        route = e3_content.get()
+        if e4_content.get() != '' and e5_content.get() != '' and e3_content.get() != '':
+            startdate = checkstartdate()
+            enddate = checkenddate()
+            startdate_date = datetime.date(int(startdate.split("-")[0]),int(startdate.split("-")[1]),int(startdate.split("-")[2]))
+            enddate_date = datetime.date(int(enddate.split("-")[0]),int(enddate.split("-")[1]),int(enddate.split("-")[2]))
+            if startdate > enddate:
+                tkinter.messagebox.showwarning('Date Error','Start Date should be before End date!') 
+            else:
+                filtered_list.clear()
+                for item in table_list:      
+                    if route in item[1] and startdate_date <= item[0] and enddate_date >= item[0]:
+                        filtered_list.append(item)
+                tree.delete(*tree.get_children())
+                for item in filtered_list:
+                    tree.insert("",'end',values=(item[0],item[1],item[2],item[3]))
         elif e4_content.get() != '' and e5_content.get() != '' and e3_content.get() == '':
-            checkstartdate()
-            checkenddate()
-        elif e4_content.get() == '' or e5_content.get() == '' and e3_content.get() != '':
-            checkroute()
+            startdate = checkstartdate()
+            enddate = checkenddate()
+            if startdate > enddate:
+                tkinter.messagebox.showwarning('Date Error','Start Date should be before End date!') 
+            else:
+                filtered_list.clear()
+                for item in table_list:      
+                    if startdate_date <= item[0] and enddate_date >= item[0]:
+                        filtered_list.append(item)
+                tree.delete(*tree.get_children())
+                for item in filtered_list:
+                    tree.insert("",'end',values=(item[0],item[1],item[2],item[3]))
+        elif e4_content.get() == '' and e5_content.get() == '' and e3_content.get() != '':
+            filtered_list.clear()
+            for item in table_list:
+                if route in item[1]:
+                    filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],item[3]))
         else:pass
-        #! filter with Date
+
+    def filtersite(event):
+        filtered_list = table_list[:]
+        sitename = event.widget.get()
+        if sitename == '--ALL--':
+            filtered_list = table_list[:]
+            tree.delete(*tree.get_children())
+            for item in table_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],item[3]))
+        else:
+            filtered_list.clear()
+            for item in table_list:
+                if sitename in item[4]:
+                    filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],item[3]))     
     
+    def filtertype(event):
+        filtered_list = table_list[:]
+        ttype = event.widget.get()
+        if ttype == '--ALL--':
+            filtered_list.clear()
+            filtered_list = table_list[:]
+            tree.delete(*tree.get_children())
+            for item in table_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],item[3]))
+        else:
+            filtered_list.clear()
+            for item in table_list:
+                if ttype in item[2]:
+                    filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],item[3]))
+      
     def back():
         if transit_his[0] == 'user':
             window.destroy()
@@ -1516,13 +1890,15 @@ def WIN_transit_his():
 
     option1 = StringVar()
     o1 = ttk.Combobox(window,width=10, textvariable=option1)
-    o1['values'] = ('InmanPark')
+    o1['values'] = tuple(sites)
+    o1.bind("<<ComboboxSelected>>",filtersite)
     o1.place(x=125,y=60)
     o1.current(0)
 
     option2 = StringVar()
     o2 = ttk.Combobox(window,width=8, textvariable=option2)
     o2['values'] = ('--ALL--','MARTA','Bus','Bike') # More states should be involved
+    o2.bind("<<ComboboxSelected>>",filtertype)
     o2.place(x=350,y=60)
     o2.current(0)
 
@@ -1531,7 +1907,29 @@ def WIN_transit_his():
 
     b2 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b2.place(x=200,y=450)
-
+    
+    def selectItem(event):
+        item = tree.focus()
+        selectitem['values'] = tree.item(item)
+        
+    tree = ttk.Treeview(window)
+    tree.place(x=25,y=200)
+    vsb = ttk.Scrollbar(window, orient="vertical", command=tree.yview)
+    vsb.place(x=425, y=200, height=240)
+    tree["show"] = 'headings'
+    tree.configure(yscrollcommand=vsb.set,height=12)
+    tree["columns"]=("one","two","three","four")
+    tree.column("one", width=100)
+    tree.column("two", width=100)
+    tree.column("three",width=100)
+    tree.column("four",width=100)
+    tree.heading("one", text="Date",command=(lambda: sorting("route")))
+    tree.heading("two", text="Route",command=(lambda: sorting("ttype")))
+    tree.heading("three", text="Transport Type",command=(lambda: sorting("price")))
+    tree.heading("four",text="Price($)",command=(lambda: sorting("csites")))
+    tree.bind('<ButtonRelease-1>', selectItem)
+    for item in table_list:
+        tree.insert("",'end',values=(item[0],item[1],item[2],item[3]))
 
     window.mainloop()
 
@@ -2754,407 +3152,303 @@ def WIN_sta_event_detail():
     b1.pack(side='bottom')
 
     window.mainloop() 
- 
 #33
 def WIN_vis_explore_event():
             
     window = Tk()
-    window.title("Explore Event")
-    window.geometry('600x600')
+    window.title(" ")
+    window.geometry('x')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="Explore Event", width=36,font=('Arial', 18, 'bold'))
+    def back():
+        if man_profile[0] == 'user':
+            window.destroy()
+            WIN_FUN_user()
+        elif man_profile[0] == 'adm':
+            window.destroy() 
+            WIN_FUN_adm()           
+        elif man_profile[0] == 'admuser':
+            window.destroy()
+            WIN_FUN_adm_and_vis()
+        elif man_profile[0] == 'man':
+            window.destroy()
+            WIN_FUN_man()
+        elif man_profile[0] == 'manuser':
+            window.destroy()
+            WIN_FUN_man_and_vis()
+        elif man_profile[0] == 'sta':
+            window.destroy()
+            WIN_FUN_sta()
+        elif man_profile[0] == 'stauser':
+            window.destroy()
+            WIN_FUN_sta_and_vis()
+        elif man_profile[0] == 'vis':
+            window.destroy()
+            WIN_FUN_vis()
+        else: pass
+
+    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    l1 = Label(window,text="Name", font=('Times 14 normal'))
-    l1.place(x=10,y=60)
+    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.grid(row=2,column=2)
 
-    l2 = Label(window,text="Description Keyword", font=('Times 14 normal'))
-    l2.place(x=230,y=60)
+    e1_content = StringVar()
+    e1 = Entry(window,width=20, bg='powder blue',textvariable=e1_content)
+    e1.place(x=150,y=60)
 
-    l3 = Label(window,text="Site Name", font=('Times 14 normal'))
-    l3.place(x=10,y=100)
-
-    l4 = Label(window,text="Start Date", font=('Times', 14, 'normal'))
-    l4.place(x=10,y=140)
-
-    l5 = Label(window,text="End Date", font=('Times', 14, 'normal'))
-    l5.place(x=300,y=140)   
-
-    l5 = Label(window,text="Daily Visits Range", font=('Times', 14, 'normal'))
-    l5.place(x=10,y=180)
-
-    l6 = Label(window,text="--", font=('Times', 14, 'normal'))
-    l6.place(x=200,y=180)
-
-    l7 = Label(window,text="Ticket Price Range", font=('Times', 14, 'normal'))
-    l7.place(x=270,y=180)
-
-    l8 = Label(window,text="--", font=('Times', 14, 'normal'))
-    l8.place(x=470,y=180)
-
-    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.place(x=50,y=250)
-
-    b2 = Button(window,text="Event Detail", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b2.place(x=375,y=250)
-
-    b3 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b3.place(x=200,y=550)
-
-    e1a = Entry(window,width=10, bg='powder blue')
-    e1a.place(x=150,y=60)
-
-    e1b = Entry(window,width=10, bg='powder blue')
-    e1b.place(x=450,y=60) 
-
-    e2 = Entry(window,width=20, bg='powder blue')
-    e2.place(x=150,y=140) 
-
-    e3a = Entry(window,width=20, bg='powder blue')
-    e3a.place(x=150,y=140)
-
-    e3b = Entry(window,width=20, bg='powder blue')
-    e3b.place(x=400,y=140) 
-
-    e4a = Entry(window,width=4, bg='powder blue')
-    e4a.place(x=160,y=180) 
-
-    e4b = Entry(window,width=4, bg='powder blue')
-    e4b.place(x=230,y=180)
-
-    e4c = Entry(window,width=4, bg='powder blue')
-    e4c.place(x=430,y=180)
-
-    e4d = Entry(window,width=4, bg='powder blue')
-    e4d.place(x=500,y=180)     
-
-    chVarDis = IntVar()
-    c1 = Checkbutton(window, text='Include Visited',variable=chVarDis)
-    if True:
-        c1.select()
-    else:
-        c1.deselect()
-    c1.place(x=150,y=220)
-
-    chVarDis2 = IntVar()
-    c1 = Checkbutton(window, text='Include Sold out event',variable=chVarDis2)
-    if True:
-        c1.select()
-    else:
-        c1.deselect()
-    c1.place(x=350,y=220)
-
-    option1 = StringVar()
-    o1 = ttk.Combobox(window,width=5, textvariable=option1)
-    o1['values'] = ('--ALL--')
-    o1.place(x=150,y=100)
-    o1.current(0)
-   
+    t1 = Text(window,width=20, bg='white')
+    t1.pack()
 
     window.mainloop() 
-#34
+
 def WIN_vis_event_detail():
             
     window = Tk()
-    window.title("Visitor Event Detail ")
-    window.geometry('500x600')
+    window.title(" ")
+    window.geometry('x')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    Event="Arboretum Walking Tour"
-    Site="Inman Park"
-    Start_Date="2019-02-01"
-    End_Date="2019-02-01"
-    Ticket_Price=0
-    Tickets_Remaining=0
-    Description= "Official"
-    
-    l0 = Label(window,text="Visitor Event Detail", width=36,font=('Arial', 18, 'bold'))
+    def back():
+        if man_profile[0] == 'user':
+            window.destroy()
+            WIN_FUN_user()
+        elif man_profile[0] == 'adm':
+            window.destroy() 
+            WIN_FUN_adm()           
+        elif man_profile[0] == 'admuser':
+            window.destroy()
+            WIN_FUN_adm_and_vis()
+        elif man_profile[0] == 'man':
+            window.destroy()
+            WIN_FUN_man()
+        elif man_profile[0] == 'manuser':
+            window.destroy()
+            WIN_FUN_man_and_vis()
+        elif man_profile[0] == 'sta':
+            window.destroy()
+            WIN_FUN_sta()
+        elif man_profile[0] == 'stauser':
+            window.destroy()
+            WIN_FUN_sta_and_vis()
+        elif man_profile[0] == 'vis':
+            window.destroy()
+            WIN_FUN_vis()
+        else: pass
+
+    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    l1 = Label(window,text="Event", font=('Times 12 normal'))
-    l1.place(x=10,y=50)
-
-    l2 = Label(window,text=Event,font=('Times 10 italic bold'))
-    l2.place(x=70,y=50)
-
-    l3 = Label(window,text="Site",font=('Times 12 normal'))
-    l3.place(x=250,y=50)   
-
-    l4 = Label(window,text=Site,font=('Times 10 italic bold'))
-    l4.place(x=300,y=50)   
-
-    l5 = Label(window,text="Start Date",font=('Times 12 normal'))
-    l5.place(x=10,y=80)
-
-    l6 = Label(window,text=Start_Date,font=('Times 10 italic bold'))
-    l6.place(x=100,y=80)
-
-    l7 = Label(window,text="End Date",font=('Times 10 normal'))
-    l7.place(x=250,y=80)  
-
-    l8 = Label(window,text=End_Date,font=('Times 10 italic bold'))
-    l8.place(x=350,y=80)
-
-    l9 = Label(window,text="Ticket Price($)",font=('Times 12 normal'))
-    l9.place(x=10,y=120)   
-
-    l10 = Label(window,text=Ticket_Price,font=('Times 10 italic bold'))
-    l10.place(x=140,y=120) 
-
-    l11 = Label(window,text="Tickets Remaining",font=('Times 10 normal'))
-    l11.place(x=250,y=120)
-
-    l12 = Label(window,text=Tickets_Remaining,font=('Times 10 italic bold'))
-    l12.place(x=380,y=120)      
-
-    l13 = Label(window,text="Description",font=('Times 12 normal'))
-    l13.place(x=10,y=200)
-
-    l14 = Label(window,text=Description,font=('Times 10 italic bold'))
-    l14.place(x=150,y=200)
-
-    l15 = Label(window,text="Visit Date",font=('Times 10 italic bold'))
-    l15.place(x=10,y=500)
-
-    b1 = Button(window,text="Log Visit", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.place(x=300,y=500)
-
-    b2 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b2.place(x=200,y=550)
+    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.grid(row=2,column=2)
 
     e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=500)
+    e1.place(x=150,y=60)
 
+    t1 = Text(window,width=20, bg='white')
+    t1.pack()
 
     window.mainloop() 
 
-#35
 def WIN_vis_explore_site():
             
     window = Tk()
-    window.title("Visitor Explore Site")
-    window.geometry('600x600')
+    window.title(" ")
+    window.geometry('x')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="Visitor Explore Site", width=36,font=('Arial', 18, 'bold'))
+    def back():
+        if man_profile[0] == 'user':
+            window.destroy()
+            WIN_FUN_user()
+        elif man_profile[0] == 'adm':
+            window.destroy() 
+            WIN_FUN_adm()           
+        elif man_profile[0] == 'admuser':
+            window.destroy()
+            WIN_FUN_adm_and_vis()
+        elif man_profile[0] == 'man':
+            window.destroy()
+            WIN_FUN_man()
+        elif man_profile[0] == 'manuser':
+            window.destroy()
+            WIN_FUN_man_and_vis()
+        elif man_profile[0] == 'sta':
+            window.destroy()
+            WIN_FUN_sta()
+        elif man_profile[0] == 'stauser':
+            window.destroy()
+            WIN_FUN_sta_and_vis()
+        elif man_profile[0] == 'vis':
+            window.destroy()
+            WIN_FUN_vis()
+        else: pass
+
+    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    l1 = Label(window,text="Name", font=('Times 12 normal'))
-    l1.place(x=10,y=50) 
-
-    l2 = Label(window,text="Start Date", font=('Times 12 normal'))
-    l2.place(x=10,y=80)
-
-    l3 = Label(window,text="End Date", font=('Times 12 normal'))
-    l3.place(x=300,y=80) 
-
-    l4 = Label(window,text="Daily Visits Range", font=('Times', 14, 'normal'))
-    l4.place(x=10,y=120)
-
-    l5 = Label(window,text="--", font=('Times', 14, 'normal'))
-    l5.place(x=200,y=120)
-
-    l6 = Label(window,text="Ticket Price Range", font=('Times', 14, 'normal'))
-    l6.place(x=270,y=120)
-
-    l7 = Label(window,text="--", font=('Times', 14, 'normal'))
-    l7.place(x=470,y=120)              
-
-    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.place(x=20,y=200)
-
-    b2 = Button(window,text="Site Detail", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b2.place(x=300,y=200)
-
-    b3 = Button(window,text="Transit Detail", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b3.place(x=450,y=200)
-
-    b4 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b4.place(x=250,y=550)
-
-    e1a = Entry(window,width=4, bg='powder blue')
-    e1a.place(x=160,y=120)
-
-    e1b = Entry(window,width=4, bg='powder blue')
-    e1b.place(x=230,y=120)    
-
-    e2a = Entry(window,width=4, bg='powder blue')
-    e2a.place(x=430,y=120)
-
-    e2b = Entry(window,width=4, bg='powder blue')
-    e2b.place(x=500,y=120)
-
-    e3a = Entry(window,width=4, bg='powder blue')
-    e3a.place(x=100,y=80)
-
-    e3b = Entry(window,width=10, bg='powder blue')
-    e3b.place(x=400,y=80)
-
-    option1 = StringVar()
-    o1 = ttk.Combobox(window,width=20, textvariable=option1)
-    o1['values'] = ('--ALL--','Site1','Site2','Site3') # More states should be involved
-    o1.place(x=60,y=50)
-    o1.current(0)    
-
-    option2 = StringVar()
-    o2 = ttk.Combobox(window,width=8, textvariable=option2)
-    o2['values'] = ('Yes','No') # This step can be hardcoded
-    o2.place(x=400,y=50)
-    o2.current(0)
-
-    chVarDis = IntVar()
-    c1 = Checkbutton(window, text='Include Visited',variable=chVarDis)
-    if True:
-        c1.select()
-    else:
-        c1.deselect()
-    c1.place(x=190,y=160)
-    window.mainloop()
-
-#36
-def WIN_vis_transit_detail():
-
-    Site="Inman Park"
-
-    window = Tk()
-    window.title("Visitor Transit Detail")
-    window.geometry('600x600')
-    window.resizable(0, 0)
-    window.configure(background="#fff")
-
-    l0 = Label(window,text="Transit Detail", width=36,font=('Arial', 18, 'bold'))
-    l0.grid(sticky='n')
-
-    l1 = Label(window,text="Site", font=('Times 12 normal'))
-    l1.place(x=10,y=50)
-
-    l2 = Label(window,text=Site, font=('Times 12 italic'))
-    l2.place(x=90,y=50)
-
-    l3 = Label(window,text="Transport Type", font=('Times 12 italic'))
-    l3.place(x=300,y=50)    
-
-    l4 = Label(window,text="Transit Date", font=('Times 12 italic'))
-    l4.place(x=150,y=550)      
-
-    b1 = Button(window,text="Back", width=10, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.place(x=10,y=550)
-
-    b2 = Button(window,text="Log Visit", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b2.place(x=450,y=550)
+    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.grid(row=2,column=2)
 
     e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=250,y=550)
+    e1.place(x=150,y=60)
 
-    option1 = StringVar()
-    o1 = ttk.Combobox(window,width=8, textvariable=option1)
-    o1['values'] = ('MARTA','Bus','Bike')
-    o1.place(x=440,y=50)
-    o1.current(0)
+    t1 = Text(window,width=20, bg='white')
+    t1.pack()
 
+    window.mainloop()
+
+def WIN_vis_transit_detail():
+            
+    window = Tk()
+    window.title(" ")
+    window.geometry('x')
+    window.resizable(0, 0)
+    window.configure(background="#fff")
+
+    def back():
+        if man_profile[0] == 'user':
+            window.destroy()
+            WIN_FUN_user()
+        elif man_profile[0] == 'adm':
+            window.destroy() 
+            WIN_FUN_adm()           
+        elif man_profile[0] == 'admuser':
+            window.destroy()
+            WIN_FUN_adm_and_vis()
+        elif man_profile[0] == 'man':
+            window.destroy()
+            WIN_FUN_man()
+        elif man_profile[0] == 'manuser':
+            window.destroy()
+            WIN_FUN_man_and_vis()
+        elif man_profile[0] == 'sta':
+            window.destroy()
+            WIN_FUN_sta()
+        elif man_profile[0] == 'stauser':
+            window.destroy()
+            WIN_FUN_sta_and_vis()
+        elif man_profile[0] == 'vis':
+            window.destroy()
+            WIN_FUN_vis()
+        else: pass
+
+    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
+    l0.grid(sticky='n')
+
+    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.grid(row=2,column=2)
+
+    e1 = Entry(window,width=20, bg='powder blue')
+    e1.place(x=150,y=60)
+
+    t1 = Text(window,width=20, bg='white')
+    t1.pack()
 
     window.mainloop() 
 
-#37
 def WIN_vis_site_detail():
-
-    Site="Inman Park"
-    Open_Everyday="Yes"
-    Address = "Inman Park, Atlanta, GA 30307"
-
+            
     window = Tk()
-    window.title("Visitor Site Detail")
-    window.geometry('600x300')
+    window.title(" ")
+    window.geometry('x')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="Site Detail", width=36,font=('Arial', 18, 'bold'))
+    def back():
+        if man_profile[0] == 'user':
+            window.destroy()
+            WIN_FUN_user()
+        elif man_profile[0] == 'adm':
+            window.destroy() 
+            WIN_FUN_adm()           
+        elif man_profile[0] == 'admuser':
+            window.destroy()
+            WIN_FUN_adm_and_vis()
+        elif man_profile[0] == 'man':
+            window.destroy()
+            WIN_FUN_man()
+        elif man_profile[0] == 'manuser':
+            window.destroy()
+            WIN_FUN_man_and_vis()
+        elif man_profile[0] == 'sta':
+            window.destroy()
+            WIN_FUN_sta()
+        elif man_profile[0] == 'stauser':
+            window.destroy()
+            WIN_FUN_sta_and_vis()
+        elif man_profile[0] == 'vis':
+            window.destroy()
+            WIN_FUN_vis()
+        else: pass
+
+    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    l1 = Label(window,text="Site", font=('Times 12 normal'))
-    l1.place(x=10,y=50)
-
-    l2 = Label(window,text=Site, font=('Times 12 italic'))
-    l2.place(x=90,y=50)    
-
-    l3 = Label(window,text="Open Everyday", font=('Times 12 normal'))
-    l3.place(x=250,y=50)
-
-    l4 = Label(window,text=Open_Everyday, font=('Times 12 italic'))
-    l4.place(x=400,y=50)
-
-    l5 = Label(window,text="Address", font=('Times 12 normal'))
-    l5.place(x=10,y=100)
-
-    l6 = Label(window,text=Address, font=('Times 12 italic'))
-    l6.place(x=100,y=100) 
-
-    l7 = Label(window,text="Visit Date", font=('Times 12 normal'))
-    l7.place(x=100,y=180)       
-
-    b1 = Button(window,text="Back", width=10, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.place(x=300,y=225)
-
-    b2 = Button(window,text="Log Visit", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b2.place(x=450,y=180)
+    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.grid(row=2,column=2)
 
     e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=250,y=180)
+    e1.place(x=150,y=60)
+
+    t1 = Text(window,width=20, bg='white')
+    t1.pack()
 
     window.mainloop() 
 
 def WIN_vis_visit_his():
             
     window = Tk()
-    window.title("Visitor Visit History")
-    window.geometry('600x600')
+    window.title(" ")
+    window.geometry('x')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    l0 = Label(window,text="Visit History", width=36,font=('Arial', 18, 'bold'))
+    def back():
+        if man_profile[0] == 'user':
+            window.destroy()
+            WIN_FUN_user()
+        elif man_profile[0] == 'adm':
+            window.destroy() 
+            WIN_FUN_adm()           
+        elif man_profile[0] == 'admuser':
+            window.destroy()
+            WIN_FUN_adm_and_vis()
+        elif man_profile[0] == 'man':
+            window.destroy()
+            WIN_FUN_man()
+        elif man_profile[0] == 'manuser':
+            window.destroy()
+            WIN_FUN_man_and_vis()
+        elif man_profile[0] == 'sta':
+            window.destroy()
+            WIN_FUN_sta()
+        elif man_profile[0] == 'stauser':
+            window.destroy()
+            WIN_FUN_sta_and_vis()
+        elif man_profile[0] == 'vis':
+            window.destroy()
+            WIN_FUN_vis()
+        else: pass
+
+    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    l1 = Label(window,text="Event", font=('Times', 14, 'normal'))
-    l1.place(x=10,y=60)
-
-    l2 = Label(window,text="Site", font=('Times', 14, 'normal'))
-    l2.place(x=250,y=60)
-
-    l3 = Label(window,text="Start Date", font=('Times', 14, 'normal'))
-    l3.place(x=10,y=100)
-
-    l5 = Label(window,text="End Date", font=('Times', 14, 'normal'))
-    l5.place(x=300,y=100)    
-
-    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.place(x=200,y=150)
-
-    b2 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b2.place(x=200,y=450)
+    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.grid(row=2,column=2)
 
     e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=100,y=60)
+    e1.place(x=150,y=60)
 
-    e2 = Entry(window,width=10, bg='powder blue')
-    e2.place(x=125,y=100)
-
-    e3 = Entry(window,width=10, bg='powder blue')
-    e3.place(x=400,y=100)
-
-    option1 = StringVar()
-    o1 = ttk.Combobox(window,width=8, textvariable=option1)
-    o1['values'] = ('ALL','MARTA','Bus','Bike')
-    o1.place(x=300,y=50)
-    o1.current(0)    
+    t1 = Text(window,width=20, bg='white')
+    t1.pack()
 
     window.mainloop()
 
 def main():
-    # db = DB()
 
     # WIN_user_login()
     # WIN_regi_nav()
@@ -3171,7 +3465,7 @@ def main():
     # WIN_FUN_sta_and_vis()
     # WIN_FUN_vis() 
     # WIN_take_transit()
-    # WIN_transit_his()
+    WIN_transit_his()
     # WIN_emp_manage_profile()
     # WIN_adm_manage_user()
     # WIN_adm_manage_site()
