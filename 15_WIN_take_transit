@@ -133,11 +133,17 @@ def WIN_take_transit():
                 newusername = "username='" + username_login[0] + "'"
                 if com != None:
                     if (transitdate,transitroute) not in com:
-                        command =  "INSERT INTO take SET " + newdate + "," + newroute + "," + newtype + "," + newusername
-                        db.insert(command)      
+                        try:
+                            command =  "INSERT INTO take SET " + newdate + "," + newroute + "," + newtype + "," + newusername
+                            db.insert(command)      
+                        except:
+                            tkinter.messagebox.showwarning('Error','Wrong Date or Selection!') 
                 else:
-                    command =  "INSERT INTO take SET " + newdate + "," + newroute + "," + newtype + "," + newusername
-                    db.insert(command)     
+                    try:
+                        command =  "INSERT INTO take SET " + newdate + "," + newroute + "," + newtype + "," + newusername
+                        db.insert(command)    
+                    except:
+                        tkinter.messagebox.showwarning('Error','Wrong Date or Selection!') 
         
     def back():
         if take_transit[0] == 'user':
