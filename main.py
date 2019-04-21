@@ -67,6 +67,7 @@ newemail_emp = []
 newemail_emp_and_vis = []
 newemail_profile = []
 oriemail_profile = []
+site_to_be_edited = []
 
 """ ============================= """
 
@@ -1943,7 +1944,7 @@ def WIN_transit_his():
     window.mainloop()
 
     #The table
-#17
+#17 testing
 def WIN_emp_manage_profile():
     db = DB()
     command = "SELECT * FROM manage_profile WHERE username='" + username_login[0] + "'"
@@ -2139,14 +2140,134 @@ def WIN_emp_manage_profile():
     b12add.place(x=400,y=e12y)
 
     window.mainloop()
-#18
+#18 testing
 def WIN_adm_manage_user():
+    db = DB()
+    command = "SELECT DISTINCT `manage_user`.`username` AS `username`,`status`,`etype`,( SELECT COUNT(  DISTINCT(`email`) ) FROM `email` WHERE `email`.`username` = `manage_user`.`username`) AS `Email Count` FROM manage_user"
+    userinfo = db.search(command)
+    # print(userinfo)
+    table_list = []
+    for row in userinfo:
+        table_list.append(row)
+    # print(table_list)
+    isreversed = [0]
+    filtered_list = table_list[:]
+    selectitem = {}
         
     window = Tk()
     window.title("Administrator Manage User")
     window.geometry('600x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def sorting(arg):
+        if arg == 'Username':
+            tree.delete(*tree.get_children())
+            if isreversed[0] % 2 == 0:
+                route_list = sorted(filtered_list, key = lambda x: x[0])
+                isreversed[0] += 1
+            else:
+                route_list = sorted(filtered_list, key = lambda x: x[0],reverse=True)
+                isreversed[0] += 1
+            for item in route_list:
+                tree.insert("",'end',values=(item[0],item[3],item[2],item[1]))
+        elif arg == 'Email Count':
+            tree.delete(*tree.get_children())
+            if isreversed[0] % 2 == 0:
+                ttype_list = sorted(filtered_list, key = lambda x: x[3])
+                isreversed[0] += 1
+            else:
+                ttype_list = sorted(filtered_list, key = lambda x: x[3],reverse=True)
+                isreversed[0] += 1
+            for item in ttype_list:
+                tree.insert("",'end',values=(item[0],item[3],item[2],item[1]))
+        elif arg == 'User Type':
+            tree.delete(*tree.get_children())
+            if isreversed[0] % 2 == 0:
+                price_list = sorted(filtered_list, key = lambda x: x[2])
+                isreversed[0] += 1
+            else:
+                price_list = sorted(filtered_list, key = lambda x: x[2],reverse=True)
+                isreversed[0] += 1
+            for item in price_list:
+                tree.insert("",'end',values=(item[0],item[3],item[2],item[1]))
+        elif arg == 'Status':
+            tree.delete(*tree.get_children())
+            if isreversed[0] % 2 == 0:
+                csites_list = sorted(filtered_list, key = lambda x: x[1])
+                isreversed[0] += 1
+            else:
+                csites_list = sorted(filtered_list, key = lambda x: x[1],reverse=True)
+                isreversed[0] += 1
+            for item in csites_list:
+                tree.insert("",'end',values=(item[0],item[3],item[2],item[1]))
+
+    def usernamefilter():
+        filteruser = e1_content.get()
+        for user in table_list:
+            if filteruser == user[0]:
+                tree.delete(*tree.get_children())
+                tree.insert("",'end',values=(user[0],user[3],user[2],user[1]))
+
+    def filterstatus(event):
+        filtered_list = table_list[:]
+        status = event.widget.get()
+        if status == '--ALL--':
+            filtered_list = table_list[:]
+            tree.delete(*tree.get_children())
+            for item in table_list:
+                tree.insert("",'end',values=(item[0],item[3],item[2],item[1]))
+        else:
+            filtered_list.clear()
+            for item in table_list:
+                if status in item[1]:
+                    filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[3],item[2],item[1]))      
+    
+    def filtertype(event):
+        filtered_list = table_list[:]
+        utype = event.widget.get()
+        print(utype)
+        if utype == '--ALL--':
+            filtered_list.clear()
+            filtered_list = table_list[:]
+            tree.delete(*tree.get_children())
+            for item in table_list:
+                tree.insert("",'end',values=(item[0],item[3],item[2],item[1]))
+        else:
+            filtered_list.clear()
+            for item in table_list:
+                if utype in item[2]:
+                    filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[3],item[2],item[1]))
+    def approve():
+        if selectitem != {}:
+            status = selectitem['values']['values'][3]
+            if status != 'Approved':
+                try:
+                    command = "UPDATE user SET status='Approved' WHERE username='" + selectitem['values']['values'][0] + "'"
+                    db.update(command)
+                    window.destroy()
+                    WIN_adm_manage_user()
+                except:
+                    tkinter.messagebox.showwarning('Error','Cannot approve!') 
+    
+    def decline():
+        if selectitem != {}:
+            status = selectitem['values']['values'][3]
+            if status == 'Pending':
+                try:
+                    command = "UPDATE user SET status='Declined' WHERE username='" + selectitem['values']['values'][0] + "'"
+                    print(command)
+                    db.update(command)
+                    window.destroy()
+                    WIN_adm_manage_user()
+                except:
+                    tkinter.messagebox.showwarning('Error','Cannot decline!') 
 
     def back():
         if man_user[0] == 'adm':
@@ -2175,45 +2296,187 @@ def WIN_adm_manage_user():
 
     option2 = StringVar()
     o2 = ttk.Combobox(window,width=8, textvariable=option2)
-    o2['values'] = ('Manager','Staff')
+    o2['values'] = ('--ALL--','User','Visitor','Manager','Staff')
+    o2.bind("<<ComboboxSelected>>",filtertype)
     o2.place(x=300,y=60)
     o2.current(0)
 
     option3 = StringVar()
     o3 = ttk.Combobox(window,width=6, textvariable=option3)
-    o3['values'] = ('--ALL--') # More states should be involved
+    o3['values'] = ('--ALL--','Approved','Pending','Declined') # More states should be involved
+    o3.bind("<<ComboboxSelected>>",filterstatus)
     o3.place(x=475,y=60)
     o3.current(0)
 
-    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: usernamefilter()))
     b1.place(x=25,y=100)
 
-    b2 = Button(window,text="Approve", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Approve", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: approve()))
     b2.place(x=350,y=100)
 
-    b3 = Button(window,text="Decline", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b3 = Button(window,text="Decline", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: decline()))
     b3.place(x=450,y=100)
 
     b4 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b4.place(x=250,y=350)
 
+    def selectItem(event):
+        item = tree.focus()
+        selectitem['values'] = tree.item(item)
+        
+    tree = ttk.Treeview(window)
+    tree.place(x=75,y=160)
+    vsb = ttk.Scrollbar(window, orient="vertical", command=tree.yview)
+    vsb.place(x=475, y=160, height=180)
+    tree["show"] = 'headings'
+    tree.configure(yscrollcommand=vsb.set,height=8)
+    tree["columns"]=("one","two","three","four")
+    tree.column("one", width=100)
+    tree.column("two", width=100)
+    tree.column("three",width=100)
+    tree.column("four",width=100)
+    tree.heading("one", text="Username",command=(lambda: sorting("Username")))
+    tree.heading("two", text="Email Count",command=(lambda: sorting("Email Count")))
+    tree.heading("three", text="User Type",command=(lambda: sorting("User Type")))
+    tree.heading("four",text="Status",command=(lambda: sorting("Status")))
+    tree.bind('<ButtonRelease-1>', selectItem)
+    for item in table_list:
+        tree.insert("",'end',values=(item[0],item[3],item[2],item[1]))
+
     window.mainloop()
-#19
+#19 testing
 def WIN_adm_manage_site():
-            
+    db = DB()
+    command = "SELECT * FROM manage_site"
+    table_raw = db.search(command)
+    table_list = []
+    for row in table_raw:
+        if row[1] == 0:
+            table_list.append([row[0],row[2],"No"])
+        else:
+            table_list.append([row[0],row[2],"Yes"])
+    isreversed = [0]
+    filtered_list = table_list[:]
+    selectitem = {} 
+
+    sites = ['--ALL--']
+    for item in table_list:
+        if item[0] not in sites:
+                sites.append(item[0])
+
+    managers = ['--ALL--']
+    for item in table_list:
+        if item[1] not in sites:
+                managers.append(item[1])
+         
     window = Tk()
     window.title("Administrator Manage Site")
     window.geometry('500x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
 
+    def sorting(arg):
+        if arg == 'Sitename':
+            tree.delete(*tree.get_children())
+            if isreversed[0] % 2 == 0:
+                sitename_list = sorted(filtered_list, key = lambda x: x[0])
+                isreversed[0] += 1
+            else:
+                sitename_list = sorted(filtered_list, key = lambda x: x[0],reverse=True)
+                isreversed[0] += 1
+            for item in sitename_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2]))
+        elif arg == 'Manager':
+            tree.delete(*tree.get_children())
+            if isreversed[0] % 2 == 0:
+                man_list = sorted(filtered_list, key = lambda x: x[1])
+                isreversed[0] += 1
+            else:
+                man_list = sorted(filtered_list, key = lambda x: x[1],reverse=True)
+                isreversed[0] += 1
+            for item in man_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2]))
+        elif arg == 'Open':
+            tree.delete(*tree.get_children())
+            if isreversed[0] % 2 == 0:
+                open_list = sorted(filtered_list, key = lambda x: x[2])
+                isreversed[0] += 1
+            else:
+                open_list = sorted(filtered_list, key = lambda x: x[2],reverse=True)
+                isreversed[0] += 1
+            for item in open_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2]))
+
+    def filtersite(event):
+        filtered_list = table_list[:]
+        sitename = event.widget.get()
+        if sitename == '--ALL--':
+            filtered_list = table_list[:]
+            tree.delete(*tree.get_children())
+            for item in table_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2]))
+        else:
+            filtered_list.clear()
+            for item in table_list:
+                if sitename in item[0]:
+                    filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2]))      
+    
+    def filterman(event):
+        filtered_list = table_list[:]
+        manname = event.widget.get()
+        if manname == '--ALL--':
+            filtered_list = table_list[:]
+            tree.delete(*tree.get_children())
+            for item in table_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2]))
+        else:
+            filtered_list.clear()
+            for item in table_list:
+                if manname in item[1]:
+                    filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2]))  
+
+    def filteropen(event):
+        filtered_list = table_list[:]
+        ifopen = event.widget.get()
+        if ifopen == 'No':
+            filtered_list = table_list[:]
+            tree.delete(*tree.get_children())
+            for item in table_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2]))
+        else:
+            filtered_list.clear()
+            for item in table_list:
+                if ifopen in item[2]:
+                    filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2]))    
+
     def navigation(value):
         if value == 1:
             window.destroy()
             WIN_adm_create_site()
         if value == 2:
-            window.destroy()
-            WIN_adm_edit_site()
+            if selectitem != {}:
+                site_to_be_edited[0] =  selectitem['values']['values'][0]
+                window.destroy()
+                WIN_adm_edit_site()
+
+    def deletesite():
+        if selectitem != {}:
+            try:
+                command = "DELETE FROM site WHERE sitename='" + selectitem['values']['values'][0] + "'"
+                db.delete(command)
+                window.destroy()
+                WIN_adm_manage_site()
+            except:
+                tkinter.messagebox.showwarning('Error','Cannot delete!') 
 
     def back():
         if man_site[0] == 'admuser':
@@ -2238,24 +2501,27 @@ def WIN_adm_manage_site():
 
     option1 = StringVar()
     o1 = ttk.Combobox(window,width=8, textvariable=option1)
-    o1['values'] = ('--ALL--')
+    o1['values'] = tuple(sites)
+    o1.bind("<<ComboboxSelected>>",filtersite)
     o1.place(x=100,y=60)
     o1.current(0)
 
     option2 = StringVar()
     o2 = ttk.Combobox(window,width=8, textvariable=option2)
-    o2['values'] = ('--ALL--')
+    o2['values'] = tuple(managers)
+    o2.bind("<<ComboboxSelected>>",filterman)
     o2.place(x=350,y=60)
     o2.current(0)
 
     option3 = StringVar()
     o3 = ttk.Combobox(window,width=6, textvariable=option3)
     o3['values'] = ('No','Yes') # More states should be involved
+    o3.bind("<<ComboboxSelected>>",filteropen)
     o3.place(x=275,y=100)
     o3.current(0)
 
-    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.place(x=25,y=140)
+    # b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    # b1.place(x=25,y=140)
 
     b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
     b2.place(x=200,y=140)
@@ -2263,14 +2529,36 @@ def WIN_adm_manage_site():
     b3 = Button(window,text="Edit", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
     b3.place(x=300,y=140)
 
-    b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: deletesite()))
     b4.place(x=400,y=140)
 
     b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b5.place(x=200,y=350)
 
+    def selectItem(event):
+        item = tree.focus()
+        selectitem['values'] = tree.item(item)
+
+    tree = ttk.Treeview(window)
+    tree.place(x=75,y=180)
+    vsb = ttk.Scrollbar(window, orient="vertical", command=tree.yview)
+    vsb.place(x=425, y=180, height=160)
+    tree["show"] = 'headings'
+    tree.configure(yscrollcommand=vsb.set,height=8)
+    tree["columns"]=("one","two","three")
+    tree.column("one", width=150)
+    tree.column("two", width=100)
+    tree.column("three",width=100)
+    tree.heading("one", text="Name",command=(lambda: sorting("Sitename")))
+    tree.heading("two", text="Manager",command=(lambda: sorting("Manager")))
+    tree.heading("three", text="Open Everyday",command=(lambda: sorting("Open")))
+    tree.bind('<ButtonRelease-1>', selectItem)
+    for item in table_list:
+        tree.insert("",'end',values=(item[0],item[1],item[2]))
+
+
     window.mainloop()
-#20
+#20 coding
 def WIN_adm_edit_site():
 
     window = Tk()
@@ -3538,7 +3826,7 @@ def WIN_vis_visit_his():
 
 def main():
 
-     WIN_user_login()
+    # WIN_user_login()
     # WIN_regi_nav()
     # WIN_regi_user()
     # WIN_regi_vis()
@@ -3556,7 +3844,7 @@ def main():
     # WIN_transit_his()
     # WIN_emp_manage_profile()
     # WIN_adm_manage_user()
-    # WIN_adm_manage_site()
+    WIN_adm_manage_site()
     # WIN_adm_edit_site()
     # WIN_adm_create_site()
     # WIN_adm_manage_transit()
