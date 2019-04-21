@@ -11,7 +11,7 @@ class DB:
     def __init__(self):
         host = "127.0.0.1"
         user = "root"
-        passwd = "Evdot0404MySQL"
+        passwd = ""
         database = "CS4400_T77"
         self.conn = pymysql.connect(host=host,user=user,passwd=passwd,database=database)
         # if self.conn.is_connected():
@@ -67,7 +67,8 @@ newemail_emp = []
 newemail_emp_and_vis = []
 newemail_profile = []
 oriemail_profile = []
-site_to_be_edited = []
+site_to_be_edited = ['Inman Park']
+transit_to_be_edited = ['Blue']
 
 """ ============================= """
 
@@ -2558,8 +2559,13 @@ def WIN_adm_manage_site():
 
 
     window.mainloop()
-#20 coding
+#20 managers
 def WIN_adm_edit_site():
+    db = DB()
+    command = "SELECT * FROM edit_site WHERE sitename='" + site_to_be_edited[0] + "'"
+    siteinfo = db.search(command)[0]
+
+    managers = [siteinfo[4]]
 
     window = Tk()
     window.title("Administrator Edit Site")
@@ -2572,7 +2578,16 @@ def WIN_adm_edit_site():
         WIN_adm_manage_site()
 
     def update():
-        pass
+        #! Need modify
+        newsitename = e1_content.get()
+        newzip = e2_content.get()
+        newaddress = e3_content.get()
+        newemployID = ""
+        try:
+            command = "UPDATE site SET sitename='" + newsitename + "',zipcode=" + newzip + ",address='" + newaddress + "',openeveryday=" + str(chVarDis.get()) + " WHERE sitename='" + site_to_be_edited[0] + "'"
+            db.update(command)
+        except:
+            tkinter.messagebox.showwarning('Update Error','No changes or invalid information')  
 
     l0 = Label(window,text="Edit Site", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
@@ -2591,25 +2606,28 @@ def WIN_adm_edit_site():
 
     e1_content = StringVar()
     e1 = Entry(window,width=10, bg='powder blue',textvariable=e1_content)
+    e1.insert(END,siteinfo[2])
     e1.place(x=100,y=60)
 
     e2_content = StringVar()
     e2 = Entry(window,width=8, bg='powder blue',textvariable=e2_content)
+    e2.insert(END,siteinfo[0])
     e2.place(x=300,y=60)
 
     e3_content = StringVar()
     e3 = Entry(window,width=26, bg='powder blue',textvariable=e3_content)
+    e3.insert(END,siteinfo[1])
     e3.place(x=100,y=100)
 
     option4 = StringVar()
     o4 = ttk.Combobox(window,width=12, textvariable=option4)
-    o4['values'] = ('Manager_name')
+    o4['values'] = tuple(managers)
     o4.place(x=100,y=140)
     o4.current(0)
 
     chVarDis = IntVar()
     c1 = Checkbutton(window, text='Open Everyday',variable=chVarDis)
-    if True:
+    if siteinfo[3] == 1:
         c1.select()
     else:
         c1.deselect()
@@ -2622,9 +2640,10 @@ def WIN_adm_edit_site():
     b2.place(x=275,y=200)
 
     window.mainloop()   
-#21
+#21 managers
 def WIN_adm_create_site():
- 
+    db = DB()
+
     window = Tk()
     window.title("Administrator Create Site")
     window.geometry('400x250')
@@ -2632,7 +2651,20 @@ def WIN_adm_create_site():
     window.configure(background="#fff")
 
     def create():
-        pass
+        #! Unassigned employee list
+
+        newsitename = e1_content.get()
+        newzip = e2_content.get()
+        newaddress = e3_content.get()
+        #
+        newemployID = option4.get()
+
+        try:
+            command = "INSTER INTO site SET sitename='" + newsitename + "',zipcode=" + newzip + ",address='" + newaddress + "',openeveryday=" + str(chVarDis.get()) 
+            db.insert(command)
+        except:
+            tkinter.messagebox.showwarning('Update Error','No changes or invalid information')  
+        
 
     def back():
         window.destroy()
@@ -2686,8 +2718,21 @@ def WIN_adm_create_site():
     b2.place(x=275,y=200)
 
     window.mainloop()   
-#22
+#22 skip
 def WIN_adm_manage_transit():
+    db = DB()
+    command = "select * from manage_transit"
+    table_raw = db.search(command)
+    table = {}
+    for row in table_raw:
+        if row[0] not in table:
+            table[row[0]] = [row[0],row[1],str(row[2]).split("'")[0],[row[3]]]
+        else:
+            table[row[0]][3].append(row[3])
+    table_list = [table[value] for value in table]
+    isreversed = [0]
+    filtered_list = table_list[:]
+    selectitem = {}
             
     window = Tk()
     window.title("Administrator Manage Transit")
@@ -2769,10 +2814,48 @@ def WIN_adm_manage_transit():
     b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b5.place(x=200,y=350)
 
+    def selectItem(event):
+        item = tree.focus()
+        selectitem['values'] = tree.item(item)
+        
+    tree = ttk.Treeview(window)
+    tree.place(x=25,y=160)
+    vsb = ttk.Scrollbar(window, orient="vertical", command=tree.yview)
+    vsb.place(x=425, y=160, height=240)
+    tree["show"] = 'headings'
+    tree.configure(yscrollcommand=vsb.set,height=12)
+    tree["columns"]=("one","two","three","four","five")
+    tree.column("one", width=80)
+    tree.column("two", width=80)
+    tree.column("three",width=80)
+    tree.column("four",width=80)
+    tree.column("four",width=80)
+    tree.heading("one", text="Route",command=(lambda: sorting("route")))
+    tree.heading("two", text="Transport Type",command=(lambda: sorting("ttype")))
+    tree.heading("three", text="Price($)",command=(lambda: sorting("price")))
+    tree.heading("four",text="# Connected Sites",command=(lambda: sorting("csites")))
+    tree.heading("five",text="# Transit Logged",command=(lambda: sorting("csites")))
+    tree.bind('<ButtonRelease-1>', selectItem)
+    for item in table_list:
+        tree.insert("",'end',values=(item[0],item[1],item[2],len(item[3])))
+
     window.mainloop()
-#23
+#23 
 def WIN_adm_edit_transit():
-            
+    db = DB()
+    command = "SELECT * FROM edit_transit WHERE route='" + transit_to_be_edited[0] + "'"
+    transitinfo = db.search(command)
+    orisites = []
+    for row in transitinfo:
+        orisites.append(row[0])
+        price = row[1]
+        ttype = row[3]
+    command = "SELECT sitename FROM site"
+    sites_tmp = list(db.search(command))
+    sites = []
+    for site in sites_tmp:
+        sites.append(site[0])
+    selectitem = {} 
     window = Tk()
     window.title("Administrator Edit Transit")
     window.geometry('400x300')
@@ -2780,13 +2863,12 @@ def WIN_adm_edit_transit():
     window.configure(background="#fff")
 
     def update():
+        #! UPDATE to DATABASE
         pass
-
+        
     def back():
         window.destroy()
         WIN_adm_manage_transit()
-
-    Transit_type = "Bus"
 
     l0 = Label(window,text="Edit Transit", width=36,font=('Arial', 18, 'bold'))
     l0.pack(side='top')
@@ -2794,7 +2876,7 @@ def WIN_adm_edit_transit():
     l1 = Label(window,text="Transport Type", font=('Times', 14, 'normal'))
     l1.place(x=25,y=60)
 
-    l2 = Label(window,text=Transit_type, font=('Times', 14, 'italic','bold'))
+    l2 = Label(window,text=ttype, font=('Times', 14, 'italic','bold'))
     l2.place(x=125,y=60)
 
     l3 = Label(window,text="Route", font=('Times', 14, 'normal'))
@@ -2808,17 +2890,36 @@ def WIN_adm_edit_transit():
 
     e1_content = StringVar()
     e1 = Entry(window,width=3, bg='powder blue',textvariable=e1_content)
+    e1.insert(END,transit_to_be_edited[0])
     e1.place(x=225,y=60)
 
     e2_content = StringVar()
     e2 = Entry(window,width=3, bg='powder blue',textvariable=e2_content)
+    e2.insert(END,price)
     e2.place(x=325,y=60)
 
-    # For now, it's fixed
-    st1 = scrolledtext.ScrolledText(window, width=20, height=8,wrap=WORD,bd=8,)
-    st1.place(x=200,y=100)
-    st1.insert(INSERT,"""Something to be filled""")
-    st1.config(state=DISABLED)
+    def selectItem(event):
+        selectitem.clear()
+        item = tree.selection()
+        selectitem['values'] = []
+        for i in item:
+            selectitem['values'].append( tree.item(i)['values'][0])
+
+    tree = ttk.Treeview(window)
+    tree.place(x=150,y=100)
+    vsb = ttk.Scrollbar(window, orient="vertical", command=tree.yview)
+    vsb.place(x=400, y=100, height=120)
+    tree["show"] = 'headings'
+    tree.configure(yscrollcommand=vsb.set,height=6)
+    tree["columns"]=("one")
+    tree.column("one", width=200)
+    tree.heading("one", text="Name",command=(lambda: None))
+    
+    #!Initial display
+    # tree.selection_add('I001')
+    tree.bind('<ButtonRelease-1>', selectItem)
+    for item in sites:
+        tree.insert("",'end',values=(item))
 
     b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.place(x=25,y=250)
@@ -2827,8 +2928,15 @@ def WIN_adm_edit_transit():
     b2.place(x=300,y=250)
 
     window.mainloop() 
-#24
+#24 testing
 def WIN_adm_create_transit():
+    db = DB()
+    command = "SELECT sitename FROM site"
+    sites_tmp = list(db.search(command))
+    sites = []
+    for site in sites_tmp:
+        sites.append(site)
+    selectitem = {} 
                  
     window = Tk()
     window.title("Administrator Create Transit")
@@ -2837,7 +2945,16 @@ def WIN_adm_create_transit():
     window.configure(background="#fff")
     
     def create():
-        pass
+        if e1_content.get() != '' and e2_content.get() != '' and selectitem != {}:
+            try:
+                command = "INSERT INTO transit SET route='" + e1_content.get() + "',price=" + e2_content.get() + ",type='" + option1.get() + "'"
+                db.update(command)
+                for site in selectitem['values']:
+                    command = "INSERT INTO connect SET transitroute='" + e1_content.get() + "',transittype='" + option1.get() + "',sitename='" + site + "'"
+                    db.update(command)
+                tkinter.messagebox.showinfo('Good','Create a new transit!') 
+            except:
+                tkinter.messagebox.showwarning('Error','Cannot create this new transit!') 
 
     def back():
         window.destroy()
@@ -2868,14 +2985,10 @@ def WIN_adm_create_transit():
 
     option1 = StringVar()
     o1 = ttk.Combobox(window,width=5, textvariable=option1)
-    o1['values'] = ('MARTA')
+    o1['values'] = ('MARTA','Bus','Bike')
     o1.place(x=125,y=60)
     o1.current(0)
     # For now, it's fixed
-    st1 = scrolledtext.ScrolledText(window, width=20, height=8,wrap=WORD,bd=8,)
-    st1.place(x=200,y=100)
-    st1.insert(INSERT,"""Something to be filled""")
-    st1.config(state=DISABLED)
 
     b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.place(x=25,y=250)
@@ -2883,8 +2996,28 @@ def WIN_adm_create_transit():
     b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: create()))
     b2.place(x=300,y=250)
 
+    def selectItem(event):
+        selectitem.clear()
+        item = tree.selection()
+        selectitem['values'] = []
+        for i in item:
+            selectitem['values'].append( tree.item(i)['values'][0])
+
+    tree = ttk.Treeview(window)
+    tree.place(x=150,y=100)
+    vsb = ttk.Scrollbar(window, orient="vertical", command=tree.yview)
+    vsb.place(x=400, y=100, height=120)
+    tree["show"] = 'headings'
+    tree.configure(yscrollcommand=vsb.set,height=6)
+    tree["columns"]=("one")
+    tree.column("one", width=200)
+    tree.heading("one", text="Name",command=(lambda: None))
+    tree.bind('<ButtonRelease-1>', selectItem)
+    for item in sites:
+        tree.insert("",'end',values=(item))
+
     window.mainloop() 
-#25
+#25 Priyam
 def WIN_man_manage_event():
             
     window = Tk()
@@ -3844,14 +3977,14 @@ def main():
     # WIN_transit_his()
     # WIN_emp_manage_profile()
     # WIN_adm_manage_user()
-    WIN_adm_manage_site()
+    # WIN_adm_manage_site()
     # WIN_adm_edit_site()
     # WIN_adm_create_site()
     # WIN_adm_manage_transit()
     # WIN_adm_edit_transit()
     # WIN_adm_create_transit()
     # WIN_man_manage_event()
-    # WIN_man_VE_event()
+    WIN_man_VE_event()
     # WIN_man_create_event()
     # WIN_man_manage_staff()
     # WIN_man_site_report()
