@@ -1,0 +1,47 @@
+#37
+def WIN_vis_site_detail():
+
+    Site="Inman Park"
+    Open_Everyday="Yes"
+    Address = "Inman Park, Atlanta, GA 30307"
+
+    window = Tk()
+    window.title("Visitor Site Detail")
+    window.geometry('600x300')
+    window.resizable(0, 0)
+    window.configure(background="#fff")
+
+    l0 = Label(window,text="Site Detail", width=36,font=('Arial', 18, 'bold'))
+    l0.grid(sticky='n')
+
+    l1 = Label(window,text="Site", font=('Times 12 normal'))
+    l1.place(x=10,y=50)
+
+    l2 = Label(window,text=Site, font=('Times 12 italic'))
+    l2.place(x=90,y=50)    
+
+    l3 = Label(window,text="Open Everyday", font=('Times 12 normal'))
+    l3.place(x=250,y=50)
+
+    l4 = Label(window,text=Open_Everyday, font=('Times 12 italic'))
+    l4.place(x=400,y=50)
+
+    l5 = Label(window,text="Address", font=('Times 12 normal'))
+    l5.place(x=10,y=100)
+
+    l6 = Label(window,text=Address, font=('Times 12 italic'))
+    l6.place(x=100,y=100) 
+
+    l7 = Label(window,text="Visit Date", font=('Times 12 normal'))
+    l7.place(x=100,y=180)       
+
+    b1 = Button(window,text="Back", width=10, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=300,y=225)
+
+    b2 = Button(window,text="Log Visit", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=450,y=180)
+
+    e1 = Entry(window,width=20, bg='powder blue')
+    e1.place(x=250,y=180)
+
+    window.mainloop() 
