@@ -1,0 +1,59 @@
+#36
+def WIN_vis_transit_detail():
+
+    Site="Inman Park"
+
+    window = Tk()
+    window.title("Visitor Transit Detail")
+    window.geometry('600x600')
+    window.resizable(0, 0)
+    window.configure(background="#fff")
+
+    l0 = Label(window,text="Transit Detail", width=36,font=('Arial', 18, 'bold'))
+    l0.grid(sticky='n')
+
+    l1 = Label(window,text="Site", font=('Times 12 normal'))
+    l1.place(x=10,y=50)
+
+    l2 = Label(window,text=Site, font=('Times 12 italic'))
+    l2.place(x=90,y=50)
+
+    l3 = Label(window,text="Transport Type", font=('Times 12 italic'))
+    l3.place(x=300,y=50)    
+
+    l4 = Label(window,text="Transit Date", font=('Times 12 italic'))
+    l4.place(x=150,y=550)      
+
+    b1 = Button(window,text="Back", width=10, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=10,y=550)
+
+    b2 = Button(window,text="Log Visit", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=450,y=550)
+
+    e1 = Entry(window,width=20, bg='powder blue')
+    e1.place(x=250,y=550)
+
+    option1 = StringVar()
+    o1 = ttk.Combobox(window,width=8, textvariable=option1)
+    o1['values'] = ('MARTA','Bus','Bike')
+    o1.place(x=440,y=50)
+    o1.current(0)
+    
+    tree = ttk.Treeview(window)
+    tree.place(x=0,y=100)
+    vsb = ttk.Scrollbar(window, orient="vertical", command=tree.yview)
+    vsb.place(x=425, y=160, height=240)
+    tree["show"] = 'headings'
+    tree.configure(yscrollcommand=vsb.set,height=12)
+    tree["columns"]=("one","two","three","four")
+    tree.column("one", width=100)
+    tree.column("two", width=100)
+    tree.column("three",width=100)
+    tree.column("four",width=100)
+    tree.heading("one", text="Route",command=(lambda: None))
+    tree.heading("two", text="Transport Type",command=(lambda: None))
+    tree.heading("three", text="Price",command=(lambda: None))
+    tree.heading("four",text="# Connected Sites",command=(lambda: None))
+
+
+    window.mainloop() 
