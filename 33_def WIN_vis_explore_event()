@@ -1,0 +1,153 @@
+#33
+def WIN_vis_explore_event():
+    db = DB()
+    sql_command_33_1 = "select sitename from site"
+    site_list = db.search(sql_command_33_1)
+    sql_command_33_2 = "SELECT DISTINCT  `eventname`, `sitename`,  `price`,`Tickets Remaining`,  `Total Visits`,  `My Visits` FROM  `explore_event`"
+    table_raw=db.search(sql_command_33_2)
+    print(table_raw)
+    window = Tk()
+    window.title("Explore Event")
+    window.geometry('600x600')
+    window.resizable(0, 0)
+    window.configure(background="#fff")
+
+    def back():
+        window.destroy()
+        WIN_FUN_vis()
+
+    def filter(e1at,e1bt,e2t,e3at,e3bt,e4at,e4bt,e4ct,e4dt):
+        print("sql_command_33_3")
+        print(e1at,e1bt,e2t,e3at,e3bt,e4at,e4bt,e4ct,e4dt)
+
+    l0 = Label(window,text="Explore Event", width=36,font=('Arial', 18, 'bold'))
+    l0.grid(sticky='n')
+
+    l1 = Label(window,text="Name", font=('Times 14 normal'))
+    l1.place(x=10,y=60)
+
+    l2 = Label(window,text="Description Keyword", font=('Times 14 normal'))
+    l2.place(x=230,y=60)
+
+    l3 = Label(window,text="Site Name", font=('Times 14 normal'))
+    l3.place(x=10,y=100)
+
+    l4 = Label(window,text="Start Date", font=('Times', 14, 'normal'))
+    l4.place(x=10,y=140)
+
+    l5 = Label(window,text="End Date", font=('Times', 14, 'normal'))
+    l5.place(x=300,y=140)   
+
+    l5 = Label(window,text="Daily Visits Range", font=('Times', 14, 'normal'))
+    l5.place(x=10,y=180)
+
+    l6 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l6.place(x=200,y=180)
+
+    l7 = Label(window,text="Ticket Price Range", font=('Times', 14, 'normal'))
+    l7.place(x=270,y=180)
+
+    l8 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l8.place(x=470,y=180)
+
+    b3 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
+    b3.place(x=200,y=550)
+
+    e1a_content= StringVar()
+    e1a = Entry(window,width=10, bg='powder blue',textvariable = e1a_content)
+    e1a.place(x=150,y=60)
+
+    e1b_content= StringVar()
+    e1b = Entry(window,width=10, bg='powder blue',textvariable = e1b_content)
+    e1b.place(x=450,y=60) 
+
+    e2_content= StringVar()
+    e2 = Entry(window,width=20, bg='powder blue', textvariable = e2_content)
+    e2.place(x=150,y=140) 
+
+    e3a_content= StringVar()
+    e3a = Entry(window,width=20, bg='powder blue',textvariable = e3a_content)
+    e3a.place(x=150,y=140)
+
+    e3b_content= StringVar()
+    e3b = Entry(window,width=20, bg='powder blue', textvariable = e3b_content)
+    e3b.place(x=400,y=140)
+
+    e4a_content= StringVar()
+    e4a = Entry(window,width=4, bg='powder blue', textvariable = e4a_content)
+    e4a.place(x=160,y=180) 
+
+    e4b_content= StringVar()
+    e4b = Entry(window,width=4, bg='powder blue', textvariable = e4b_content)
+    e4b.place(x=230,y=180)
+
+    e4c_content= StringVar()
+    e4c = Entry(window,width=4, bg='powder blue', textvariable = e4c_content)
+    e4c.place(x=430,y=180)
+
+    e4d_content= StringVar()
+    e4d = Entry(window,width=4, bg='powder blue',textvariable = e4d_content)
+    e4d.place(x=500,y=180)
+         
+
+    chVarDis = IntVar()
+    c1 = Checkbutton(window, text='Include Visited',variable=chVarDis)
+    if True:
+        c1.select()
+    else:
+        c1.deselect()
+    c1.place(x=150,y=220)
+
+    chVarDis2 = IntVar()
+    c1 = Checkbutton(window, text='Include Sold out event',variable=chVarDis2)
+    if True:
+        c1.select()
+    else:
+        c1.deselect()
+    c1.place(x=350,y=220)
+
+    option1 = StringVar()
+    o1 = ttk.Combobox(window,width=20, textvariable=option1)
+    o1['values'] = tuple(site_list)
+    o1.place(x=130,y=100)
+    o1.current(0)
+    tree = ttk.Treeview(window)
+    tree.place(x=0,y=300)
+    vsb = ttk.Scrollbar(window, orient="vertical", command=tree.yview)
+    vsb.place(x=550, y=250, height=250)
+    tree["show"] = 'headings'
+    tree.configure(yscrollcommand=vsb.set,height=12)
+
+    e1a_text=e1a_content.get()
+    e1b_text=e1b_content.get()
+    e2_text=e2_content.get()
+    e3a_text=e3a_content.get()
+    e3b_text=e3b_content.get()
+    e4a_text=e4a_content.get()
+    e4b_text=e4b_content.get()
+    e4c_text=e4c_content.get()
+    e4d_text=e4d_content.get()
+    print(e1a_text)
+
+    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: filter()))
+    b1.place(x=50,y=250)
+
+    b2 = Button(window,text="Event Detail", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=375,y=250)
+
+    tree["columns"]=("one","two","three","four","five","six")
+    tree.column("one", width=100)
+    tree.column("two", width=100)
+    tree.column("three",width=100)
+    tree.column("four",width=100)
+    tree.column("five",width=100)
+    tree.column("six",width=100)
+    tree.heading("one", text="Event Name",command=(lambda: None))
+    tree.heading("two", text="Site Name",command=(lambda: None))
+    tree.heading("three", text="Ticket Price",command=(lambda: None))
+    tree.heading("four",text="Ticket Remaining",command=(lambda: None))
+    tree.heading("five",text="Total Visits",command=(lambda: None))
+    tree.heading("six",text="My Visits",command=(lambda: None))
+
+
+    window.mainloop() 
