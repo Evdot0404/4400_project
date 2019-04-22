@@ -1,0 +1,39 @@
+#30
+def WIN_man_daily_detail():
+#def WIN_man_daily_detail(date): 
+            
+    window = Tk()
+    window.title("Manager Daily Detail")
+    window.geometry('400x300')
+    window.resizable(0, 0)
+    window.configure(background="#fff")
+
+    def back():
+        window.destroy()
+        WIN_man_site_report()
+
+    l0 = Label(window,text="Daily Detail", width=36,font=('Arial', 18, 'bold'))
+    l0.pack(side='top')
+
+    b1 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
+    b1.pack(side='bottom')
+
+    tree = ttk.Treeview(window)
+    tree.place(x=0,y=50)
+    vsb = ttk.Scrollbar(window, orient="vertical", command=tree.yview)
+    vsb.place(x=425, y=160, height=240)
+    tree["show"] = 'headings'
+    tree.configure(yscrollcommand=vsb.set,height=12)
+    tree["columns"]=("one","two","three","four")
+    tree.column("one", width=100)
+    tree.column("two", width=100)
+    tree.column("three",width=100)
+    tree.column("four",width=100)
+    tree.heading("one", text="Event Name",command=(lambda: sorting("route")))
+    tree.heading("two", text="Staff Name",command=(lambda: sorting("ttype")))
+    tree.heading("three", text="Visits",command=(lambda: sorting("price")))
+    tree.heading("four",text="Revenue($)",command=(lambda: sorting("csites")))
+    #tree.bind('<ButtonRelease-1>', selectItem)
+    #for item in table_list:
+    #    tree.insert("",'end',values=(item[0],item[1],item[2],len(item[3]))) 
+    window.mainloop()
