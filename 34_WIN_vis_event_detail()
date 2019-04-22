@@ -1,0 +1,98 @@
+#34
+#def WIN_vis_event_detail(Event_name,Event_Start_date,visitor_username):
+def WIN_vis_event_detail():
+    db = DB()
+    #should we do db=DB for every function?
+    visitor_username='mary.smith'
+    #input should always be string
+    Event = "Bus Tour"  
+    #Event = Event_name  
+    Start_Date = "2019-02-01"
+    #Startdate = Event_Start_date
+    sql_command_34_3 = "SELECT DISTINCT `eventname`,`sitename`,`eventstartdate`,`enddate`,`price`,`description`,`Tickets Remaining`FROM `visitor_event_detail` WHERE `eventname` = '"+str(Event)+"'and `eventstartdate` = '"+str(Start_Date)+"'  "
+    #print(sql_command_32_1)
+    detail_list= db.search(sql_command_34_3)
+    #print(detail_list)
+    #print("23")            
+    window = Tk()
+    window.title("Visitor Event Detail ")
+    window.geometry('500x600')
+    window.resizable(0, 0)
+    window.configure(background="#fff")
+
+
+    Site=detail_list[0][1]
+    End_Date=detail_list[0][3]
+    Ticket_Price=detail_list[0][4]
+    Tickets_Remaining=detail_list[0][6]
+    Description= detail_list[0][5]
+
+    def log_visit():
+        #print(e1_content.get())
+        if not re.match(r'^[0-9]{4}-[0-9]{2}-[0-9]{2}$',e1_content.get()):
+            tkinter.messagebox.showwarning('Date Error','Not valid date!')
+        #sql_command_34_4="INSERT INTO `visit_event` SET `eventname`='"+str(Event)+"', `eventstartdate`='"str()"', `sitename`='"+str(Inman Park)+"', `date`='"+str(e1_content)+"', `visitorusername`='"+visitor_username+"'"
+        #db.insert(sql_command_34_4)
+        #update query
+    
+    l0 = Label(window,text="Visitor Event Detail", width=36,font=('Arial', 18, 'bold'))
+    l0.grid(sticky='n')
+
+    l1 = Label(window,text="Event", font=('Times 12 normal'))
+    l1.place(x=10,y=50)
+
+    l2 = Label(window,text=Event,font=('Times 10 italic bold'))
+    l2.place(x=70,y=50)
+
+    l3 = Label(window,text="Site",font=('Times 12 normal'))
+    l3.place(x=250,y=50)   
+
+    l4 = Label(window,text=Site,font=('Times 10 italic bold'))
+    l4.place(x=300,y=50)   
+
+    l5 = Label(window,text="Start Date",font=('Times 12 normal'))
+    l5.place(x=10,y=80)
+
+    l6 = Label(window,text=Start_Date,font=('Times 10 italic bold'))
+    l6.place(x=100,y=80)
+
+    l7 = Label(window,text="End Date",font=('Times 10 normal'))
+    l7.place(x=250,y=80)  
+
+    l8 = Label(window,text=End_Date,font=('Times 10 italic bold'))
+    l8.place(x=350,y=80)
+
+    l9 = Label(window,text="Ticket Price($)",font=('Times 12 normal'))
+    l9.place(x=10,y=120)   
+
+    l10 = Label(window,text=Ticket_Price,font=('Times 10 italic bold'))
+    l10.place(x=140,y=120) 
+
+    l11 = Label(window,text="Tickets Remaining",font=('Times 10 normal'))
+    l11.place(x=250,y=120)
+
+    l12 = Label(window,text=Tickets_Remaining,font=('Times 10 italic bold'))
+    l12.place(x=380,y=120)      
+
+    l13 = Label(window,text="Description",font=('Times 12 normal'))
+    l13.place(x=10,y=200)
+
+    st1 = scrolledtext.ScrolledText(window, width=40, height=10,wrap=WORD,bd=8,)
+    st1.place(x=125,y=200)
+    st1.insert(INSERT,Description)
+    st1.config(state=DISABLED)
+
+    l15 = Label(window,text="Visit Date",font=('Times 10 italic bold'))
+    l15.place(x=10,y=500)
+
+    b1 = Button(window,text="Log Visit", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: log_visit()))
+    b1.place(x=300,y=500)
+
+    e1_content = StringVar()
+    e1 = Entry(window,width=20, bg='powder blue',textvariable=e1_content)
+    e1.place(x=150,y=500) 
+
+    b2 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2.place(x=200,y=550)
+
+    window.mainloop() 
