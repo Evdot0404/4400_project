@@ -7,6 +7,7 @@ import tkinter.messagebox
 import re
 import datetime
 import random
+from datetime import datetime
 
 # user  user123456 u1@beltline.com not approved
 # visitor visitor123 v1@beltline.com
@@ -55,7 +56,7 @@ class DB:
         self.cursor.execute(arg)
         self.conn.commit()
 # Mutural functions 
-username_login = ['staff3']
+username_login = ['']
 
 take_transit = ['']
 transit_his = ['']
@@ -74,14 +75,16 @@ newemail = []
 newemail_vis = []
 newemail_emp = []
 newemail_emp_and_vis = []
-newemail_profile = ['m2@beltline.com']
-oriemail_profile = ['m2@beltline.com']
+newemail_profile = ['']
+oriemail_profile = ['']
 site_to_be_edited = ['']
 transit_to_be_edited = ['']
 site_daily_detail = ['']
 event_to_be_edited = ['']
 whos_site = ['']
 event_to_view = ['']
+which_event = ['']
+which_site = ['']
 
 #1 finished
 def WIN_user_login():
@@ -529,7 +532,7 @@ def WIN_regi_vis():
     b6add.place(x=400,y=e6y)
 
     window.mainloop()
-#5 #!NEED TEST
+#5 
 def WIN_regi_emp():
     db = DB()
     geometry = '600x' + str(len(newemail_emp)*40+400)
@@ -773,7 +776,7 @@ def WIN_regi_emp():
     b6add.place(x=400,y=e6y)
 
     window.mainloop()
-#6 #!NEED TEST
+#6 
 def WIN_regi_emp_and_vis():
     db = DB()
     geometry = '600x' + str(len(newemail_emp_and_vis)*40+400)
@@ -2860,7 +2863,7 @@ def WIN_adm_create_site():
     b2.place(x=275,y=200)
 
     window.mainloop()   
-#22 #! Transit Logged
+#22 # Transit Logged
 def WIN_adm_manage_transit():
     db = DB()
     command = "select * from manage_transit"
@@ -2895,7 +2898,7 @@ def WIN_adm_manage_transit():
             filtered_list = table_list[:]
             tree.delete(*tree.get_children())
             for item in table_list:
-                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4])))
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4]),"1"))
         else:
             filtered_list.clear()
             for item in table_list:
@@ -2903,7 +2906,7 @@ def WIN_adm_manage_transit():
                     filtered_list.append(item)
             tree.delete(*tree.get_children())
             for item in filtered_list:
-                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4])))  
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4]),"1"))  
 
     def filter(table_list):
         start = e5a_content.get()
@@ -2918,7 +2921,7 @@ def WIN_adm_manage_transit():
                         filtered_list.append(item)
                 tree.delete(*tree.get_children())
                 for item in filtered_list:
-                    tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4])))  
+                    tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4]),"1"))  
         elif e2_content.get() != '' :
             filtered_list.clear()
             for item in table_list:
@@ -2926,7 +2929,7 @@ def WIN_adm_manage_transit():
                     filtered_list.append(item)
             tree.delete(*tree.get_children())
             for item in filtered_list:
-                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4])))  
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4]),"1"))  
         
     
     def filtertype(event):
@@ -2937,7 +2940,7 @@ def WIN_adm_manage_transit():
             filtered_list = table_list[:]
             tree.delete(*tree.get_children())
             for item in table_list:
-                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4])))
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4]),"1"))
         else:
             filtered_list.clear()
             for item in table_list:
@@ -2945,7 +2948,7 @@ def WIN_adm_manage_transit():
                     filtered_list.append(item)
             tree.delete(*tree.get_children())
             for item in filtered_list:
-                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4])))
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4]),"1"))
     
     def deletetransit():
         if selectitem != {}:
@@ -3041,7 +3044,7 @@ def WIN_adm_manage_transit():
     tree = ttk.Treeview(window)
     tree.place(x=25,y=160)
     vsb = ttk.Scrollbar(window, orient="vertical", command=tree.yview)
-    vsb.place(x=425, y=160, height=240)
+    vsb.place(x=500, y=160, height=240)
     tree["show"] = 'headings'
     tree.configure(yscrollcommand=vsb.set,height=12)
     tree["columns"]=("one","two","three","four","five")
@@ -3057,10 +3060,10 @@ def WIN_adm_manage_transit():
     tree.heading("five",text="# Transit Logged",command=(lambda: None))
     tree.bind('<ButtonRelease-1>', selectItem)
     for item in table_list:
-        tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4])))
+        tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4]),"1"))
 
-    window.mainloop()
-#23 testing
+    window.mainloop()#23 testing
+#23 
 def WIN_adm_edit_transit():
     db = DB()
     command = "SELECT * FROM edit_transit WHERE route='" + transit_to_be_edited[0] + "'"
@@ -3167,7 +3170,7 @@ def WIN_adm_edit_transit():
     b2.place(x=300,y=250)
 
     window.mainloop() 
-#24 #! update the view
+#24 
 def WIN_adm_create_transit():
     db = DB()
     command = "SELECT sitename FROM site"
@@ -3272,7 +3275,7 @@ def WIN_adm_create_transit():
         tree.insert("",'end',values=(item))
 
     window.mainloop() 
-#25 #! change the event information for all the corresponding visits
+#25 
 def WIN_man_manage_event():
     db = DB()
     command = "SELECT * FROM manage_event"
@@ -3510,7 +3513,7 @@ def WIN_man_manage_event():
         tree.insert("",'end',values=(item[0],item[12],item[9],item[11],item[10]))
 
     window.mainloop()
-#26 #! check staff assigned date
+#26 # check staff assigned date
 def WIN_man_VE_event():
     db = DB()
     command = "SELECT * FROM edit_event WHERE eventname='" + event_to_be_edited[0] + "'"
@@ -3757,7 +3760,7 @@ def WIN_man_VE_event():
             tree.insert("",'end',values=(item[9],item[10],item[11]))
         tmp_list.append((item[9],item[10],item[11]))
     window.mainloop()
-#27 #! unassigned staffs,overlap
+#27 # unassigned staffs,overlap
 def WIN_man_create_event():
     db =DB()
     command = "SELECT CONCAT(fname,' ',lname) from user WHERE username in (SELECT eusername FROM employee WHERE etype='Staff')"
@@ -4032,7 +4035,7 @@ def WIN_man_manage_staff():
         tree.insert("",'end',values=(item[6]+' '+item[7],item[8]))
 
     window.mainloop()
-#29 #! need to be tested
+#29 
 def WIN_man_site_report():
     db = DB()
     command = "SELECT employeeID FROM employee WHERE eusername='" + username_login[0] + "'"
@@ -4115,7 +4118,7 @@ def WIN_man_site_report():
         else:pass
 
     def navigation(value):
-        site_daily_detail = selectitem['values']['values']
+        site_daily_detail[0] = selectitem['values']['values']
         if value == 1:
             window.destroy()
             WIN_man_daily_detail()
@@ -4237,7 +4240,7 @@ def WIN_man_site_report():
         tree.insert("",'end',values=(item[0],item[1],item[2],item[3],item[4]))
 
     window.mainloop()
-#30 #! datetime in daily detail
+#30 
 def WIN_man_daily_detail():
     db = DB()
     command = "SELECT employeeID FROM employee WHERE eusername='" + username_login[0] + "'"
@@ -4250,9 +4253,16 @@ def WIN_man_daily_detail():
     for event in eventinfo:
         events.append(event[0])
     # for event in 
-    #!!!
+    command = " SELECT DISTINCT \
+	`eventname`,\
+    `Staff`, \
+    `Total_Visits`, \
+    `Total_Revenue` \
+    FROM \
+	`site_report` \
+    WHERE `site_report`.`date` = '" + site_daily_detail[0][0] + "' " + \
+    "AND `site_report`.`sitename` = '" + sites + "'" 
 
-    command = "SELECT * FROM daily_detail"
     dailydetail = db.search(command)
     table_list = []
     table_dic = {}
@@ -4260,10 +4270,10 @@ def WIN_man_daily_detail():
         table_list.append(row)
     for row in table_list:
         if row[0] not in table_dic:
-            table_dic[row[0]] = [row[0],[row[3]],row[6],row[5]]
+            table_dic[row[0]] = [row[0],[row[1]],row[2],row[3]]
         else:
-            if row[3] not in table_dic[row[0]][1]:
-                table_dic[row[0]][1].append(row[3])
+            if row[1] not in table_dic[row[0]][1]:
+                table_dic[row[0]][1].append(row[1])
     for value,item in table_dic.items():
         table_dic[value][1] = ','.join(item[1])
             
@@ -4332,10 +4342,42 @@ def WIN_sta_view_schedule():
     window.configure(background="#fff")
 
     def filter():
-        pass
+        eventname = e1_content.get()
+        keyword = e2_content.get()
+        startdate = e3_content.get()
+        enddate = e4_content.get()
+        if eventname != '' :
+            filtered_list.clear()
+            for item in table_list:
+                if eventname in item[0]:
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[3],item[1],item[2],item[4])) 
+        elif keyword != '':
+            filtered_list.clear()
+            for item in table_list:
+                if keyword in item[4]:
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[3],item[1],item[2],item[4])) 
+        elif startdate <= enddate and startdate != '' and enddate != '':
+            startdate_date = datetime.date(int(startdate.split("-")[0]),int(startdate.split("-")[1]),int(startdate.split("-")[2]))
+            enddate_date = datetime.date(int(enddate.split("-")[0]),int(enddate.split("-")[1]),int(enddate.split("-")[2]))
+            filtered_list.clear()
+            for item in table_list:   
+                if (startdate_date <= item[2] and enddate_date >= item[2]) or (startdate_date <= item[3] and enddate_date >= item[2]):
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[3],item[1],item[2],item[4]))
     
     def navigation():
-        event_to_view[0] =  selectitem['values']['values'][0]
+        event_to_view[0] =  [selectitem['values']['values'][0],selectitem['values']['values'][2]]
         window.destroy()
         WIN_sta_event_detail()
 
@@ -4414,16 +4456,16 @@ def WIN_sta_view_schedule():
         tree.insert("",'end',values=(item[0],item[3],item[1],item[2],item[4]))
 
     window.mainloop()
-#32 p
+#32 My line
 def WIN_sta_event_detail():
     db = DB()
     #should we do db=DB for every function?
 
     #input should always be string
     #Event = "Bus Tour"  
-    Event = Event_name  
+    Event = event_to_view[0][0]  
     #Startdate = "2019-02-01"
-    Startdate = Event_Start_date
+    Startdate = event_to_view[0][1]  
     #sql_command_32 = "select * from event"
 
     sql_command_32_1 = "SELECT `event`.`eventname`,`event`.`sitename`, `event`.`enddate`,`event`.`eventstartdate`,`event`.`capacity`, `event`.`description`,`event`.`price`,`assign_to`.`employeeID`,CONCAT(`user`.`fname`,' ',`user`.`lname`) as Staff, `employee`.`eusername` FROM `event` JOIN `assign_to` ON `event`.`eventname` = `assign_to`.`eventname` AND `event`.`eventstartdate` = `assign_to`.`eventstartdate` JOIN `employee` ON `assign_to`.`employeeID` = `employee`.`employeeID` JOIN `user` ON `employee`.`eusername` = `user`.`username` where `event`.`eventname` = '"+str(Event)+"' and `event`.`eventstartdate` = '"+str(Startdate)+"'"
@@ -4527,27 +4569,28 @@ def WIN_sta_event_detail():
     b1.pack(side='bottom')
 
     window.mainloop() 
-#33 p
+#33 
 def WIN_vis_explore_event():
     db = DB()
     sql_command_33_1 = "select sitename from site"
     site_list = db.search(sql_command_33_1)
     sql_command_33_2 = "SELECT DISTINCT  `eventname`, `sitename`,  `price`,`Tickets Remaining`,  `Total Visits`,  `My Visits` FROM  `explore_event`"
     table_raw=db.search(sql_command_33_2)
-    print(table_raw)
     window = Tk()
     window.title("Explore Event")
     window.geometry('600x600')
     window.resizable(0, 0)
     window.configure(background="#fff")
+    selectitem = {}
 
     def back():
         window.destroy()
         WIN_FUN_vis()
 
-    def filter(e1at,e1bt,e2t,e3at,e3bt,e4at,e4bt,e4ct,e4dt):
+
+    def filter():
         print("sql_command_33_3")
-        print(e1at,e1bt,e2t,e3at,e3bt,e4at,e4bt,e4ct,e4dt)
+        #print(e1at,e1bt,e2t,e3at,e3bt,e4at,e4bt,e4ct,e4dt)
 
     l0 = Label(window,text="Explore Event", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
@@ -4656,13 +4699,22 @@ def WIN_vis_explore_event():
     e4b_text=e4b_content.get()
     e4c_text=e4c_content.get()
     e4d_text=e4d_content.get()
-    print(e1a_text)
 
-    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: filter()))
+    def Event_Detail():
+        window.destroy()
+        which_event[0] =  selectitem['values']['values'][0]
+        print(which_event[0])
+        WIN_vis_event_detail()
+
+    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda:filter()))
     b1.place(x=50,y=250)
 
-    b2 = Button(window,text="Event Detail", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Event Detail", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: Event_Detail()))
     b2.place(x=375,y=250)
+
+    def selectItem(event):
+        item = tree.focus()
+        selectitem['values'] = tree.item(item)
 
     tree["columns"]=("one","two","three","four","five","six")
     tree.column("one", width=100)
@@ -4677,20 +4729,23 @@ def WIN_vis_explore_event():
     tree.heading("four",text="Ticket Remaining",command=(lambda: None))
     tree.heading("five",text="Total Visits",command=(lambda: None))
     tree.heading("six",text="My Visits",command=(lambda: None))
-
-
-    window.mainloop() #34:
+    tree.bind('<ButtonRelease-1>', selectItem)
+    for row in table_raw:
+       tree.insert("",'end',values=(row[0],row[1],row[2],row[3],row[4],row[5]))
+    
+    window.mainloop() 
 #34
 def WIN_vis_event_detail():
     db = DB()
     #should we do db=DB for every function?
-    visitor_username='mary.smith'
+    visitor_username= username_login[0]  #to be commented ; below to be uncommented
+    #visitor_username=visitorusername
     #input should always be string
-    Event = "Bus Tour"  
+    Event = which_event[0] #comment this out
     #Event = Event_name  
-    Start_Date = "2019-02-01"
+    Start_Date = "2019-02-01" #comment this out
     #Startdate = Event_Start_date
-    sql_command_34_3 = "SELECT DISTINCT `eventname`,`sitename`,`eventstartdate`,`enddate`,`price`,`description`,`Tickets Remaining`FROM `visitor_event_detail` WHERE `eventname` = '"+str(Event)+"'and `eventstartdate` = '"+str(Start_Date)+"'  "
+    sql_command_34_3 = "SELECT DISTINCT `eventname`,`sitename`,`eventstartdate`,`enddate`,`price`,`description`,`Tickets Remaining`FROM `visitor_event_detail` WHERE `eventname` = '"+str(Event)+"'"
     #print(sql_command_32_1)
     detail_list= db.search(sql_command_34_3)
     #print(detail_list)
@@ -4708,14 +4763,21 @@ def WIN_vis_event_detail():
     Tickets_Remaining=detail_list[0][6]
     Description= detail_list[0][5]
 
+    def back():
+        window.destroy()
+        WIN_vis_explore_event()
+            
+
     def log_visit():
         #print(e1_content.get())
         if not re.match(r'^[0-9]{4}-[0-9]{2}-[0-9]{2}$',e1_content.get()):
             tkinter.messagebox.showwarning('Date Error','Not valid date!')
-        #sql_command_34_4="INSERT INTO `visit_event` SET `eventname`='"+str(Event)+"', `eventstartdate`='"str()"', `sitename`='"+str(Inman Park)+"', `date`='"+str(e1_content)+"', `visitorusername`='"+visitor_username+"'"
-        #db.insert(sql_command_34_4)
-        #update query
-    
+        else:    
+            e1_text=e1_content.get()
+            #print(e1_text)
+            sql_command_34_4="INSERT INTO `visit_event` SET `eventname`='"+str(Event)+"', `eventstartdate`='"+str(Start_Date)+"', `sitename`='"+str(Site)+"', `date`='"+str(e1_text)+"', `visitorusername`='"+str(visitor_username)+"'"
+            db.insert(sql_command_34_4)
+
     l0 = Label(window,text="Visitor Event Detail", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
@@ -4773,18 +4835,14 @@ def WIN_vis_event_detail():
     e1 = Entry(window,width=20, bg='powder blue',textvariable=e1_content)
     e1.place(x=150,y=500) 
 
-    b2 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b2.place(x=200,y=550)
 
     window.mainloop() 
 #35
 def WIN_vis_explore_site():
-            
-    window = Tk()
-    window.title(" ")
-    window.geometry('x')
-    window.resizable(0, 0)
-    window.configure(background="#fff")
+    db=DB()
+    selectitem = {}
 
     def back():
         if man_profile[0] == 'user':
@@ -4812,28 +4870,223 @@ def WIN_vis_explore_site():
             window.destroy()
             WIN_FUN_vis()
         else: pass
+    
+    sql_command_35_1= "SELECT DISTINCT `sitename`, `openeveryday`, `eventstartdate`, `Event_count`,	`Total Visits`, `My Visits` FROM `explore_site`"
+    sql_35_return= db.search(sql_command_35_1)
+    
+    len_table=len(sql_35_return)
+    #for i in range(0,len_table)
+        
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
+    window = Tk()
+    window.title("Visitor Explore Site")
+    window.geometry('600x600')
+    window.resizable(0, 0)
+    window.configure(background="#fff")
+
+    l0 = Label(window,text="Visitor Explore Site", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Name", font=('Times 12 normal'))
+    l1.place(x=10,y=50) 
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l2 = Label(window,text="Start Date", font=('Times 12 normal'))
+    l2.place(x=10,y=80) 
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l3 = Label(window,text="End Date", font=('Times 12 normal'))
+    l3.place(x=300,y=80) 
 
+    l4 = Label(window,text="Daily Visits Range", font=('Times', 14, 'normal'))
+    l4.place(x=10,y=120)
+
+    l5 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l5.place(x=200,y=120)
+
+    l6 = Label(window,text="Ticket Price Range", font=('Times', 14, 'normal'))
+    l6.place(x=270,y=120)
+
+    l7 = Label(window,text="--", font=('Times', 14, 'normal'))
+    l7.place(x=470,y=120)     
+
+    def tosite():
+        window.destroy()
+        which_site[0] =  selectitem['values']['values'][0]
+        WIN_vis_site_detail()        
+    
+    def totransit():
+        window.destroy()
+        which_site[0] =  selectitem['values']['values'][0]
+        WIN_vis_transit_detail()   
+
+
+    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1.place(x=20,y=200)
+
+    b2 = Button(window,text="Site Detail", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: tosite()))
+    b2.place(x=300,y=200)
+
+    b3 = Button(window,text="Transit Detail", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: totransit()))
+    b3.place(x=450,y=200)
+
+    b4 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
+    b4.place(x=250,y=550)
+
+    e1a = Entry(window,width=4, bg='powder blue')
+    e1a.place(x=160,y=120)
+
+    e1b = Entry(window,width=4, bg='powder blue')
+    e1b.place(x=230,y=120)    
+
+    e2a = Entry(window,width=4, bg='powder blue')
+    e2a.place(x=430,y=120)
+
+    e2b = Entry(window,width=4, bg='powder blue')
+    e2b.place(x=500,y=120)
+
+    e3a = Entry(window,width=4, bg='powder blue')
+    e3a.place(x=100,y=80)
+
+    e3b = Entry(window,width=10, bg='powder blue')
+    e3b.place(x=400,y=80)
+
+    option1 = StringVar()
+    o1 = ttk.Combobox(window,width=20, textvariable=option1)
+    o1['values'] = ('--ALL--','Site1','Site2','Site3') # More states should be involved
+    o1.place(x=60,y=50)
+    o1.current(0)    
+
+    option2 = StringVar()
+    o2 = ttk.Combobox(window,width=8, textvariable=option2)
+    o2['values'] = ('Yes','No') # This step can be hardcoded
+    o2.place(x=400,y=50)
+    o2.current(0)
+
+    def selectItem(event):
+        item = tree.focus()
+        selectitem['values'] = tree.item(item)
+    
+    tree = ttk.Treeview(window)
+    tree.place(x=50,y=250)
+    vsb = ttk.Scrollbar(window, orient="vertical", command=tree.yview)
+    vsb.place(x=500, y=250, height=300)
+    tree["show"] = 'headings'
+    tree.configure(yscrollcommand=vsb.set,height=12)
+    tree["columns"]=("one","two","three","four")
+    tree.column("one", width=100)
+    tree.column("two", width=100)
+    tree.column("three",width=100)
+    tree.column("four",width=100)
+    tree.heading("one", text="Sitename",command=(lambda: None))
+    tree.heading("two", text="Event Count",command=(lambda: None))
+    tree.heading("three", text="Total Visits",command=(lambda: None))
+    tree.heading("four",text="My Visits",command=(lambda: None))
+    tree.bind('<ButtonRelease-1>', selectItem)
+
+    for row in sql_35_return:
+        tree.insert("",'end',values=(row[0],row[1],row[2],row[3],row[4],row[5]))
+    chVarDis = IntVar()
+    c1 = Checkbutton(window, text='Include Visited',variable=chVarDis)
+    if True:
+        c1.select()
+    else:
+        c1.deselect()
+    c1.place(x=190,y=160)
     window.mainloop()
 #36
 def WIN_vis_transit_detail():
+    db=DB()
+
+    def back():
+        window.destroy()
+        WIN_vis_explore_site() 
+    
+    def log_visit():
+        #print(e1_content.get())
+        if not re.match(r'^[0-9]{4}-[0-9]{2}-[0-9]{2}$',e1_content.get()):
+            tkinter.messagebox.showwarning('Date Error','Not valid date!')
+        else:    
+            e1_text=e1_content.get()
+            #print(e1_text)
+            sql_command_34_4="INSERT INTO `take` SET `transitroute`='Blue', `transittype`='MARTA', `date`='2019-02-02', `username`='"+str(visitor)+"';"
+            db.insert(sql_command_34_4)
+
             
+    Site=which_site[0]#to be commented uncomment the below line
+    #Site = sitename
+    visitor_username=username_login[0]#to be commented uncomment the below line
+    #visitor_username=visitorusername
+
+    sql_command_36_1= "SELECT DISTINCT `type`, `route`, `price`, `Connected Sites` FROM	`transit_detail` WHERE sitename = '"+Site+"';"
+    view_36=db.search(sql_command_36_1)
     window = Tk()
-    window.title(" ")
-    window.geometry('x')
+    window.title("Visitor Transit Detail")
+    window.geometry('600x600')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+ 
+    l0 = Label(window,text="Transit Detail", width=36,font=('Arial', 18, 'bold'))
+    l0.grid(sticky='n')
+
+    l1 = Label(window,text="Site", font=('Times 12 normal'))
+    l1.place(x=10,y=50)
+
+    l2 = Label(window,text=Site, font=('Times 12 italic'))
+    l2.place(x=90,y=50)
+
+    l3 = Label(window,text="Transport Type", font=('Times 12 italic'))
+    l3.place(x=300,y=50)    
+
+    l4 = Label(window,text="Transit Date", font=('Times 12 italic'))
+    l4.place(x=150,y=550)      
+
+    b1 = Button(window,text="Back", width=10, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
+    b1.place(x=10,y=550)
+
+    b2 = Button(window,text="Log Visit", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: log_visit()))
+    b2.place(x=450,y=550)
+
+    e1_content=StringVar()
+    e1 = Entry(window,width=20, bg='powder blue',textvariable= e1_content)
+    e1.place(x=250,y=550)
+    e1_text=e1_content.get()
+    
+    option1 = StringVar()
+    o1 = ttk.Combobox(window,width=8, textvariable=option1)
+    o1['values'] = ('MARTA','Bus','Bike')
+    o1.place(x=440,y=50)
+    o1.current(0)
+    
+    tree = ttk.Treeview(window)
+    tree.place(x=50,y=250)
+    vsb = ttk.Scrollbar(window, orient="vertical", command=tree.yview)
+    vsb.place(x=550, y=250, height=240)
+    tree["show"] = 'headings'
+    tree.configure(yscrollcommand=vsb.set,height=12)
+    tree["columns"]=("one","two","three","four")
+    tree.column("one", width=100)
+    tree.column("two", width=100)
+    tree.column("three",width=100)
+    tree.column("four",width=100)
+    tree.heading("one", text="Route",command=(lambda: None))
+    tree.heading("two", text="Transport Type",command=(lambda: None))
+    tree.heading("three", text="Price",command=(lambda: None))
+    tree.heading("four",text="# Connected Sites",command=(lambda: None))
+
+    for row in view_36:
+        tree.insert("",'end',values=(row[0],row[1],row[2],row[3]))
+
+    window.mainloop() 
+#37
+def WIN_vis_site_detail():
+    visitor_username= username_login[0] #comment this out
+    Site=which_site[0] #comment this out 
+    #Site="sitename"
+    #visitor_username=visitorusername
+
+
+    Address = "Inman Park, Atlanta, GA 30307"
+    db=DB()
 
     def back():
         if man_profile[0] == 'user':
@@ -4862,26 +5115,30 @@ def WIN_vis_transit_detail():
             WIN_FUN_vis()
         else: pass
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
-    l0.grid(sticky='n')
+    def log_visit(visitor_username):
+        if not re.match(r'^[0-9]{4}-[0-9]{2}-[0-9]{2}$',e1_content.get()):
+            tkinter.messagebox.showwarning('Date Error','Not valid date!')
+        else:
+            e1_text=e1_content.get()
+            #print(e1_text)
+            sql_command_37_2="INSERT INTO `visit_site` SET `sitename`='"+str(Site)+"', `date`='"+str(e1_text)+"', `visitorusername`='"+str(visitor_username)+"';"
+            db.insert(sql_command_37_2)
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
 
-    window.mainloop() 
-#37 
-def WIN_vis_site_detail():
+    sql_command_37_1="SELECT DISTINCT `sitename`, `openeveryday`, `address` FROM `site_detail` WHERE `sitename` ='"+Site+"'"
+    view_37=db.search(sql_command_37_1)
+    print(view_37)
 
-    Site="Inman Park"
-    Open_Everyday="Yes"
-    Address = "Inman Park, Atlanta, GA 30307"
+    if view_37[0][1] == 1:
+        Open_Everyday = "Yes"
+    else:
+        Open_Everyday = "No"
+    Address = view_37[0][2]
 
+    
+    
     window = Tk()
     window.title("Visitor Site Detail")
     window.geometry('600x300')
@@ -4912,25 +5169,23 @@ def WIN_vis_site_detail():
     l7 = Label(window,text="Visit Date", font=('Times 12 normal'))
     l7.place(x=100,y=180)       
 
-    b1 = Button(window,text="Back", width=10, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Back", width=10, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.place(x=300,y=225)
 
-    b2 = Button(window,text="Log Visit", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b2.place(x=450,y=180)
-
-    e1 = Entry(window,width=20, bg='powder blue')
+    e1_content= StringVar()
+    e1 = Entry(window,width=20, bg='powder blue', textvariable=e1_content)
     e1.place(x=250,y=180)
 
-    window.mainloop() 
-#38 
-def WIN_vis_visit_his():
-            
-    window = Tk()
-    window.title(" ")
-    window.geometry('x')
-    window.resizable(0, 0)
-    window.configure(background="#fff")
 
+    b2 = Button(window,text="Log Visit", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda:log_visit(visitor_username)))
+    b2.place(x=450,y=180)   
+    
+
+    window.mainloop() 
+#38
+def WIN_vis_visit_his():
+    db=DB()
+    visitorusername = username_login[0]
     def back():
         if man_profile[0] == 'user':
             window.destroy()
@@ -4958,23 +5213,91 @@ def WIN_vis_visit_his():
             WIN_FUN_vis()
         else: pass
 
-    l0 = Label(window,text="", width=36,font=('Arial', 18, 'bold'))
+    sql_command_38_1="SELECT DISTINCT `date`,`eventname`,`sitename`,`price` FROM `visit_history` WHERE visitorusername='" + visitorusername + "'"
+
+    view_38=db.search(sql_command_38_1)
+
+    def Filter():
+        #print("here")
+        option1_text = option1.get()
+        e1_text= e1_content.get()
+        e2_text= e2_content.get()
+        e3_text= e3_content.get()
+        sql_command_38_2="SELECT DISTINCT `date`,`eventname`,`sitename`,`price`FROM `visit_history WHERE `eventname` like '%"+str(e1_text)+"%' AND DATE BETWEEN"+str(e2_text)+"AND"+str(e3_text)
+        view_38_2 = db.search(sql_command_38_2)
+        for row in view_38_2:
+            tree.insert("",'end',values=(row[0],row[1],row[2],row[3]))
+
+    window = Tk()
+    window.title("Visitor Visit History")
+    window.geometry('600x600')
+    window.resizable(0, 0)
+    window.configure(background="#fff")
+
+    l0 = Label(window,text="Visit History", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
 
-    b1 = Button(window,text="", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
-    b1.grid(row=2,column=2)
+    l1 = Label(window,text="Event", font=('Times', 14, 'normal'))
+    l1.place(x=10,y=60)
 
-    e1 = Entry(window,width=20, bg='powder blue')
-    e1.place(x=150,y=60)
+    l2 = Label(window,text="Site", font=('Times', 14, 'normal'))
+    l2.place(x=250,y=60)
 
-    t1 = Text(window,width=20, bg='white')
-    t1.pack()
+    l3 = Label(window,text="Start Date", font=('Times', 14, 'normal'))
+    l3.place(x=10,y=100)
+
+    l5 = Label(window,text="End Date", font=('Times', 14, 'normal'))
+    l5.place(x=300,y=100)    
+
+    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: Filter()))
+    b1.place(x=200,y=150)
+
+    b2 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
+    b2.place(x=200,y=550)
+
+    e1_content = StringVar()
+    e1 = Entry(window,width=20, bg='powder blue',textvariable='e1_content')
+    e1.place(x=100,y=60)
+
+    e2_content = StringVar()
+    e2 = Entry(window,width=10, bg='powder blue',textvariable='e2_content')
+    e2.place(x=125,y=100)
+
+    e3_content = StringVar()
+    e3 = Entry(window,width=10, bg='powder blue',textvariable='e3_content')
+    e3.place(x=400,y=100)
+    
+    option1 = StringVar()
+    o1 = ttk.Combobox(window,width=8, textvariable=option1)
+    o1['values'] = ('ALL','MARTA','Bus','Bike')
+    o1.place(x=300,y=50)
+    o1.current(0)
+    
+
+    tree = ttk.Treeview(window)
+    tree.place(x=50,y=250)
+    vsb = ttk.Scrollbar(window, orient="vertical", command=tree.yview)
+    vsb.place(x=550, y=250, height=240)
+    tree["show"] = 'headings'
+    tree.configure(yscrollcommand=vsb.set,height=12)
+    tree["columns"]=("one","two","three","four")
+    tree.column("one", width=100)
+    tree.column("two", width=100)
+    tree.column("three",width=100)
+    tree.column("four",width=100)
+    tree.heading("one", text="Route",command=(lambda: None))
+    tree.heading("two", text="Transport Type",command=(lambda: None))
+    tree.heading("three", text="Price",command=(lambda: None))
+    tree.heading("four",text="# Connected Sites",command=(lambda: None))
+
+    for row in view_38:
+        tree.insert("",'end',values=(row[0],row[1],row[2],row[3]))
 
     window.mainloop()
 
 def main():
 
-    # WIN_user_login()
+    WIN_user_login()
     # WIN_regi_nav()
     # WIN_regi_user()
     # WIN_regi_vis()
@@ -5004,7 +5327,7 @@ def main():
     # WIN_man_manage_staff()
     # WIN_man_site_report()
     # WIN_man_daily_detail()
-    WIN_sta_view_schedule()
+    # WIN_sta_view_schedule()
     # WIN_sta_event_detail()
     # WIN_vis_explore_event()
     # WIN_vis_event_detail()
