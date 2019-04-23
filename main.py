@@ -1,17 +1,26 @@
 #! /usr/bin/python3
-import pymysql 
+import pymysql # mysql-connector-python
 from tkinter import *
 from tkinter import scrolledtext
 from tkinter import ttk
 import tkinter.messagebox
 import re
 import datetime
+import random
+
+# user  user123456 u1@beltline.com not approved
+# visitor visitor123 v1@beltline.com
+# adm dsmith456 dsmith@outlook.com
+# man manager1 m1@beltline.com
+# man,vis manager2 m2@beltline.com
+# sta staff1234 s1@beltline.com
+# sta,vis staff7890 s3@beltline.com
 
 class DB:
     def __init__(self):
         host = "127.0.0.1"
         user = "root"
-        passwd = ""
+        passwd = "Evdot0404MySQL"
         database = "CS4400_T77"
         self.conn = pymysql.connect(host=host,user=user,passwd=passwd,database=database)
         # if self.conn.is_connected():
@@ -46,7 +55,7 @@ class DB:
         self.cursor.execute(arg)
         self.conn.commit()
 # Mutural functions 
-username_login = ['']
+username_login = ['staff3']
 
 take_transit = ['']
 transit_his = ['']
@@ -65,13 +74,14 @@ newemail = []
 newemail_vis = []
 newemail_emp = []
 newemail_emp_and_vis = []
-newemail_profile = []
-oriemail_profile = []
+newemail_profile = ['m2@beltline.com']
+oriemail_profile = ['m2@beltline.com']
 site_to_be_edited = ['']
 transit_to_be_edited = ['']
 site_daily_detail = ['']
 event_to_be_edited = ['']
 whos_site = ['']
+event_to_view = ['']
 
 #1 finished
 def WIN_user_login():
@@ -112,6 +122,7 @@ def WIN_user_login():
         command = "SELECT U.username FROM user as U " + "WHERE U.password='" + password + "'"
         username = db.search(command)
         username_login[0] = username[0][0]
+        # print(username_login[0])
 
         # For WIN17 profiles
         command = "SELECT * FROM manage_profile WHERE username='" + username_login[0] + "'"
@@ -518,7 +529,7 @@ def WIN_regi_vis():
     b6add.place(x=400,y=e6y)
 
     window.mainloop()
-#5 waiting for new table
+#5 #!NEED TEST
 def WIN_regi_emp():
     db = DB()
     geometry = '600x' + str(len(newemail_emp)*40+400)
@@ -595,18 +606,39 @@ def WIN_regi_emp():
             tkinter.messagebox.showwarning('City Error','City should not be none') 
         city = e10_content.get() 
         state = option11.get()
-        address = e9_content
+        address = e9_content.get()
         usertype = option7.get()
         zipcode = checkzipcode()
         status = "Pending"
         comusertype = "Employee"
+        
+        command = "SELECT employeeID FROM employee ORDER BY employeeID"
+        eids = db.search(command)
+        leid = eids[-1][0]
+        employeeid = int(leid) + 1
+        employeeid = '0' * (9 - len(list(str(int(leid) + 1)))) + str(employeeid)
+           
         if None not in (fname,lname,password,username,phone,zipcode,city,state,usertype,address) and newemail_emp != []:
             try:
-                #! mysql queries
-                command = ""
+                command = "INSERT INTO `employee` SET `employeeID`='" \
+                                + employeeid + "'," + \
+                            "`phone`=" + phone  + "," + \
+                            "`address`='" + address + "'," + \
+                            "`city` ='" + city + "'," + \
+                            "`state`='" + state + "',"  +\
+                            "`zipcode` = " + zipcode + "," + \
+                            "`eusername`='" + username + "'" + \
+                            "`etype`='" + usertype + "'"
+                db.insert(command)
+                command = "INSERT INTO `user` SET `username` ='" + username + "'," +   \
+                            "`password` = '" + password + "'," + \
+                            "`status` = '" + status + "'," + \
+                            "`fname` = '" + fname + "'," + \
+                            "`lname` = '" + lname + "'" + \
+                            "`etype` = '" + comusertype + "'"
                 db.insert(command)
                 for email in newemail_emp:
-                    command =""
+                    command ="INSERT INTO `email` SET `username` ='" + username + "',email='" + email + "'"
                     db.insert(command)
             except:
                 tkinter.messagebox.showwarning('Error','Incomplete information!') 
@@ -741,7 +773,7 @@ def WIN_regi_emp():
     b6add.place(x=400,y=e6y)
 
     window.mainloop()
-#6 waiting for new table
+#6 #!NEED TEST
 def WIN_regi_emp_and_vis():
     db = DB()
     geometry = '600x' + str(len(newemail_emp_and_vis)*40+400)
@@ -780,7 +812,7 @@ def WIN_regi_emp_and_vis():
         elif e6_content.get() in emails:
             tkinter.messagebox.showwarning('Existed Email','The email exists, try another email!')
         else:
-            newemail_emp_and_viss.append(e6_content.get())
+            newemail_emp_and_vis.append(e6_content.get())
 
     def checkphone():
         command = 'SELECT phone FROM employee'
@@ -807,7 +839,7 @@ def WIN_regi_emp_and_vis():
             tkinter.messagebox.showwarning('Last Name Error','Last Name should not be none')
         if e2_content.get() == '':
             tkinter.messagebox.showwarning('Username Error','Username should not be none')  
-        if len(newemail_emp_and_vis) == 0:
+        if len(newemail_emp) == 0:
             tkinter.messagebox.showwarning('Email Error','Email should not be none')  
         fname = e1_content.get()
         lname = e4_content.get()
@@ -818,18 +850,39 @@ def WIN_regi_emp_and_vis():
             tkinter.messagebox.showwarning('City Error','City should not be none') 
         city = e10_content.get() 
         state = option11.get()
-        address = e9_content
+        address = e9_content.get()
         usertype = option7.get()
         zipcode = checkzipcode()
         status = "Pending"
-        comusertype = "Employee"
-        if None not in (fname,lname,password,username,phone,zipcode,city,state,usertype,address) and newemail_emp_and_vis != []:
+        comusertype = "employee,visitor"
+        
+        command = "SELECT employeeID FROM employee ORDER BY employeeID"
+        eids = db.search(command)
+        leid = eids[-1][0]
+        employeeid = int(leid) + 1
+        employeeid = '0' * (9 - len(list(str(int(leid) + 1)))) + str(employeeid)
+           
+        if None not in (fname,lname,password,username,phone,zipcode,city,state,usertype,address) and newemail_emp != []:
             try:
-                #! mysql queries
-                command = ""
+                command = "INSERT INTO `employee` SET `employeeID`='" \
+                                + employeeid + "'," + \
+                            "`phone`=" + phone  + "," + \
+                            "`address`='" + address + "'," + \
+                            "`city` ='" + city + "'," + \
+                            "`state`='" + state + "',"  +\
+                            "`zipcode` = " + zipcode + "," + \
+                            "`eusername`='" + username + "'" + \
+                            "`etype`='" + usertype + "'"
+                db.insert(command)
+                command = "INSERT INTO `user` SET `username` ='" + username + "'," +   \
+                            "`password` = '" + password + "'," + \
+                            "`status` = '" + status + "'," + \
+                            "`fname` = '" + fname + "'," + \
+                            "`lname` = '" + lname + "'," + \
+                            "`etype` = '" + comusertype + "'"
                 db.insert(command)
                 for email in newemail_emp_and_vis:
-                    command =""
+                    command ="INSERT INTO `email` SET `username` ='" + username + "',email='" + email + "'"
                     db.insert(command)
             except:
                 tkinter.messagebox.showwarning('Error','Incomplete information!') 
@@ -1583,7 +1636,7 @@ def WIN_take_transit():
                 tree.insert("",'end',values=(item[0],item[1],item[2],len(item[3])))
       
     def logtransit():
-        if not re.match(r'^[0-9]{4}-[0-9]{2}-[0-9]{2}$',e3_content.get()):
+        if not re.match(r'^^\d\d\d\d-(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])',e3_content.get()):
             tkinter.messagebox.showwarning('Date Error','Not valid date!')            
         else:
             if selectitem != {}:
@@ -1596,19 +1649,22 @@ def WIN_take_transit():
                 newroute = "transitroute='" + str(info[0]) + "'"
                 newtype = "transittype='" + info[1] + "'"
                 newusername = "username='" + username_login[0] + "'"
+                
                 if com != None:
                     if (transitdate,transitroute) not in com:
                         try:
                             command =  "INSERT INTO take SET " + newdate + "," + newroute + "," + newtype + "," + newusername
                             db.insert(command)      
                         except:
-                            tkinter.messagebox.showwarning('Error','Wrong Date or Selection!') 
+                            tkinter.messagebox.showwarning('Error','You have take the same transit that day!') 
                 else:
                     try:
                         command =  "INSERT INTO take SET " + newdate + "," + newroute + "," + newtype + "," + newusername
                         db.insert(command)    
                     except:
                         tkinter.messagebox.showwarning('Error','Wrong Date or Selection!') 
+            else:
+                tkinter.messagebox.showwarning('Route Error','Choose a route please!') 
         
     def back():
         if take_transit[0] == 'user':
@@ -1746,7 +1802,6 @@ def WIN_transit_his():
             if element not in sites:
                 sites.append(element)
     # for item from table_list:pass
-    print(table_list)
     isreversed = [0]
     filtered_list = table_list[:]
     selectitem = {}
@@ -1800,13 +1855,13 @@ def WIN_transit_his():
                 tree.insert("",'end',values=(item[0],item[1],item[2],item[3]))
 
     def checkstartdate():
-        if not re.match(r'[0-9]{4}-[0-9]{2}-[0-9]{2}',e4_content.get()):
+        if not re.match(r'^\d\d\d\d-(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])',e4_content.get()):
             tkinter.messagebox.showwarning('Date Error','Not valid Start date!')            
         else:
             return e4_content.get()
 
     def checkenddate():
-        if not re.match(r'[0-9]{4}-[0-9]{2}-[0-9]{2}',e5_content.get()):
+        if not re.match(r'^\d\d\d\d-(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])',e5_content.get()):
             tkinter.messagebox.showwarning('Date Error','Not valid End date!')            
         else:
             return  e5_content.get()
@@ -1823,7 +1878,7 @@ def WIN_transit_his():
             else:
                 filtered_list.clear()
                 for item in table_list:      
-                    if route in item[1] and startdate_date <= item[0] and enddate_date >= item[0]:
+                    if route == item[1] and startdate_date <= item[0] and enddate_date >= item[0]:
                         filtered_list.append(item)
                 tree.delete(*tree.get_children())
                 for item in filtered_list:
@@ -1831,6 +1886,8 @@ def WIN_transit_his():
         elif e4_content.get() != '' and e5_content.get() != '' and e3_content.get() == '':
             startdate = checkstartdate()
             enddate = checkenddate()
+            startdate_date = datetime.date(int(startdate.split("-")[0]),int(startdate.split("-")[1]),int(startdate.split("-")[2]))
+            enddate_date = datetime.date(int(enddate.split("-")[0]),int(enddate.split("-")[1]),int(enddate.split("-")[2]))
             if startdate > enddate:
                 tkinter.messagebox.showwarning('Date Error','Start Date should be before End date!') 
             else:
@@ -1844,7 +1901,7 @@ def WIN_transit_his():
         elif e4_content.get() == '' and e5_content.get() == '' and e3_content.get() != '':
             filtered_list.clear()
             for item in table_list:
-                if route in item[1]:
+                if route == item[1]:
                     filtered_list.append(item)
             tree.delete(*tree.get_children())
             for item in filtered_list:
@@ -1994,7 +2051,7 @@ def WIN_emp_manage_profile():
     db = DB()
     command = "SELECT * FROM manage_profile WHERE username='" + username_login[0] + "'"
     profile = db.search(command)
-    print(profile)
+    # print(profile)
     command = "SELECT * FROM user WHERE username='" + username_login[0] + "'"
     if db.search(command)[0][5] == 'employee,visitor':
         Etype = "manuser"
@@ -2023,29 +2080,35 @@ def WIN_emp_manage_profile():
         newlname = e2_content.get()
         newphone = e9_content.get() 
         IsVis = chVarDis.get()
-        try:
-            command = "UPDATE user SET fname='" + newfname + "',lname='" + newlname + "' WHERE username='" + username_login[0] + "'"
-            db.update(command)
-            command = "UPDATE employee SET phone='" + newphone + "' WHERE username='" + username_login[0] + "'" 
-            db.update(command)
-            for email in oriemail_profile:
-                if email not in newemail_profile:
-                    command = "DELETE FROM email WHERE username='" + username_login[0] + "' AND email='" + email + "'" 
+        if newfname != Fname or newlname != Lname or int(newphone) != int(Phone) or newemail_profile != oriemail_profile:
+            try:    
+                if newfname != Fname or newlname != Lname:
+                    command = "UPDATE user SET fname='" + newfname + "',lname='" + newlname  + "' WHERE username='" + username_login[0] + "'"
                     db.update(command)
-            for email in newemail_profile:
-                if email not in oriemail_profile:
-                    command = "INSERT INTO email SET username='" + username_login[0] + "',email='" + email + "'"
+                if int(newphone) != int(Phone):
+                    command = "UPDATE employee SET phone=" + newphone  + " WHERE eusername='" + username_login[0] + "'"
                     db.update(command)
-            if IsVis == 1:
-                command = "UPDATE user SET etype='employee,visitor' WHERE username='" + username_login[0] + "'"
-                db.update(command)
-            else:
-                command = "UPDATE user SET etype='Employee' WHERE username='" + username_login[0] + "'"
-                db.update(command)
-            window.destroy()
-            WIN_user_login()
-        except:
-            tkinter.messagebox.showwarning('Update Error','No changes or invalid information')
+                if newemail_profile != oriemail_profile:
+                    for email in oriemail_profile:
+                        if email not in newemail_profile:
+                            command = "DELETE FROM email WHERE username='" + username_login[0] + "' AND email='" + email + "'" 
+                            db.update(command)
+                    for email in newemail_profile:
+                        if email not in oriemail_profile:
+                            command = "INSERT INTO email SET username='" + username_login[0] + "',email='" + email + "'"
+                            db.update(command)
+                if IsVis != isVis:
+                    if IsVis == 1:
+                        command = "UPDATE user SET etype='employee,visitor' WHERE username='" + username_login[0] + "'"
+                        db.update(command)
+                    else:
+                        command = "UPDATE user SET etype='Employee' WHERE username='" + username_login[0] + "'"
+                        db.update(command)
+                tkinter.messagebox.showinfo('Success!','Profile updated, please relogin.')
+                window.destroy()
+                WIN_user_login()
+            except:
+                tkinter.messagebox.showwarning('Update Error','At least one email! No changes or invalid information')
 
     def checkemail():
         command = 'SELECT email FROM email'
@@ -2249,9 +2312,9 @@ def WIN_adm_manage_user():
 
     def usernamefilter():
         filteruser = e1_content.get()
-        for user in table_list:
-            if filteruser == user[0]:
-                tree.delete(*tree.get_children())
+        tree.delete(*tree.get_children())
+        for user in table_list:   
+            if filteruser == user[0]:    
                 tree.insert("",'end',values=(user[0],user[3],user[2],user[1]))
 
     def filterstatus(event):
@@ -2274,7 +2337,6 @@ def WIN_adm_manage_user():
     def filtertype(event):
         filtered_list = table_list[:]
         utype = event.widget.get()
-        print(utype)
         if utype == '--ALL--':
             filtered_list.clear()
             filtered_list = table_list[:]
@@ -2609,6 +2671,17 @@ def WIN_adm_edit_site():
     command = "SELECT * FROM edit_site WHERE sitename='" + site_to_be_edited[0] + "'"
     siteinfo = db.search(command)[0]
 
+    command = "SELECT DISTINCT   `P`.`employeeID`,   `P`.`username`,   `P`.`Manager Name` FROM  \
+         ( SELECT    `employee`.`employeeID`,   `user`.`username`,   CONCAT( `user`.`fname`, ' ',`user`.`lname` ) as `Manager Name`  FROM  \
+              `employee` JOIN `user` ON `employee`.`eusername` = `user`.`username`  WHERE   `employee`.`etype` = 'Manager'  )  AS `P`   LEFT JOIN  \
+                   ( SELECT    `employee`.`employeeID`,   `user`.`username`,   CONCAT( `user`.`fname`, ' ',`user`.`lname` ) as `Manager Name`  FROM \
+                       `employee` JOIN `user` ON `employee`.`eusername` = `user`.`username`   JOIN `site` ON `site`.`employeeID` = `employee`.`employeeID`  WHERE  \
+                            `employee`.`etype` = 'Manager'  )  AS `Q` ON  `P`.`employeeID` = `Q`.`employeeID` WHERE  `Q`.`employeeID` IS NULL"
+    
+    unassigned_man_tmp = db.search(command)
+    unassigned_man = []
+    for man in unassigned_man_tmp:
+        unassigned_man.append(man[2])
     managers = [siteinfo[4]]
 
     window = Tk()
@@ -2622,16 +2695,29 @@ def WIN_adm_edit_site():
         WIN_adm_manage_site()
 
     def update():
-        #! Need modify
         newsitename = e1_content.get()
         newzip = e2_content.get()
         newaddress = e3_content.get()
-        newemployID = ""
-        try:
-            command = "UPDATE site SET sitename='" + newsitename + "',zipcode=" + newzip + ",address='" + newaddress + "',openeveryday=" + str(chVarDis.get()) + " WHERE sitename='" + site_to_be_edited[0] + "'"
-            db.update(command)
-        except:
-            tkinter.messagebox.showwarning('Update Error','No changes or invalid information')  
+        if option4.get() != managers[0]: 
+            for man in unassigned_man_tmp:
+                if man[2] in option4.get():
+                    ID = man[0]
+            try: 
+                command = "UPDATE site SET employeeID='" + ID + "' WHERE sitename='"  + site_to_be_edited[0] + "'"
+                print(command)
+                db.update(command)
+                tkinter.messagebox.showinfo('Success','New manager assigned') 
+                back()  
+            except:
+                pass
+        elif newsitename != siteinfo[2] or newzip != siteinfo[0] or newaddress != siteinfo[1]:
+            try:
+                command = "UPDATE site SET sitename='" + newsitename + "',zipcode=" + newzip + ",address='" + newaddress + "',openeveryday=" + str(chVarDis.get()) + " WHERE sitename='" + site_to_be_edited[0] + "'"
+                db.update(command)
+                tkinter.messagebox.showinfo('Success','Site info updated') 
+                back()
+            except:
+                tkinter.messagebox.showwarning('Update Error','No changes or invalid information')  
 
     l0 = Label(window,text="Edit Site", width=36,font=('Arial', 18, 'bold'))
     l0.grid(sticky='n')
@@ -2665,7 +2751,7 @@ def WIN_adm_edit_site():
 
     option4 = StringVar()
     o4 = ttk.Combobox(window,width=12, textvariable=option4)
-    o4['values'] = tuple(managers)
+    o4['values'] = tuple(managers + unassigned_man)
     o4.place(x=100,y=140)
     o4.current(0)
 
@@ -2687,6 +2773,17 @@ def WIN_adm_edit_site():
 #21 managers
 def WIN_adm_create_site():
     db = DB()
+    command = "SELECT DISTINCT   `P`.`employeeID`,   `P`.`username`,   `P`.`Manager Name` FROM  \
+         ( SELECT    `employee`.`employeeID`,   `user`.`username`,   CONCAT( `user`.`fname`, ' ',`user`.`lname` ) as `Manager Name`  FROM  \
+              `employee` JOIN `user` ON `employee`.`eusername` = `user`.`username`  WHERE   `employee`.`etype` = 'Manager'  )  AS `P`   LEFT JOIN  \
+                   ( SELECT    `employee`.`employeeID`,   `user`.`username`,   CONCAT( `user`.`fname`, ' ',`user`.`lname` ) as `Manager Name`  FROM \
+                       `employee` JOIN `user` ON `employee`.`eusername` = `user`.`username`   JOIN `site` ON `site`.`employeeID` = `employee`.`employeeID`  WHERE  \
+                            `employee`.`etype` = 'Manager'  )  AS `Q` ON  `P`.`employeeID` = `Q`.`employeeID` WHERE  `Q`.`employeeID` IS NULL"
+    
+    unassigned_man_tmp = db.search(command)
+    unassigned_man = []
+    for man in unassigned_man_tmp:
+        unassigned_man.append(man[2])
 
     window = Tk()
     window.title("Administrator Create Site")
@@ -2695,19 +2792,20 @@ def WIN_adm_create_site():
     window.configure(background="#fff")
 
     def create():
-        #! Unassigned employee list
-
         newsitename = e1_content.get()
         newzip = e2_content.get()
         newaddress = e3_content.get()
-        #
-        newemployID = option4.get()
-
+        for man in unassigned_man_tmp:
+            if man[2] in option4.get():
+                newemployID = man[0]
         try:
-            command = "INSTER INTO site SET sitename='" + newsitename + "',zipcode=" + newzip + ",address='" + newaddress + "',openeveryday=" + str(chVarDis.get()) 
+            command = "INSERT INTO site SET sitename='" + newsitename + "',zipcode=" + newzip + ",address='" + newaddress + "',openeveryday=" + str(chVarDis.get()) + ",employeeID='" + newemployID + "'" \
+                        + ",city='Atlanta',state='GA'"
             db.insert(command)
+            tkinter.messagebox.showinfo('Success','New site created.') 
+            back()
         except:
-            tkinter.messagebox.showwarning('Update Error','No changes or invalid information')  
+            tkinter.messagebox.showwarning('Create Error','Sitename should be unique or zipcode should be 5 digits')  
         
 
     def back():
@@ -2743,7 +2841,7 @@ def WIN_adm_create_site():
 
     option4 = StringVar()
     o4 = ttk.Combobox(window,width=12, textvariable=option4)
-    o4['values'] = ('Manager_name')
+    o4['values'] = tuple(unassigned_man)
     o4.place(x=100,y=140)
     o4.current(0)
 
@@ -2762,27 +2860,102 @@ def WIN_adm_create_site():
     b2.place(x=275,y=200)
 
     window.mainloop()   
-#22 skip
+#22 #! Transit Logged
 def WIN_adm_manage_transit():
     db = DB()
     command = "select * from manage_transit"
     table_raw = db.search(command)
     table = {}
+    sites = []
+    ttype = []
     for row in table_raw:
         if row[0] not in table:
-            table[row[0]] = [row[0],row[1],str(row[2]).split("'")[0],[row[3]]]
-        else:
-            table[row[0]][3].append(row[3])
+            table[row[0]] = [row[0],row[1],str(row[2]),row[3],[row[4]]]
+        elif row[4] not in table[row[0]][4]:
+            table[row[0]][4].append(row[4])
+        if row[4] not in sites:
+            sites.append(row[4])
+        if row[1] not in ttype:
+            ttype.append(row[1])
     table_list = [table[value] for value in table]
     isreversed = [0]
     filtered_list = table_list[:]
     selectitem = {}
-            
+     
     window = Tk()
     window.title("Administrator Manage Transit")
     window.geometry('500x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def filtersite(event):
+        filtered_list = table_list[:]
+        sitename = event.widget.get()
+        if sitename == '--ALL--':
+            filtered_list = table_list[:]
+            tree.delete(*tree.get_children())
+            for item in table_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4])))
+        else:
+            filtered_list.clear()
+            for item in table_list:
+                if sitename in item[4]:
+                    filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4])))  
+
+    def filter(table_list):
+        start = e5a_content.get()
+        end = e5b_content.get()
+        if start != '' and end != '':
+            if float(end) < float(start):
+                tkinter.messagebox.showwarning('Error','Its not a good price range') 
+            else:
+                filtered_list.clear()
+                for item in table_list:
+                    if float(item[2]) >= float(start) and float(item[2]) <= float(end):
+                        filtered_list.append(item)
+                tree.delete(*tree.get_children())
+                for item in filtered_list:
+                    tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4])))  
+        elif e2_content.get() != '' :
+            filtered_list.clear()
+            for item in table_list:
+                if e2_content.get() == item[0]:
+                    filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4])))  
+        
+    
+    def filtertype(event):
+        filtered_list = table_list[:]
+        ttype = event.widget.get()
+        if ttype == '--ALL--':
+            filtered_list.clear()
+            filtered_list = table_list[:]
+            tree.delete(*tree.get_children())
+            for item in table_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4])))
+        else:
+            filtered_list.clear()
+            for item in table_list:
+                if ttype in item[1]:
+                    filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4])))
+    
+    def deletetransit():
+        if selectitem != {}:
+            try:
+                command = "DELETE FROM transit WHERE route='" + str(selectitem['values']['values'][0]) + "' and type='" + selectitem['values']['values'][1] + "'"
+                db.delete(command)
+                window.destroy()
+                WIN_adm_manage_transit()
+            except:
+                tkinter.messagebox.showwarning('Error','Cannot delete!') 
 
     def navigation(value):
         if value == 1:
@@ -2790,6 +2963,7 @@ def WIN_adm_manage_transit():
             WIN_adm_create_transit()
         if value == 2:
             window.destroy()
+            transit_to_be_edited[0] = str(selectitem['values']['values'][0])
             WIN_adm_edit_transit()
 
     def back():
@@ -2819,11 +2993,11 @@ def WIN_adm_manage_transit():
     l5 = Label(window,text="--", font=('Times', 14, 'normal'))
     l5.place(x=400,y=100)
 
-    e5a_content = IntVar()
+    e5a_content = StringVar()
     e5a = Entry(window,width=3, bg='powder blue',textvariable=e5a_content)
     e5a.place(x=350,y=100)
 
-    e5b_content = IntVar()
+    e5b_content = StringVar()
     e5b = Entry(window,width=3, bg='powder blue',textvariable=e5b_content)
     e5b.place(x=425,y=100)
 
@@ -2833,17 +3007,19 @@ def WIN_adm_manage_transit():
 
     option1 = StringVar()
     o1 = ttk.Combobox(window,width=10, textvariable=option1)
-    o1['values'] = ('--ALL--')
+    o1['values'] = tuple(ttype)
+    o1.bind("<<ComboboxSelected>>",filtertype)
     o1.place(x=125,y=60)
     o1.current(0)
 
     option3 = StringVar()
     o3 = ttk.Combobox(window,width=8, textvariable=option3)
-    o3['values'] = ('Inman Park') # More states should be involved
+    o3['values'] = tuple(sites) # More states should be involved
+    o3.bind("<<ComboboxSelected>>",filtersite)
     o3.place(x=125,y=100)
     o3.current(0)
 
-    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: filter(table_list)))
     b1.place(x=25,y=140)
 
     b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
@@ -2852,7 +3028,7 @@ def WIN_adm_manage_transit():
     b3 = Button(window,text="Edit", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
     b3.place(x=300,y=140)
 
-    b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: deletetransit()))
     b4.place(x=400,y=140)
 
     b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
@@ -2872,16 +3048,16 @@ def WIN_adm_manage_transit():
     tree.column("one", width=80)
     tree.column("two", width=80)
     tree.column("three",width=80)
-    tree.column("four",width=80)
-    tree.column("four",width=80)
-    tree.heading("one", text="Route",command=(lambda: sorting("route")))
-    tree.heading("two", text="Transport Type",command=(lambda: sorting("ttype")))
-    tree.heading("three", text="Price($)",command=(lambda: sorting("price")))
-    tree.heading("four",text="# Connected Sites",command=(lambda: sorting("csites")))
-    tree.heading("five",text="# Transit Logged",command=(lambda: sorting("csites")))
+    tree.column("four",width=60)
+    tree.column("four",width=60)
+    tree.heading("one", text="Route",command=(lambda: None))
+    tree.heading("two", text="Transport Type",command=(lambda: None))
+    tree.heading("three", text="Price($)",command=(lambda: None))
+    tree.heading("four",text="# Connected Sites",command=(lambda: None))
+    tree.heading("five",text="# Transit Logged",command=(lambda: None))
     tree.bind('<ButtonRelease-1>', selectItem)
     for item in table_list:
-        tree.insert("",'end',values=(item[0],item[1],item[2],len(item[3])))
+        tree.insert("",'end',values=(item[0],item[1],item[2],len(item[4])))
 
     window.mainloop()
 #23 testing
@@ -2891,14 +3067,16 @@ def WIN_adm_edit_transit():
     transitinfo = db.search(command)
     orisites = []
     for row in transitinfo:
-        orisites.append(row[0])
+        if row[0] not in orisites:
+            orisites.append(row[0])
         price = row[1]
         ttype = row[3]
+
     command = "SELECT sitename FROM site"
     sites_tmp = list(db.search(command))
     sites = []
     for site in sites_tmp:
-        sites.append(site[0])
+        sites.append(site)
     selectitem = {} 
     window = Tk()
     window.title("Administrator Edit Transit")
@@ -2909,12 +3087,15 @@ def WIN_adm_edit_transit():
     def update():
         if e1_content.get() != '' and e2_content.get() != '' and selectitem != {}:
             try:
-                command = "UPDATE transit SET route='" + e1_content.get() + "',price=" + e2_content.get() + ",type='" + option1.get() + "'"
+                command = "UPDATE transit SET route='" + e1_content.get() + "',price='" + e2_content.get()  + "' WHERE route='" +  transit_to_be_edited[0] + "'"
                 db.update(command)
-                for site in selectitem['values']:
-                    command = "UPDATE connect SET transitroute='" + e1_content.get() + "',transittype='" + option1.get() + "',sitename='" + site + "'"
-                    db.update(command)
-                tkinter.messagebox.showinfo('Good','Edited a  transit!') 
+                if selectitem['values'] != []:
+                    command = "DELETE FROM connect WHERE transitroute='" + transit_to_be_edited[0] + "' and transittype='" + ttype + "'" 
+                    db.delete(command)
+                    for site in selectitem['values']:
+                        command = "INSERT INTO connect SET transitroute='" + e1_content.get()  + "',sitename='" + site + "',transittype='" + ttype + "'" 
+                        db.update(command)
+                    tkinter.messagebox.showinfo('Good','Edited a  transit!') 
             except:
                 tkinter.messagebox.showwarning('Error','Cannot edit this transit!') 
         
@@ -2970,14 +3151,15 @@ def WIN_adm_edit_transit():
     tree.bind('<ButtonRelease-1>', selectItem)
     i = 0
     for item in sites:
-        tree.insert("",i,item,values=(item))
+        # print(item)
+        tree.insert("",i,item[0],values=(item))
         i = i + 1
     tree.selection_set(orisites)
     tree.focus_set()
+
     for site in orisites:
         tree.focus(site)
     
-
     b1 = Button(window,text="Back", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.place(x=25,y=250)
 
@@ -2985,7 +3167,7 @@ def WIN_adm_edit_transit():
     b2.place(x=300,y=250)
 
     window.mainloop() 
-#24 testing
+#24 #! update the view
 def WIN_adm_create_transit():
     db = DB()
     command = "SELECT sitename FROM site"
@@ -3002,13 +3184,29 @@ def WIN_adm_create_transit():
     window.configure(background="#fff")
     
     def create():
-        if e1_content.get() != '' and e2_content.get() != '' and selectitem != {}:
+        if len(selectitem['values']) < 2:
+            tkinter.messagebox.showwarning('Error','At least two connected sites!') 
+        elif e1_content.get() != '' and e2_content.get() != '':
             try:
                 command = "INSERT INTO transit SET route='" + e1_content.get() + "',price=" + e2_content.get() + ",type='" + option1.get() + "'"
                 db.update(command)
                 for site in selectitem['values']:
                     command = "INSERT INTO connect SET transitroute='" + e1_content.get() + "',transittype='" + option1.get() + "',sitename='" + site + "'"
                     db.update(command)
+                command = "DROP VIEW IF EXISTS `manage_transit`;"
+                db.update(command)
+                #! Bugs here
+                command = "CREATE VIEW `manage_transit` AS\
+                                SELECT\
+                                    `transit`.`route`,\
+                                    `transit`.`type`,\
+                                    `transit`.`price`,\
+                                    `take`.`username`,	\
+                                    `connect`.`sitename`	\
+                                FROM\
+                                    `transit` JOIN `take` ON `transit`.`route` = `take`.`transitroute` AND `take`.`transittype` = `transit`.`type`\
+                                    JOIN `connect` ON `take`.`transittype` = `connect`.`transittype` AND `take`.`transitroute` = `connect`.`transitroute`"
+                db.update(command)
                 tkinter.messagebox.showinfo('Good','Create a new transit!') 
             except:
                 tkinter.messagebox.showwarning('Error','Cannot create this new transit!') 
@@ -3074,7 +3272,7 @@ def WIN_adm_create_transit():
         tree.insert("",'end',values=(item))
 
     window.mainloop() 
-#25 Priyam
+#25 #! change the event information for all the corresponding visits
 def WIN_man_manage_event():
     db = DB()
     command = "SELECT * FROM manage_event"
@@ -3093,6 +3291,11 @@ def WIN_man_manage_event():
     window.configure(background="#fff")
 
     def navigation(value):
+        command = "SELECT employeeID FROM employee WHERE eusername='" + username_login[0] + "'"
+        ID = db.search(command)[0][0]
+        command = "SELECT sitename FROM site WHERE employeeID='" + ID + "'"
+        sitename = db.search(command)[0][0]
+        whos_site[0] = [sitename,ID]
         if value == 1:
             window.destroy()
             WIN_man_create_event()
@@ -3101,9 +3304,88 @@ def WIN_man_manage_event():
             window.destroy()
             WIN_man_VE_event()
 
+    def filter():
+        name = e1_content.get()
+        keyword = e2_content.get()
+        startdate = e3_content.get()
+        enddate = e4_content.get()
+        duration_s = e6a_content.get()
+        duration_e = e6b_content.get()
+        visit_s = e8a_content.get()
+        visit_e = e8b_content.get()
+        revenue_s = e10a_content.get()
+        revenue_e = e10b_content.get()
+        if name != '':
+            filtered_list.clear()
+            for item in table_list:
+                if name in item[0]:
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[12],item[9],item[11],item[10])) 
+        elif keyword != '':
+            filtered_list.clear()
+            for item in table_list:
+                if keyword in item[3]:
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[12],item[9],item[11],item[10])) 
+        elif startdate != '' and enddate != '':
+            startdate_date = datetime.date(int(startdate.split("-")[0]),int(startdate.split("-")[1]),int(startdate.split("-")[2]))
+            enddate_date = datetime.date(int(enddate.split("-")[0]),int(enddate.split("-")[1]),int(enddate.split("-")[2]))
+            if startdate > enddate_date:
+                tkinter.messagebox.showwarning('Date Error','Start Date should be before End date!') 
+            else:
+                filtered_list.clear()
+                for item in table_list:      
+                    if startdate_date <= enddate_date:
+                        if (startdate_date <= item[1] and enddate_date >= item[1]) or (startdate_date <= item[2] and enddate_date >= item[1]):
+                            if item not in filtered_list:
+                                filtered_list.append(item)
+                tree.delete(*tree.get_children())
+                for item in filtered_list:
+                    tree.insert("",'end',values=(item[0],item[12],item[9],item[11],item[10]))
+        elif duration_e != 0 and duration_s != 0:
+            filtered_list.clear()
+            for item in table_list: 
+                if duration_s <= item[9] and duration_e >= item[9]:
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[12],item[9],item[11],item[10]))
+        elif visit_s != 0 and visit_e != 0:
+            filtered_list.clear()
+            for item in table_list: 
+                if visit_s <= item[11] and visit_e >= item[11]:
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[12],item[9],item[11],item[10]))
+        elif revenue_s != 0 and revenue_e != 0: 
+            filtered_list.clear()
+            for item in table_list: 
+                if visit_s <= item[10] and visit_e >= item[10]:
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[12],item[9],item[11],item[10]))
+        else:pass
+
     def deleteevent():
-        #! Delete mysql
-        command = ""
+        if selectitem != {}:
+            try:
+                command = "DELETE FROM event WHERE eventname='" + str(selectitem['values']['values'][0]) + "'"
+                db.delete(command)
+                window.destroy()
+                WIN_man_manage_event()
+            except:
+                tkinter.messagebox.showwarning('Error','Cannot delete!') 
 
     def back():
         if man_event[0] == 'man':
@@ -3187,7 +3469,7 @@ def WIN_man_manage_event():
     e10b = Entry(window,width=3, bg='powder blue',textvariable=e10b_content)
     e10b.place(x=315,y=180)
 
-    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: filter()))
     b1.place(x=25,y=220)
 
     b2 = Button(window,text="Create", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
@@ -3196,7 +3478,7 @@ def WIN_man_manage_event():
     b3 = Button(window,text="ViewEdit", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(2)))
     b3.place(x=300,y=220)
 
-    b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b4 = Button(window,text="Delete", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: deleteevent()))
     b4.place(x=400,y=220)
 
     b5 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
@@ -3228,7 +3510,7 @@ def WIN_man_manage_event():
         tree.insert("",'end',values=(item[0],item[12],item[9],item[11],item[10]))
 
     window.mainloop()
-#26 FILTERS
+#26 #! check staff assigned date
 def WIN_man_VE_event():
     db = DB()
     command = "SELECT * FROM edit_event WHERE eventname='" + event_to_be_edited[0] + "'"
@@ -3239,6 +3521,7 @@ def WIN_man_VE_event():
         table_list.append(row)
         if row[7] not in staffs:
             staffs.append(row[7])
+    filtered_list = table_list[:]
     window = Tk()
     window.title("Manager View/Edit Event")
     window.geometry('400x800')
@@ -3249,6 +3532,13 @@ def WIN_man_VE_event():
     allstaffs = db.search(command)
     selectitem = {}
 
+    oristaffsid = []
+    for staff in staffs:
+        command = "SELECT username FROM user WHERE CONCAT(fname,' ',lname)='" + staff + "'"
+        username = db.search(command)[0][0]
+        command = "SELECT employeeID FROM employee WHERE eusername='" + username + "'"
+        oristaffsid.append(db.search(command)[0][0])
+
     Eventname =  event_to_be_edited[0]
     Price = table_list[0][3]
     Startdate = table_list[0][1]
@@ -3256,6 +3546,76 @@ def WIN_man_VE_event():
     Minsta = table_list[0][6]
     Capacity = table_list[0][4]
 
+    def filter():
+        visit_s = e16a_content.get()
+        visit_e = e16b_content.get()
+        revenue_s = e18a_content.get()
+        revenue_e = e18b_content.get()
+        if visit_s != 0 and visit_e != 0:
+            filtered_list.clear()
+            tmp_list = []
+            for item in table_list: 
+                if visit_s <= item[10] and visit_e >= item[10]:
+                    if (item[9],item[10],item[11]) not in tmp_list:
+                        filtered_list.append(item)
+                        tmp_list.append((item[9],item[10],item[11]))
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[9],item[10],item[11]))
+        elif revenue_s != 0 and revenue_e != 0: 
+            filtered_list.clear()
+            for item in table_list: 
+                if revenue_s <= item[11] and revenue_e >= item[11]:
+                    if (item[9],item[10],item[11]) not in tmp_list:
+                        filtered_list.append(item)
+                        tmp_list.append((item[9],item[10],item[11]))
+            tree.delete(*tree.get_children())
+            for item in filtered_list:         
+                tree.insert("",'end',values=(item[9],item[10],item[11]))
+        else:pass
+
+    def update():
+        if len(selectitem['values']) >= Minsta:
+            newstaffs = []
+            for staff in selectitem['values']:
+                #! check staff assigned date
+                command = "SELECT username FROM user WHERE CONCAT(fname,' ',lname)='" + staff + "'"
+                # print(command)
+                username = db.search(command)[0][0]
+                command = "SELECT employeeID FROM employee WHERE eusername='" + username + "'"
+                # print(command)
+                ID = db.search(command)[0][0]
+                newstaffs.append(ID)
+            for staff in selectitem['values']:
+                command = "SELECT username FROM user WHERE CONCAT(fname,' ',lname)='" + staff + "'"
+                # print(command)
+                username = db.search(command)[0][0]
+                command = "SELECT employeeID FROM employee WHERE eusername='" + username + "'"
+                # print(command)
+                ID = db.search(command)[0][0]
+                command = "SELECT sitename FROM event WHERE eventname='" + event_to_be_edited[0] + "'"
+                # print(command)
+                sitesinfo = db.search(command)
+                sites = []
+                for site in sitesinfo:
+                    if site[0] not in sites:
+                        sites.append(site[0])
+                try:
+                    for site in sites:
+                        eventstartdate = str(table_list[0][1]).split(",")[0]
+                        for oriID in oristaffsid:
+                            if oriID not in newstaffs:                       
+                                command = "DELETE FROM assign_to WHERE employeeID='" + oriID + "'"
+                                db.delete(command)
+                        try:
+                            command = "INSERT INTO assign_to SET eventname='" + event_to_be_edited[0] + "',eventstartdate='" + eventstartdate  + "',employeeID='" +  str(ID) + "',sitename='" + site + "'"
+                            db.update(command)
+                        except:
+                            pass 
+                        tkinter.messagebox.showinfo('Good','Edited an event!') 
+                except:
+                    tkinter.messagebox.showwarning('Error','Cannot edit this transit!') 
+        
     def back():
         window.destroy()
         WIN_man_manage_event()
@@ -3334,8 +3694,11 @@ def WIN_man_VE_event():
     e18b.place(x=275,y=500)
 
     def selectItem1(event):
-        item = tree.focus()
-        selectitem['values'] = tree.item(item)
+        selectitem.clear()
+        item = tree1.selection()
+        selectitem['values'] = []
+        for i in item:
+            selectitem['values'].append( tree1.item(i)['values'][0])
 
     tree1 = ttk.Treeview(window)
     tree1.place(x=150,y=180)
@@ -3362,18 +3725,17 @@ def WIN_man_VE_event():
     st2.insert(INSERT,table_list[0][5])
     st2.config(state=DISABLED)
 
-    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: filter()))
     b1.place(x=25,y=540)
 
-    b2 = Button(window,text="Update", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Update", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: update()))
     b2.place(x=275,y=540)
 
     b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b3.pack(side='bottom')
 
     def selectItem(event):
-        item = tree.focus()
-        selectitem['values'] = tree.item(item)
+        pass
 
     tree = ttk.Treeview(window)
     tree.place(x=25,y=580)
@@ -3395,7 +3757,7 @@ def WIN_man_VE_event():
             tree.insert("",'end',values=(item[9],item[10],item[11]))
         tmp_list.append((item[9],item[10],item[11]))
     window.mainloop()
-#27 Priyam
+#27 #! unassigned staffs,overlap
 def WIN_man_create_event():
     db =DB()
     command = "SELECT CONCAT(fname,' ',lname) from user WHERE username in (SELECT eusername FROM employee WHERE etype='Staff')"
@@ -3407,6 +3769,43 @@ def WIN_man_create_event():
     window.geometry('500x500')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def create():
+        name = e1_content.get()
+        price = e2_content.get()
+        cap = e3_content.get()
+        minsta = e4_content.get()
+        startdate = e5_content.get()
+        enddate = e6_content.get()
+        description = st1.get("1.0","end-1c")
+        site = whos_site[0][0]
+        print(selectitem['values']['values'])
+        
+        if None not in (name,price,cap,minsta,startdate,enddate,description,site) and startdate <= enddate:
+            try:
+                command = "INSERT INTO event SET description='" + description \
+                    + "',minStaffReq='" + minsta \
+                    + "',capacity='" + cap \
+                    + "',price='" + price \
+                    + "',enddate='" + enddate \
+                    + "',eventname='" + name \
+                    + "',eventstartdate='" + startdate \
+                    + "',sitename='" + site + "'"
+                db.insert(command)
+                for staff in selectitem['values']['values']:
+                    
+                    command = "SELECT username FROM user WHERE CONCAT(fname,' ',lname)='" + staff + "'"
+                    username = db.search(command)[0][0]
+                    command = "SELECT employeeID FROM employee WHERE eusername='" + username + "'"
+                    ID = db.search(command)[0][0]
+                    command = "INSERT INTO assign_to SET employeeID='" + ID \
+                            + "',eventname='" + name \
+                            + "',eventstartdate='" + startdate \
+                            + "',sitename='" + site + "'"
+                    db.insert(command)
+                tkinter.messagebox.showinfo('Good','Created an event!') 
+            except:
+                tkinter.messagebox.showwarning('Error','Cannot create this event!') 
 
     def back():
         window.destroy()
@@ -3463,14 +3862,16 @@ def WIN_man_create_event():
     e6 = Entry(window,width=8, bg='powder blue',textvariable=e6_content)
     e6.place(x=350,y=140)
 
-    st1 = Text(window, width=43, height=6,wrap=WORD,bd=8,)
+    st1 = Text(window, width=43, height=6,wrap=WORD,bd=8)
     st1.place(x=125,y=180)
     st1.insert(INSERT,"""Something to be filled""")
-    # st1.config(state=DISABLED)
 
     def selectItem(event):
-        item = tree1.focus()
-        selectitem['values'] = tree1.item(item)
+        selectitem.clear()
+        item = tree.selection()
+        selectitem['values'] = []
+        for i in item:
+            selectitem['values'].append( tree.item(i)['values'][0])
 
     tree1 = ttk.Treeview(window)
     tree1.place(x=150,y=300)
@@ -3492,24 +3893,23 @@ def WIN_man_create_event():
     b1 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
     b1.place(x=75,y=450)
 
-    b2 = Button(window,text="Create", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="Create", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: create()))
     b2.place(x=275,y=450)
 
     window.mainloop() 
 #28 filter
 def WIN_man_manage_staff():
     db = DB()
-    command = "SELECT sitename FROM site"
-    sites_tmp = list(db.search(command))
-    sites = []
-    for site in sites_tmp:
-        sites.append(site[0])
-    command = "SELECT * from manage_staff"
+    command = "SELECT employeeID FROM employee WHERE eusername='" + username_login[0] + "'"
+    ID = db.search(command)[0][0]
+    command = "SELECT sitename FROM site WHERE employeeID='" + ID + "'"
+    sites = db.search(command)[0][0]
+    command = "SELECT * from manage_staff WHERE sitename='" + sites + "'"
     table_raw = db.search(command)
     table_list = []
     for row in table_raw:
         table_list.append(row)
-    filtered_list = []
+    filtered_list = table_list[:]
                 
     window = Tk()
     window.title("Manager Manage Staff")
@@ -3517,21 +3917,49 @@ def WIN_man_manage_staff():
     window.resizable(0, 0)
     window.configure(background="#fff")
 
-    def filtersite(event):
-        sitename = event.widget.get()
-        filtered_list.clear()
-        tree.delete(*tree.get_children())
-        for site in table_list:
-            if site[0] == sitename and (site[9],site[8]) not in filtered_list:
-                filtered_list.append((site[9],site[8]))
-        for item in filtered_list:
-            tree.insert("",'end',values=(item[0],item[1]))
-
     def filter():
         fname = e2_content.get()
         lname = e2_content.get()
         startdate = e4_content.get()
         enddate = e4_content.get()
+        if fname != '' and lname == '':
+            filtered_list.clear()
+            for item in table_list:
+                if fname in item[6]:
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[6]+' '+item[7],item[8])) 
+        elif fname == '' and lname != '':
+            filtered_list.clear()
+            for item in table_list:
+                if lname in item[7]:
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[6]+' '+item[7],item[8])) 
+        elif fname != '' and lname != '':
+            filtered_list.clear()
+            for item in table_list:
+                if lname in item[7] and fname in item[6]:
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[6]+' '+item[7],item[8])) 
+        elif startdate <= enddate and startdate != '' and enddate != '':
+            startdate_date = datetime.date(int(startdate.split("-")[0]),int(startdate.split("-")[1]),int(startdate.split("-")[2]))
+            enddate_date = datetime.date(int(enddate.split("-")[0]),int(enddate.split("-")[1]),int(enddate.split("-")[2]))
+            filtered_list.clear()
+            for item in table_list:   
+                if (startdate_date <= item[2] and enddate_date >= item[2]) or (startdate_date <= item[3] and enddate_date >= item[2]):
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[6]+' '+item[7],item[8]))
 
     def back():
         if view_sta[0] == 'man':
@@ -3578,8 +4006,7 @@ def WIN_man_manage_staff():
 
     option1 = StringVar()
     o1 = ttk.Combobox(window,width=10, textvariable=option1)
-    o1['values'] = tuple(sites)
-    o1.bind("<<ComboboxSelected>>",filtersite)
+    o1['values'] = ([sites])
     o1.place(x=125,y=60)
     o1.current(0)
 
@@ -3602,13 +4029,17 @@ def WIN_man_manage_staff():
     tree.heading("two", text="# Event Shifts",command=(lambda: None))
     # tree.bind('<ButtonRelease-1>', selectItem)
     for item in filtered_list:
-        tree.insert("",'end',values=(item[0],item[1]))
+        tree.insert("",'end',values=(item[6]+' '+item[7],item[8]))
 
     window.mainloop()
-#29 
+#29 #! need to be tested
 def WIN_man_site_report():
     db = DB()
-    command = "SELECT * FROM site_report WHERE sitename='" + whos_site[0] + "'"
+    command = "SELECT employeeID FROM employee WHERE eusername='" + username_login[0] + "'"
+    ID = db.search(command)[0][0]
+    command = "SELECT sitename FROM site WHERE employeeID='" + ID + "'"
+    sites = db.search(command)[0][0]
+    command = "SELECT `date`,`Event_count`,`Staff_count`,`Total_Visits`,`Total_Revenue` FROM site_report WHERE sitename='" + sites + "'"
     sitereport = db.search(command)
     table_list = []
     for row in sitereport:
@@ -3623,7 +4054,68 @@ def WIN_man_site_report():
     window.resizable(0, 0)
     window.configure(background="#fff")
 
+    def filter():
+        startdate = e1_content.get()
+        enddate = e2_content.get()
+        ecr_s = e4a_content.get()
+        ecr_e = e4b_content.get()
+        scr_s = e6a_content.get()
+        scr_e = e6b_content.get()
+        tvr_s = e8a_content.get()
+        tvr_e = e8b_content.get()
+        trr_s = e10a_content.get()
+        trr_e = e10b_content.get()
+        if startdate <= enddate and startdate != '' and enddate != '':
+            startdate_date = datetime.date(int(startdate.split("-")[0]),int(startdate.split("-")[1]),int(startdate.split("-")[2]))
+            enddate_date = datetime.date(int(enddate.split("-")[0]),int(enddate.split("-")[1]),int(enddate.split("-")[2]))
+            filtered_list.clear()
+            for item in table_list:   
+                if startdate_date <= item[0] and enddate_date >= item[0]:
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],item[3],item[4]))
+        elif ecr_e != 0 and ecr_s != 0:
+            filtered_list.clear()
+            for item in table_list: 
+                if ecr_s <= item[1] and ecr_e >= item[1]:
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],item[3],item[4]))
+        elif scr_s != 0 and scr_e != 0:
+            filtered_list.clear()
+            for item in table_list: 
+                if scr_s <= item[2] and scr_e >= item[2]:
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],item[3],item[4]))
+        elif tvr_s != 0 and tvr_e != 0: 
+            filtered_list.clear()
+            for item in table_list: 
+                if tvr_s <= item[3] and tvr_e >= item[3]:
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],item[3],item[4]))
+        elif trr_s != 0 and trr_e != 0: 
+            filtered_list.clear()
+            for item in table_list: 
+                if trr_s <= item[4] and trr_e >= item[4]:
+                    if item not in filtered_list:
+                        filtered_list.append(item)
+            tree.delete(*tree.get_children())
+            for item in filtered_list:
+                tree.insert("",'end',values=(item[0],item[1],item[2],item[3],item[4]))
+        else:pass
+
     def navigation(value):
+        site_daily_detail = selectitem['values']['values']
         if value == 1:
             window.destroy()
             WIN_man_daily_detail()
@@ -3710,7 +4202,7 @@ def WIN_man_site_report():
     e10b = Entry(window,width=2, bg='powder blue',textvariable=e10b_content)
     e10b.place(x=440,y=140)
 
-    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Filter", width=14, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: filter()))
     b1.place(x=50,y=180)
 
     b2 = Button(window,text="Daily Detail", width=12, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation(1)))
@@ -3742,12 +4234,24 @@ def WIN_man_site_report():
     tree.heading("five", text="Total Revenue($)",command=(lambda: None))
     tree.bind('<ButtonRelease-1>', selectItem)
     for item in table_list:
-        tree.insert("",'end',values=(item[1],item[6],item[5],item[4],item[3]))
+        tree.insert("",'end',values=(item[0],item[1],item[2],item[3],item[4]))
 
     window.mainloop()
-#30 for a single date
+#30 #! datetime in daily detail
 def WIN_man_daily_detail():
     db = DB()
+    command = "SELECT employeeID FROM employee WHERE eusername='" + username_login[0] + "'"
+    ID = db.search(command)[0][0]
+    command = "SELECT sitename FROM site WHERE employeeID='" + ID + "'"
+    sites = db.search(command)[0][0]
+    command = "SELECT eventname FROM event WHERE sitename='" + sites + "'"
+    eventinfo = db.search(command)
+    events = []
+    for event in eventinfo:
+        events.append(event[0])
+    # for event in 
+    #!!!
+
     command = "SELECT * FROM daily_detail"
     dailydetail = db.search(command)
     table_list = []
@@ -3801,7 +4305,9 @@ def WIN_man_daily_detail():
 #31 display
 def WIN_sta_view_schedule():
     db =DB()
-    command = "SELECT * FROM view_schedule"
+    command = "SELECT employeeID FROM employee WHERE eusername='" + username_login[0] + "'"
+    ID = db.search(command)[0][0]
+    command = "SELECT * FROM view_schedule WHERE employeeID='" + ID + "'"
     schedule = db.search(command)
     table_dic = {}
     table_list = []
@@ -3824,6 +4330,14 @@ def WIN_sta_view_schedule():
     window.geometry('500x400')
     window.resizable(0, 0)
     window.configure(background="#fff")
+
+    def filter():
+        pass
+    
+    def navigation():
+        event_to_view[0] =  selectitem['values']['values'][0]
+        window.destroy()
+        WIN_sta_event_detail()
 
     def back():
         if view_schedule[0] == 'sta':
@@ -3865,10 +4379,10 @@ def WIN_sta_view_schedule():
     e4 = Entry(window,width=10, bg='powder blue',textvariable=e4_content)
     e4.place(x=350,y=100)
 
-    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b1 = Button(window,text="Filter", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: filter()))
     b1.place(x=100,y=140)
 
-    b2 = Button(window,text="View Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: None))
+    b2 = Button(window,text="View Event", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: navigation()))
     b2.place(x=275,y=140)
 
     b3 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
@@ -3902,7 +4416,6 @@ def WIN_sta_view_schedule():
     window.mainloop()
 #32 p
 def WIN_sta_event_detail():
-    db = DB()
     db = DB()
     #should we do db=DB for every function?
 
@@ -4362,7 +4875,7 @@ def WIN_vis_transit_detail():
     t1.pack()
 
     window.mainloop() 
-#37
+#37 
 def WIN_vis_site_detail():
 
     Site="Inman Park"
@@ -4409,7 +4922,7 @@ def WIN_vis_site_detail():
     e1.place(x=250,y=180)
 
     window.mainloop() 
-#38
+#38 
 def WIN_vis_visit_his():
             
     window = Tk()
@@ -4461,7 +4974,7 @@ def WIN_vis_visit_his():
 
 def main():
 
-    WIN_user_login()
+    # WIN_user_login()
     # WIN_regi_nav()
     # WIN_regi_user()
     # WIN_regi_vis()
@@ -4482,7 +4995,7 @@ def main():
     # WIN_adm_manage_site()
     # WIN_adm_edit_site()
     # WIN_adm_create_site()
-    # WIN_adm_manage_transit()
+    # WIN_adm_manage_transit()   
     # WIN_adm_edit_transit()
     # WIN_adm_create_transit()
     # WIN_man_manage_event()
@@ -4491,7 +5004,7 @@ def main():
     # WIN_man_manage_staff()
     # WIN_man_site_report()
     # WIN_man_daily_detail()
-    # WIN_sta_view_schedule()
+    WIN_sta_view_schedule()
     # WIN_sta_event_detail()
     # WIN_vis_explore_event()
     # WIN_vis_event_detail()
