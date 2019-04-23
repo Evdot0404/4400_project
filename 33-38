@@ -643,9 +643,10 @@ def WIN_vis_visit_his():
         e1_text= e1_content.get()
         e2_text= e2_content.get()
         e3_text= e3_content.get()
-        sql_command_38_2="SELECT DISTINCT `date`,`eventname`,`sitename`,`price`FROM `visit_history WHERE `eventname` like '%"+str()+"%' AND " 
-
-
+        sql_command_38_2="SELECT DISTINCT `date`,`eventname`,`sitename`,`price`FROM `visit_history WHERE `eventname` like '%"+str(e1_text)+"%' AND DATE BETWEEN"+str(e2_text)+"AND"+str(e3_text)
+        view_38_2 = db.search(sql_command_38_2)
+        for row in view_38_2:
+            tree.insert("",'end',values=(row[0],row[1],row[2],row[3]))
 
     window = Tk()
     window.title("Visitor Visit History")
@@ -672,7 +673,7 @@ def WIN_vis_visit_his():
     b1.place(x=200,y=150)
 
     b2 = Button(window,text="Back", width=16, height=2,bg='pink',fg='grey',font=('Arial 9 bold'), command=(lambda: back()))
-    b2.place(x=200,y=450)
+    b2.place(x=200,y=550)
 
     e1_content = StringVar()
     e1 = Entry(window,width=20, bg='powder blue',textvariable='e1_content')
